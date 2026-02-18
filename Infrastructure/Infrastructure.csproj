@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Configurations\" />
-    <Folder Include="Data\Seeding\" />
     <Folder Include="Repositories\Contracts\" />
     <Folder Include="Repositories\Implementations\" />
   </ItemGroup>
