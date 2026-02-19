@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infrastructure.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace Infrastructure.Data.Entities
         public string? Description { get; set; }
 
         public ICollection<Profession> Professions { get; set; } = new HashSet<Profession>();
+        public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     }
 }

@@ -75,6 +75,12 @@ namespace Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(q => q.RecommendedProfessionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.School)
+                .WithMany(s => s.Users)
+                .HasForeignKey(u => u.SchoolId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
