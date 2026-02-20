@@ -32,6 +32,8 @@ builder.Services.AddScoped<ISchoolService, SchoolService>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
+builder.Services.AddScoped<IProfessionService, ProfessionService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

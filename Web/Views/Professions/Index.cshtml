@@ -1,0 +1,55 @@
+﻿@using Core.ViewModels.School
+@using Core.ViewModels.Professions
+@model IEnumerable<ProfessionListVm>
+
+@{
+    var schools = ViewBag.Schools as IEnumerable<SchoolDropdownVm> ?? Enumerable.Empty<SchoolDropdownVm>();
+    int? selected = ViewBag.SelectedSchoolId as int?;
+}
+
+<h2 class="mb-3">Професии</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <select class="form-select" name="schoolId">
+            <option value="">-- Всички училища --</option>
+            @foreach (var s in schools)
+            {
+                <option value="@s.Id" selected="@(selected == s.Id)">
+                    @s.Name
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary w-100">Филтрирай</button>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-outline-secondary w-100" asp-controller="Professions" asp-action="Index">Изчисти</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Професия</th>
+            <th>Училище</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.SchoolName</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary"
+                       asp-controller="Professions" asp-action="Details" asp-route-id="@p.Id">
+                        Детайли
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
