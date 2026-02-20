@@ -1,0 +1,41 @@
+﻿@using Core.ViewModels.Materials
+@model MaterialDetailsVm
+
+<h2 class="mb-3">@Model.Title</h2>
+
+<div class="text-muted mb-2">
+    Професия: @Model.ProfessionName
+</div>
+
+<div class="text-muted mb-2">
+    Категория: @Model.CategoryName
+</div>
+
+<div class="text-muted mb-2">
+    Качено от: @Model.TeacherName
+</div>
+
+<div class="text-muted mb-3">
+    Дата: @Model.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p>@Model.Description</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Url))
+{
+    <a class="btn btn-outline-primary me-2" href="@Model.Url" target="_blank">
+        Отвори ресурс
+    </a>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.FilePath))
+{
+    <a class="btn btn-outline-success" href="@Model.FilePath" target="_blank">
+        Изтегли файл
+    </a>
+}
+
+<a class="btn btn-secondary mt-3" href="javascript:history.back()">Назад</a>

@@ -12,11 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString,
-        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+    options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(connectionString,
+//        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -33,6 +33,10 @@ builder.Services.AddScoped<ISchoolService, SchoolService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 builder.Services.AddScoped<IProfessionService, ProfessionService>();
+
+builder.Services.AddScoped<IMaterialService, MaterialService>();
+
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 var app = builder.Build();
 
