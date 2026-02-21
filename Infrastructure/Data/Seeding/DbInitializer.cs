@@ -24,12 +24,8 @@ namespace Infrastructure.Data.Seeding
             // Roles
             string[] roles = { "Admin", "Teacher", "Student" };
             foreach (var role in roles)
-            {
                 if (!await roleManager.RoleExistsAsync(role))
-                {
                     await roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
 
             // Admin user
             var adminEmail = "admin@lms.com";
@@ -136,7 +132,7 @@ namespace Infrastructure.Data.Seeding
                         "Финансово-стопанска гимназия \"Васил Левски\"", "Добрич"),
 
                     ("Приложен програмист",
-                        "Разработва (уеб/десктоп приложения, работи с бази данни и поддръжка на софтуер.",
+                        "Разработва уеб/десктоп приложения, работи с бази данни и поддръжка на софтуер.",
                         "Природо-математическа гимназия \"Иван Вазов\"", "Добрич"),
 
                     ("Системен програмист",
@@ -173,7 +169,7 @@ namespace Infrastructure.Data.Seeding
 
                     ("Хотелиер",
                         "Работа с гости, резервации, настаняване, обслужване и организация на хотелския процес.",
-                        "Професионална гимназия по туризъм \"П. К. Яворов\"", "Добрич")
+                        "Професионална гимназия по туризъм \"П. К. Яворов\"", "Добрич"),
                 };
 
                 foreach (var (profession, description, schoolName, city) in map)

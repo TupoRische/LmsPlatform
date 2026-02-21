@@ -1,0 +1,46 @@
+﻿@using Core.ViewModels.Materials
+@model IEnumerable<MaterialListVm>
+
+<h2 class="mb-3">Моите материали</h2>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-area="Teacher" asp-controller="Materials" asp-action="Create">
+        + Добави материал
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Нямаш добавени материали.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Заглавие</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.Title</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           asp-area="Teacher" asp-controller="Materials" asp-action="Edit" asp-route-id="@m.Id">
+                            Edit
+                        </a>
+
+                        <form class="d-inline" method="post"
+                              asp-area="Teacher" asp-controller="Materials" asp-action="Delete" asp-route-id="@m.Id">
+                            @Html.AntiForgeryToken()
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -39,3 +39,58 @@
 }
 
 <a class="btn btn-secondary mt-3" href="javascript:history.back()">Назад</a>
+
+<hr />
+<h4 class="mb-3">Коментари</h4>
+
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <form asp-controller="Comments" asp-action="Create" method="post" class="mb-3">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="materialId" value="@Model.Id" />
+
+        <div class="mb-2">
+            <textarea name="Content" class="form-control" rows="3" maxlength="1000"
+                  placeholder="Напиши коментар..."></textarea>
+        </div>
+        <button class="btn btn-primary">Публикувай</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-info">
+        За да коментираш, трябва да си влязъл.
+    </div>
+}
+
+@if (!Model.Comments.Any())
+{
+    <div class="text-muted">Няма коментари.</div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var c in Model.Comments)
+        {
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <strong>@c.AuthorName</strong>
+                    <small class="text-muted">@c.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                </div>
+
+                <div class="mt-2">@c.Content</div>
+
+                @if (User.Identity?.IsAuthenticated == true
+                        && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == c.AuthorId)
+                {
+                    <form asp-controller="Comments" asp-action="Delete" method="post" class="mt-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@c.Id" />
+                        <input type="hidden" name="materialId" value="@Model.Id" />
+                        <button class="btn btn-sm btn-outline-danger">Изтрий</button>
+                    </form>
+                }
+            </div>
+        }
+    </div>
+}

@@ -31,19 +31,50 @@ namespace Core.Services
 
             public async Task<MaterialDetailsVm?> GetByIdAsync(int id)
                  => await repo.AllReadonly()
-            .Where(m => m.Id == id)
-            .Select(m => new MaterialDetailsVm
-            {
-                Id = m.Id,
-                Title = m.Title,
-                Description = m.Description,
-                FilePath = m.FilePath,
-                Url = m.Url,
-                ProfessionName = m.Profession.Name,
-                CategoryName = m.MaterialCategory.Name,
-                TeacherName = m.Teacher.UserName!,
-                CreatedOn = m.CreatedOn
-            })
-            .FirstOrDefaultAsync();
+                .Where(m => m.Id == id)
+                .Select(m => new MaterialDetailsVm
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Description = m.Description,
+                    FilePath = m.FilePath,
+                    Url = m.Url,
+                    ProfessionName = m.Profession.Name,
+                    CategoryName = m.MaterialCategory.Name,
+                    TeacherName = m.Teacher.UserName!,
+                    CreatedOn = m.CreatedOn
+                })
+                .FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<MaterialListVm>> GetMineAsync(string teacherId)
+            => await repo.AllReadonly()
+                .Where(m => m.TeacherId == teacherId)
+                .Select(m => new MaterialListVm
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Description = m.Description
+                })
+                .ToListAsync();
+
+        public Task CreateAsync(MaterialFormVm model, string teacherId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MaterialFormVm?> GetForEditAsync(int id, string teacherId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync(int id, MaterialFormVm model, string teacherId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(int id, string teacherId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

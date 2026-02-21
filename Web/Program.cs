@@ -14,29 +14,24 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString,
-//        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
     {
-        options.SignIn.RequireConfirmedAccount = false; // �� ���������� (���� true ��� �� �������������)
+        options.SignIn.RequireConfirmedAccount = false;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<ISchoolService, SchoolService>();
-
+builder.Services.AddScoped<IProfessionService, ProfessionService>();
+builder.Services.AddScoped<IMaterialService, MaterialService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
-builder.Services.AddScoped<IProfessionService, ProfessionService>();
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddScoped<IMaterialService, MaterialService>();
-
-builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -63,19 +58,12 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    try
-    {
-        await DbInitializer.SeedAsync(scope.ServiceProvider);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex);   // ��� �� � Output/Console
-        throw;
-    }
+    await DbInitializer.SeedAsync(scope.ServiceProvider);
 }
 
 app.Run();

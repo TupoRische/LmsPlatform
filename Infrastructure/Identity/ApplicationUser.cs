@@ -17,6 +17,9 @@ namespace Infrastructure.Identity
         public ICollection<Material> MaterialsCreated { get; set; } = new HashSet<Material>();
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
         public ICollection<QuizResult> QuizResults { get; set; } = new HashSet<QuizResult>();
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public bool RequestedTeacher { get; set; } = false;
         public int? SchoolId { get; set; }
         public School? School { get; set; }
     }

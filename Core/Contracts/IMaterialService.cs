@@ -11,5 +11,10 @@ namespace Core.Contracts
     {
         Task<IEnumerable<MaterialListVm>> GetByProfessionAsync(int professionId);
         Task<MaterialDetailsVm?> GetByIdAsync(int id);
+        Task<IEnumerable<MaterialListVm>> GetMineAsync(string teacherId);
+        Task CreateAsync(MaterialFormVm model, string teacherId);
+        Task<MaterialFormVm?> GetForEditAsync(int id, string teacherId);
+        Task<bool> UpdateAsync(int id, MaterialFormVm model, string teacherId);
+        Task<bool> DeleteAsync(int id, string teacherId);
     }
 }
