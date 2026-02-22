@@ -1,7 +1,12 @@
-﻿@if(TempData["Info"] != null)
+﻿@if (TempData["Info"] is string info)
+{
+    <div class="alert alert-info">@info</div>
+}
+
+@if (ViewBag.PendingApproval == true)
 {
     <div class="alert alert-info">
-	@TempData["Info"]
+        Заявката ти за учител е изпратена. Изчакай одобрение от администратор.
     </div>
 }
 

@@ -28,6 +28,9 @@ builder.Services.AddScoped<IProfessionService, ProfessionService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+builder.Services.AddScoped<IAdminTeacherRequestsService, AdminTeacherRequestsService>();
+builder.Services.AddScoped<ITeacherDashboardService, TeacherDashboardService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

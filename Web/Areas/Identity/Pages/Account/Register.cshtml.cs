@@ -127,6 +127,14 @@ namespace Web.Areas.Identity.Pages.Account
                 })
                 .ToList();
         }
+
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            await LoadSchoolsAsync();
+        }
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -158,8 +166,7 @@ namespace Web.Areas.Identity.Pages.Account
 
                 if (Input.RequestTeacher)
                 {
-                    TempData["Info"] = "Заявката ти за учител е изпратена. Изчакай одобрение от администратор.";
-                    return RedirectToPage("Index", "Home", new { pendingApproval = 1 });
+                    return RedirectToAction("Index", "Home", new { pendingApproval = 1, area = "" });
                 }
 
                 await _userManager.AddToRoleAsync(user, "Student");

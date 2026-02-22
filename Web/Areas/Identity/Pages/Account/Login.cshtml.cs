@@ -97,7 +97,6 @@ namespace Web.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -108,23 +107,32 @@ namespace Web.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (user != null && user.RequestedTeacher && !user.IsApproved)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "Заявката ти за учител все още не е одобрена.");
+                    return Page();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(
+                    Input.Email,
+                    Input.Password,
+                    Input.RememberMe,
+                    lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
                     {
-                        return Redirect("/Admin/Schools");
-                        // или: return RedirectToRoute(new { area = "Admin", controller = "Schools", action = "Index" });
+                        return RedirectToRoute(new { area = "Admin", controller = "Dashboard", action = "Index" });
                     }
 
                     return LocalRedirect(returnUrl ?? "~/");
@@ -134,6 +142,7 @@ namespace Web.Areas.Identity.Pages.Account
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
@@ -145,8 +154,6 @@ namespace Web.Areas.Identity.Pages.Account
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }

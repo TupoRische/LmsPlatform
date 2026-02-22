@@ -1,0 +1,47 @@
+﻿@model Core.ViewModels.Teacher.TeacherDashboardVm
+
+<h2>Teacher Dashboard</h2>
+<hr />
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card border-start border-primary border-4 shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-muted">My Materials</h6>
+                <h3>@Model.MyMaterials</h3>
+                <a asp-area="Teacher" asp-controller="Materials" asp-action="My" class="text-decoration-none">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-start border-success border-4 shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-muted">My Comments</h6>
+                <h3>@Model.MyComments</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4" />
+
+<h5>Latest materials</h5>
+@if (!Model.LatestMaterials.Any())
+{
+    <div class="text-muted">No materials yet.</div>
+}
+else
+{
+    <ul>
+        @foreach (var m in Model.LatestMaterials)
+        {
+            <li>
+                <a asp-area="Teacher" asp-controller="Materials" asp-action="Details" asp-route-id="@m.Id">
+                    @m.Title
+                </a>
+                <small class="text-muted">(@m.CreatedOn.ToLocalTime():dd.MM.yyyy)</small>
+            </li>
+        }
+    </ul>
+}

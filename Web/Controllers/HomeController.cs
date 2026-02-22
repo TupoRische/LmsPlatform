@@ -13,8 +13,9 @@ namespace Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? pendingApproval)
         {
+            ViewBag.PendingApproval = pendingApproval == 1;
             return View();
         }
 

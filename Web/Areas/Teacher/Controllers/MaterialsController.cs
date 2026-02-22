@@ -11,7 +11,6 @@ namespace Web.Areas.Teacher.Controllers
     public class MaterialsController : Controller 
     {
         private readonly IMaterialService materials;
-
         public MaterialsController(IMaterialService materials) => this.materials = materials;
 
         public async Task<IActionResult> Index()
