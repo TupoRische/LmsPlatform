@@ -31,6 +31,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
 builder.Services.AddScoped<IAdminTeacherRequestsService, AdminTeacherRequestsService>();
 builder.Services.AddScoped<ITeacherDashboardService, TeacherDashboardService>();
+builder.Services.AddScoped<ITeacherMaterialsService, TeacherMaterialsService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

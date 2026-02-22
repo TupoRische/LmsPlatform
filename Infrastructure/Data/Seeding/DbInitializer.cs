@@ -186,6 +186,21 @@ namespace Infrastructure.Data.Seeding
 
                 await context.SaveChangesAsync();
             }
+
+
+            //Материали
+            if (!context.MaterialCategories.Any())
+            {
+                context.MaterialCategories.AddRange(
+                    new MaterialCategory { Name = "Теория" },
+                    new MaterialCategory { Name = "Практика" },
+                    new MaterialCategory { Name = "Презентации" },
+                    new MaterialCategory { Name = "Задачи" },
+                    new MaterialCategory { Name = "Допълнителни материали" }
+                );
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

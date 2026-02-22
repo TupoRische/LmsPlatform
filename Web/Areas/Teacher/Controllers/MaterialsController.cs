@@ -1,57 +1,132 @@
 ﻿using Core.Contracts;
+using Core.ViewModels.Materials;
+using Core.ViewModels.Teacher.Materials;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Core.ViewModels.Materials;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Web.Areas.Teacher.Controllers
 {
     [Area("Teacher")]
     [Authorize(Roles = "Teacher")]
-    public class MaterialsController : Controller 
+    public class MaterialsController : Controller
     {
-        private readonly IMaterialService materials;
-        public MaterialsController(IMaterialService materials) => this.materials = materials;
+        private readonly ITeacherMaterialsService materials;
+        private readonly IWebHostEnvironment _env;
+        private readonly ApplicationDbContext _context;
 
-        public async Task<IActionResult> Index()
-            => View(await materials.GetMineAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)));
-
-        public IActionResult Create() => View();
-
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MaterialFormVm model)
+        public MaterialsController(ITeacherMaterialsService materials, IWebHostEnvironment env)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            await materials.CreateAsync(model, User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return RedirectToAction(nameof(Index));
+            this.materials = materials;
+            _env = env;
         }
+
+        public async Task<IActionResult> My()
+            => View(await materials.GetMineAsync(User));
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            await LoadDropdownsAsync();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateMaterialVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await LoadDropdownsAsync();
+                return View(model);
+            }
+
+            string? filePath = null;
+
+            if (model.File != null && model.File.Length > 0)
+            {
+                if (model.File.Length > 20 * 1024 * 1024) // 20MB
+                {
+                    ModelState.AddModelError(nameof(model.File), "Файлът е прекалено голям (макс 20MB).");
+                    await LoadDropdownsAsync();
+                    return View(model);
+                }
+
+                var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "materials");
+                Directory.CreateDirectory(uploadsDir);
+
+                var ext = Path.GetExtension(model.File.FileName);
+                var safeName = $"{Guid.NewGuid()}{ext}";
+                var fullPath = Path.Combine(uploadsDir, safeName);
+
+                await using var fs = System.IO.File.Create(fullPath);
+                await model.File.CopyToAsync(fs);
+
+                filePath = $"/uploads/materials/{safeName}";
+            }
+
+            var id = await materials.CreateAsync(User, model, filePath);
+            return RedirectToAction(nameof(Details), new { id });
+        }
+        private async Task LoadDropdownsAsync()
+        {
+            ViewBag.Professions = await _context.Professions
+                .OrderBy(p => p.Name) // ако е Title – смени на Title
+                .Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.Name
+                })
+                .ToListAsync();
+
+            ViewBag.Categories = await _context.MaterialCategories
+                .OrderBy(c => c.Name)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                })
+                .ToListAsync();
+
+        }
+
+        private async Task LoadCategoriesAsync()
+        {
+            ViewBag.Categories = await _context.MaterialCategories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IActionResult> Details(int id)
+            => View(await materials.GetDetailsAsync(User, id));
 
         public async Task<IActionResult> Edit(int id)
-        {
-            var model = await materials.GetForEditAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (model == null) return NotFound();
-            return View(model);
-        }
+            => View(await materials.GetEditAsync(User, id));
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MaterialFormVm model)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditMaterialVm model)
         {
             if (!ModelState.IsValid) return View(model);
-
-            var ok = await materials.UpdateAsync(id, model, User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (!ok) return Forbid();
-
-            return RedirectToAction(nameof(Index));
+            await materials.EditAsync(User, id, model);
+            return RedirectToAction(nameof(Details), new { id });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var ok = await materials.DeleteAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (!ok) return Forbid();
-
-            return RedirectToAction(nameof(Index));
+            await materials.DeleteAsync(User, id);
+            return RedirectToAction(nameof(My));
         }
+
+
     }
 }

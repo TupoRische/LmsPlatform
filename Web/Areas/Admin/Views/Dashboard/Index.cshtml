@@ -1,6 +1,6 @@
 ﻿@model Core.ViewModels.Admin.AdminDashboardVm
 
-<h2 class="mb-4">Admin Dashboard</h2>
+<h2 class="mb-4">Администраторско табло</h2>
 <hr />
 
 <div class="row g-3">
@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted">Users</h6>
+                            <h6 class="text-muted">Потребители</h6>
                             <h3>@Model.TotalUsers</h3>
                         </div>
                         <i class="bi bi-people fs-1 text-primary"></i>
@@ -25,7 +25,7 @@
             <div class="card border-start border-success border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Teachers</h6>
+                        <h6 class="text-muted">Учители</h6>
                         <h3>@Model.Teachers</h3>
                     </div>
                     <i class="bi bi-person-badge fs-1 text-success"></i>
@@ -38,7 +38,7 @@
             <div class="card border-start border-info border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Students</h6>
+                        <h6 class="text-muted">Ученици</h6>
                         <h3>@Model.Students</h3>
                     </div>
                     <i class="bi bi-mortarboard fs-1 text-info"></i>
@@ -52,7 +52,7 @@
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted">
-                            <a asp-area="Admin" asp-controller="TeacherRequests" asp-action="Index" class="text-decoration-none text-warning">Pending Teachers</a>
+                            <a asp-area="Admin" asp-controller="TeacherRequests" asp-action="Index" class="text-decoration-none text-warning">Неодобрени учители</a>
                         </h6>
                         <h3>@Model.PendingTeachers</h3>
                     </div>
@@ -70,7 +70,7 @@
             <div class="card border-start border-secondary border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Schools</h6>
+                        <h6 class="text-muted">Училища</h6>
                         <h3>@Model.Schools</h3>
                     </div>
                     <i class="bi bi-building fs-1 text-secondary"></i>
@@ -83,7 +83,7 @@
             <div class="card border-start border-dark border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Professions</h6>
+                        <h6 class="text-muted">Професии</h6>
                         <h3>@Model.Professions</h3>
                     </div>
                     <i class="bi bi-briefcase fs-1 text-dark"></i>
@@ -96,7 +96,7 @@
             <div class="card border-start border-primary border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Materials</h6>
+                        <h6 class="text-muted">Материали</h6>
                         <h3>@Model.Materials</h3>
                     </div>
                     <i class="bi bi-journal-text fs-1 text-primary"></i>
@@ -109,7 +109,7 @@
             <div class="card border-start border-success border-4 shadow-sm h-100 dashboard-card">
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted">Comments</h6>
+                        <h6 class="text-muted">Коментари</h6>
                         <h3>@Model.Comments</h3>
                     </div>
                     <i class="bi bi-chat-dots fs-1 text-success"></i>
@@ -142,7 +142,7 @@
     }
     else
     {
-        <small class="text-muted">No pending requests</small>
+        <small class="text-muted">Няма изчакващи за одобрение</small>
     }
 </div>
 

@@ -13,7 +13,7 @@ else
         <thead>
             <tr>
                 <th>Име</th>
-                <th>Email</th>
+                <th>Имейл</th>
                 <th>Дата</th>
                 <th class="text-end"></th>
             </tr>
@@ -29,13 +29,13 @@ else
                         <form class="d-inline" method="post" asp-action="Approve">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@u.Id" />
-                            <button class="btn btn-sm btn-success">Approve</button>
+                            <button class="btn btn-sm btn-success">Одобри</button>
                         </form>
 
                         <form class="d-inline" method="post" asp-action="Reject">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@u.Id" />
-                            <button class="btn btn-sm btn-outline-danger">Reject</button>
+                            <button class="btn btn-sm btn-outline-danger">Отхвърли</button>
                         </form>
                     </td>
                 </tr>

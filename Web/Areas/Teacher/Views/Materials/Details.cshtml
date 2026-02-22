@@ -1,0 +1,39 @@
+﻿@model Core.ViewModels.Teacher.Materials.TeacherMaterialDetailsVm
+
+<h2>@Model.Title</h2>
+<hr />
+
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p>@Model.Description</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Url))
+{
+    <p>
+        <a href="@Model.Url" target="_blank">Отвори материал</a>
+    </p>
+}
+
+<p class="text-muted">
+    Създадено: @Model.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+</p>
+
+<p>
+    <a class="btn btn-outline-secondary"
+       asp-area="Teacher" asp-controller="Materials" asp-action="Edit" asp-route-id="@Model.Id">
+        Редактирай
+    </a>
+
+    <form class="d-inline" method="post"
+          asp-area="Teacher" asp-controller="Materials" asp-action="Delete" asp-route-id="@Model.Id">
+        @Html.AntiForgeryToken()
+        <button class="btn btn-outline-danger"
+                onclick="return confirm('Delete this material?');">
+            Изтрий
+        </button>
+    </form>
+
+    <a class="btn btn-outline-primary"
+       asp-area="Teacher" asp-controller="Materials" asp-action="My">Назад</a>
+</p>

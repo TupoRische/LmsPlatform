@@ -18,11 +18,9 @@ namespace Infrastructure.Data.Entities
         [MaxLength(2000)]
         public string? Description { get; set; }
 
-        // Ако качвате файл: пазите път/име (реално файла е в wwwroot/uploads)
         [MaxLength(500)]
         public string? FilePath { get; set; }
 
-        // или линк към ресурс
         [MaxLength(500)]
         public string? Url { get; set; }
 

@@ -4,7 +4,7 @@
 
 <p>
     <a class="btn btn-primary" asp-area="Admin" asp-controller="Schools" asp-action="Create">
-        + Ново училище
+        + Добави ново училище
     </a>
 </p>
 
@@ -28,10 +28,10 @@
                 <td>@s.UsersCount</td>
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-secondary"
-                       asp-area="Admin" asp-controller="Schools" asp-action="Edit" asp-route-id="@s.Id">Edit</a>
+                       asp-area="Admin" asp-controller="Schools" asp-action="Edit" asp-route-id="@s.Id">Редактирай</a>
 
                     <a class="btn btn-sm btn-outline-danger"
-                       asp-area="Admin" asp-controller="Schools" asp-action="Delete" asp-route-id="@s.Id">Delete</a>
+                       asp-area="Admin" asp-controller="Schools" asp-action="Delete" asp-route-id="@s.Id">Изтрий</a>
                 </td>
             </tr>
         }
