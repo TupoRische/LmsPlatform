@@ -13,7 +13,7 @@ namespace Core.Contracts
     {
         Task<TeacherMaterialsMyVm> GetMineAsync(ClaimsPrincipal user);
 
-        //Task<int> CreateAsync(ClaimsPrincipal user, CreateMaterialVm model);
+        Task<CreateMaterialFormVm> GetCreateFormAsync();
         Task<int> CreateAsync(ClaimsPrincipal user, CreateMaterialVm model, string? filePath);
 
         Task<TeacherMaterialDetailsVm> GetDetailsAsync(ClaimsPrincipal user, int id);

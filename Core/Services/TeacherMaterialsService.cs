@@ -1,4 +1,5 @@
 ﻿using Core.Contracts;
+using Core.ViewModels.Common;
 using Core.ViewModels.Teacher.Materials;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -63,6 +64,25 @@ namespace Core.Services
             _context.Materials.Add(entity);
             await _context.SaveChangesAsync();
             return entity.Id;
+        }
+
+        public async Task<CreateMaterialFormVm> GetCreateFormAsync()
+        {
+            var professions = await _context.Professions
+                .OrderBy(p => p.Name)
+                .Select(p => new OptionVm { Id = p.Id, Name = p.Name })
+                .ToListAsync();
+
+            var categories = await _context.MaterialCategories
+                .OrderBy(c => c.Name)
+                .Select(c => new OptionVm { Id = c.Id, Name = c.Name })
+                .ToListAsync();
+
+            return new CreateMaterialFormVm
+            {
+                Professions = professions,
+                Categories = categories
+            };
         }
 
         public async Task<TeacherMaterialDetailsVm> GetDetailsAsync(ClaimsPrincipal user, int id)

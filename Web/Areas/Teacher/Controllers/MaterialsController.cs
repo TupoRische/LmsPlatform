@@ -16,9 +16,9 @@ namespace Web.Areas.Teacher.Controllers
     {
         private readonly ITeacherMaterialsService materials;
         private readonly IWebHostEnvironment _env;
-        private readonly ApplicationDbContext _context;
 
-        public MaterialsController(ITeacherMaterialsService materials, IWebHostEnvironment env)
+        public MaterialsController(ITeacherMaterialsService materials, IWebHostEnvironment env,
+    ApplicationDbContext context)
         {
             this.materials = materials;
             _env = env;
@@ -30,36 +30,42 @@ namespace Web.Areas.Teacher.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await LoadDropdownsAsync();
-            return View();
+            var form = await materials.GetCreateFormAsync();
+            return View(form);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateMaterialVm model)
+        public async Task<IActionResult> Create(CreateMaterialFormVm form)
         {
+            // form.Material е реалният CreateMaterialVm
             if (!ModelState.IsValid)
             {
-                await LoadDropdownsAsync();
-                return View(model);
+                var reload = await materials.GetCreateFormAsync();
+                reload.Material = form.Material;   // запазваш въведеното
+                return View(reload);
             }
 
             string? filePath = null;
+            var model = form.Material;
 
             if (model.File != null && model.File.Length > 0)
             {
-                if (model.File.Length > 20 * 1024 * 1024) // 20MB
+                if (model.File.Length > 20 * 1024 * 1024)
                 {
-                    ModelState.AddModelError(nameof(model.File), "Файлът е прекалено голям (макс 20MB).");
-                    await LoadDropdownsAsync();
-                    return View(model);
+                    ModelState.AddModelError("Material.File", "Файлът е прекалено голям (макс 20MB).");
+
+                    var reload = await materials.GetCreateFormAsync();
+                    reload.Material = form.Material;
+                    return View(reload);
                 }
 
                 var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "materials");
                 Directory.CreateDirectory(uploadsDir);
 
                 var ext = Path.GetExtension(model.File.FileName);
-                var safeName = $"{Guid.NewGuid()}{ext}";
+                var safeName = $"{Guid.NewGuid():N}{ext}";
                 var fullPath = Path.Combine(uploadsDir, safeName);
 
                 await using var fs = System.IO.File.Create(fullPath);
@@ -71,38 +77,11 @@ namespace Web.Areas.Teacher.Controllers
             var id = await materials.CreateAsync(User, model, filePath);
             return RedirectToAction(nameof(Details), new { id });
         }
-        private async Task LoadDropdownsAsync()
-        {
-            ViewBag.Professions = await _context.Professions
-                .OrderBy(p => p.Name) // ако е Title – смени на Title
-                .Select(p => new SelectListItem
-                {
-                    Value = p.Id.ToString(),
-                    Text = p.Name
-                })
-                .ToListAsync();
-
-            ViewBag.Categories = await _context.MaterialCategories
-                .OrderBy(c => c.Name)
-                .Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                })
-                .ToListAsync();
-
-        }
-
-        private async Task LoadCategoriesAsync()
-        {
-            ViewBag.Categories = await _context.MaterialCategories
-                .Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                })
-                .ToListAsync();
-        }
+        //private async Task LoadDropdownsAsync()
+        //{
+        //    ViewBag.Professions = new List<SelectListItem>(); // TODO
+        //    ViewBag.Categories = new List<SelectListItem>();  // TODO
+        //}
 
         public async Task<IActionResult> Details(int id)
             => View(await materials.GetDetailsAsync(User, id));
