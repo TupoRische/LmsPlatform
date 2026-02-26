@@ -3,6 +3,7 @@ using Core.ViewModels.School;
 using Infrastructure.Data.Entities;        // School
 using Infrastructure.Repositories;         // IRepository<T>
 using Infrastructure.Repositories.Contracts;
+using Infrastructure.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -26,6 +27,20 @@ namespace Core.Services
                 })
                 .OrderBy(s => s.City).ThenBy(s => s.Name)
                 .ToListAsync();
+        public async Task<IEnumerable<SchoolListVm>> GetRandomThreeAsync()
+        {
+            return await repo
+                .All()
+                .OrderBy(x => Guid.NewGuid())
+                .Take(3)
+                .Select(s => new SchoolListVm
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    City = s.City
+                })
+                .ToListAsync();
+        }
 
         public async Task<SchoolDetailsVm?> GetByIdAsync(int id)
             => await repo.AllReadonly()
@@ -76,5 +91,7 @@ namespace Core.Services
                 .OrderBy(s => s.Name)
                 .Select(s => new SchoolDropdownVm { Id = s.Id, Name = s.Name })
                 .ToListAsync();
+
+        
     }
 }

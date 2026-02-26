@@ -17,6 +17,10 @@ html {
   min-height: 100%;
 }
 
+main {
+    padding-top: 120px;
+}
+
 body {
   margin-bottom: 60px;
 }
@@ -29,3 +33,748 @@ body {
         transform: translateY(-5px);
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0,0,0,.12);
+    background: #fff;
+    color: #1f2937;
+    text-decoration: none;
+    transition: transform .08s ease, box-shadow .12s ease, background-color .12s ease;
+}
+
+    .icon-btn:hover {
+        background: #f8fafc;
+        box-shadow: 0 4px 14px rgba(0,0,0,.08);
+        transform: translateY(-1px);
+        color: #111827;
+    }
+
+    .icon-btn i {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .icon-btn.dropdown-toggle::after {
+        display: none;
+    }
+
+.hero {
+/*    background: linear-gradient(135deg, #5B7DB1, #3E5C8A);*/
+    min-height: 70vh;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #E2DAD6;
+    margin: 0;
+    padding: 0;
+}
+
+/* header */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100px;
+    width: 100%;
+    background-color: #6482AD; /* Твоето синьо за хедъра */
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+    nav .nav-bar {
+        height: 100%;
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+    }
+
+/* Лого */
+.nav-bar .logo a {
+    font-size: 28px;
+    font-weight: 700;
+    color: #314c73; /* Твоят тъмен цвят за текст */
+    text-decoration: none;
+}
+
+/* Меню (Център) */
+.nav-bar .menu .nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links li {
+    margin: 0 10px;
+    position: relative;
+}
+
+    .nav-links li a {
+        position: relative;
+        color: #314c73; /* Твоят тъмен цвят за линковете */
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 5px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        /* Hover ефект: Текстът става светъл, както в стария ти код */
+        .nav-links li a:hover {
+            color: #F5EDED;
+        }
+
+        /* Ефектът с точката */
+        .nav-links li a::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background-color: #F5EDED; /* Светла точка */
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links li a:hover::before,
+        .nav-links li a.active::before {
+            opacity: 1;
+            bottom: 2px;
+        }
+
+/* Премахва черните точки от всички списъци в навигацията */
+nav ul {
+    list-style: none !important;
+    padding: 0;
+    margin: 0;
+}
+
+/* За всеки случай, специфично за основното меню и падащите менюта */
+.nav-links, .dropdown-content {
+    list-style: none !important;
+}
+
+/* --- Падащо меню (Dropdown) --- */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #F5EDED; /* Твоят светъл фон */
+    min-width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+    .dropdown-content::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 8px 8px 8px;
+        border-style: solid;
+        border-color: transparent transparent #F5EDED transparent;
+    }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        margin-top: 25px;
+    }
+
+    to {
+        opacity: 1;
+        margin-top: 10px;
+    }
+}
+
+.dropdown-content a, .dropdown-content p {
+    color: #6482AD !important; /* Тъмен текст */
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    font-size: 15px;
+    text-align: left;
+    font-weight: normal;
+}
+
+    .dropdown-content a:hover {
+        background-color: #E2DAD6; /* Твоят бежов цвят при ховър в менюто */
+        color: #6482AD !important;
+    }
+
+/* --- Десен панел (Икони) --- */
+.right-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-toggle, .profile-icon, .lang-icon {
+    color: #314c73; /* Тъмният цвят за иконите */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s, color 0.3s;
+}
+
+    /* При ховър иконите стават светли */
+    .search-toggle:hover, .profile-icon:hover, .lang-icon:hover {
+        color: #F5EDED;
+        transform: scale(1.1);
+    }
+
+/* Търсачка Анимация */
+.searchBox {
+    position: relative;
+}
+
+    .searchBox .cancel-icon {
+        display: none;
+    }
+
+    .searchBox.active .search-icon {
+        display: none;
+    }
+
+    .searchBox.active .cancel-icon {
+        display: block;
+    }
+
+.search-field {
+    position: absolute;
+    top: 50px;
+    right: -10px;
+    background-color: #6482AD; /* Синьо като хедъра */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.searchBox.active .search-field {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.search-field input {
+    height: 40px;
+    width: 220px;
+    border: none;
+    outline: none;
+    padding: 0 15px;
+    border-radius: 6px;
+    background: #F5EDED; /* Светло поле */
+    color: #314c73; /* Тъмен текст вътре */
+    font-size: 16px;
+}
+
+/* register/login/contact forms */
+.profile-wrapper {
+    position: relative;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #F5EDED;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: none;
+    min-width: 220px;
+    z-index: 999;
+}
+
+    .profile-dropdown.active {
+        display: block;
+    }
+
+.container {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.form-container {
+    background: #F5EDED;
+    padding: 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+    color: #314c73;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+button.btn {
+    background: #6482AD;
+    color: #F5EDED;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    button.btn:hover {
+        background: #536b8f;
+    }
+
+.reg-a {
+    align-self: center;
+    color: #6482AD;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+fieldset {
+    border: 1px solid #d0cfcf;
+    padding: 12px 14px;
+    border-radius: 6px;
+    background: #fff;
+    display: grid;
+    gap: 8px;
+}
+
+legend {
+    padding: 0 6px;
+    font-weight: bold;
+    color: #314c73;
+}
+
+/* sections */
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+    .section-header h2 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+/* hero section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5em 0;
+    padding-bottom: 100px;
+}
+
+.hero-content {
+    flex: 1;
+    margin-left: 50px;
+}
+
+    .hero-content h1 {
+        font-size: 3rem;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.gradcap {
+    max-width: 50%;
+    height: auto;
+}
+
+/* professions section */
+
+.professions-grid {
+    width: 90%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin: auto;
+}
+
+.project {
+    background: white;
+    color: #6482AD;
+    border-radius: 10px;
+    transition: 0.2s;
+    padding: 25px;
+}
+
+    .project h3 {
+        color: #314c73;
+    }
+
+    .project a {
+        text-decoration: none;
+        color: #6482AD;
+    }
+
+    .project:hover {
+        transform: scale(1.06);
+        background: #bfdbfe;
+    }
+
+.professions-section {
+    background-color: #7FA1C3;
+    padding: 60px 0;
+}
+
+.more-btn-wrapper {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.more-btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background-color: #314c73;
+    color: #F5EDED;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+    .more-btn:hover {
+        background-color: #223a5c;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+/* schools section */
+.schools-section {
+    padding: 60px 0;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.school-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .list-item:hover {
+        background-color: #f8fafc;
+    }
+
+    .list-item a {
+        text-decoration: none;
+        color: #6482AD;
+        text-align: center;
+    }
+
+.school {
+    font-size: 1.1rem;
+    color: #6482AD;
+}
+
+.city {
+    color: #64748b;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.schools-section-modern {
+    background-color: #cfc6bf;
+    padding: 80px 0;
+}
+
+    .schools-section-modern h2 {
+        font-weight: 700;
+        margin-bottom: 40px;
+    }
+
+.schools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.school-item {
+    background: #e9e9ea;
+    padding: 25px 35px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+    .school-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+.school-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #5a7aa6;
+    text-decoration: none;
+}
+
+    .school-name:hover {
+        text-decoration: underline;
+    }
+
+.school-city {
+    color: #6c7a89;
+    font-weight: 500;
+}
+
+.more-item {
+    justify-content: center;
+}
+
+.more-link {
+    font-size: 18px;
+    font-weight: 600;
+    color: #5a7aa6;
+    text-decoration: none;
+}
+
+    .more-link:hover {
+        text-decoration: underline;
+    }
+
+/*Professions form*/
+.custom-select {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    transition: 0.3s;
+}
+
+    .custom-select:focus {
+        border-color: #6482AD;
+        box-shadow: 0 0 0 3px rgba(100,130,173,0.2);
+    }
+
+/* Филтрирай бутон */
+.custom-filter-btn {
+    background: linear-gradient(135deg, #6482AD, #314c73);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .custom-filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+
+/* Изчисти бутон */
+.custom-clear-btn {
+    background: #f1f5f9;
+    color: #314c73;
+    border: 1px solid #cbd5e1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .custom-clear-btn:hover {
+        background: #e2e8f0;
+    }
+
+/* footer */
+footer {
+    background: #6482AD;
+    color: #F5EDED;
+    padding-bottom: 30px;
+    padding-top: 10px;
+}
+
+.layoutfooter {
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin: auto;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer h4 {
+    color: #314c73;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.layoutfooter-column {
+    text-align: center;
+}
+
+.footer-top {
+    text-align: center;
+}
+
+/* responsive */
+
+@media (max-width: 900px) {
+    .professions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .menu {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+        padding: 40px 0;
+        gap: 30px;
+    }
+
+    .hero-content {
+        margin-left: 0;
+        padding: 0 20px;
+    }
+
+    .hero-image {
+        width: 100%;
+    }
+
+    .gradcap {
+        max-width: 70%;
+    }
+
+    .professions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .list-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+        .list-item a {
+            display: block;
+        }
+
+    .footer {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+    }
+
+    .form-actions {
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+    }
+}

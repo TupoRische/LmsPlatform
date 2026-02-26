@@ -64,6 +64,21 @@ namespace Core.Services
         })
         .FirstOrDefaultAsync();
 
+        public async Task<IEnumerable<ProfessionIndexVm>> GetRandomThreeAsync()
+        {
+            return await repo.AllReadonly()
+                .OrderBy(x => Guid.NewGuid())
+                .Take(3)
+                .Select(p => new ProfessionIndexVm
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description
+                })
+                .ToListAsync();
+        }
+
+
         public Task UpdateAsync(int id, ProfessionFormVm model)
         {
             throw new NotImplementedException();

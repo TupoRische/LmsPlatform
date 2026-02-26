@@ -12,6 +12,8 @@ namespace Core.Contracts
     {
         // ако ти трябват допълнителни методи само за училища – добавяш тук
         Task<IEnumerable<SchoolDropdownVm>> GetDropdownAsync();
+        Task<IEnumerable<SchoolListVm>> GetRandomThreeAsync();
+
     }
 
 }

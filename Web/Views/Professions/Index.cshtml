@@ -9,9 +9,11 @@
 
 <h2 class="mb-3">Професии</h2>
 
-<form method="get" class="row g-2 mb-3">
+<form method="get" class="row align-items-end g-3 mb-4">
+
     <div class="col-md-6">
-        <select class="form-select" name="schoolId">
+        <label class="form-label fw-semibold">Училище</label>
+        <select class="form-select custom-select" name="schoolId">
             <option value="">-- Всички училища --</option>
             @foreach (var s in schools)
             {
@@ -21,12 +23,21 @@
             }
         </select>
     </div>
-    <div class="col-md-3">
-        <button class="btn btn-primary w-100">Филтрирай</button>
+
+    <div class="col-md-3 d-grid">
+        <button type="submit" class="btn custom-filter-btn">
+            Филтрирай
+        </button>
     </div>
-    <div class="col-md-3">
-        <a class="btn btn-outline-secondary w-100" asp-controller="Professions" asp-action="Index">Изчисти</a>
+
+    <div class="col-md-3 d-grid">
+        <a class="btn custom-clear-btn"
+           asp-controller="Professions"
+           asp-action="Index">
+            Изчисти
+        </a>
     </div>
+
 </form>
 
 <table class="table table-striped">

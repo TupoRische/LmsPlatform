@@ -1,4 +1,6 @@
-﻿@if (TempData["Info"] is string info)
+﻿@model Core.ViewModels.Home.HomeIndexVm
+
+@if (TempData["Info"] is string info)
 {
     <div class="alert alert-info">@info</div>
 }
@@ -11,10 +13,97 @@
 }
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Начало";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Добре дошли</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section id="hero" class="hero">
+    <div class="hero-content">
+        <h1>Твоят път към успешна кариера</h1>
+        <p>
+            Открий материали за всички професии и най-добрите
+            професионални гимназии в България.
+        </p>
+    </div>
+
+    <div class="hero-image">
+        <img class="gradcap"
+             src="~/images/gradcap.png"
+             asp-append-version="true"
+             alt="graduation cap" />
+    </div>
+</section>
+
+<section id="professions" class="professions-section">
+    <div class="section-header">
+        <h2>Видове професии</h2>
+        <p>Списък с професиите, които се изучават в България</p>
+    </div>
+
+    <div class="professions-grid">
+
+        @foreach (var profession in Model.Professions)
+        {
+            <div class="project">
+                <h3>@profession.Name</h3>
+                <p>@profession.Description</p>
+
+                <a asp-controller="Professions"
+                   asp-action="Details"
+                   asp-route-id="@profession.Id">
+                    Виж повече
+                </a>
+            </div>
+        }
+
+    </div>
+
+    <!-- БУТОН ПО СРЕДАТА -->
+    <div class="more-btn-wrapper">
+        <a asp-controller="Professions"
+           asp-action="Index"
+           class="more-btn">
+            Вижте повече
+        </a>
+    </div>
+
+</section>
+
+<section class="schools-section-modern">
+    <div class="container">
+
+        <div class="section-header text-center mb-5">
+            <h2>Професионални гимназии в градовете</h2>
+        </div>
+
+        <div class="schools-list">
+
+            @foreach (var school in Model.Schools)
+            {
+                <div class="school-item">
+                    <div>
+                        <a asp-controller="Schools"
+                           asp-action="Details"
+                           asp-route-id="@school.Id"
+                           class="school-name">
+                            @school.Name
+                        </a>
+                    </div>
+
+                    <div class="school-city">
+                        гр. @school.City
+                    </div>
+                </div>
+            }
+
+            <div class="school-item more-item">
+                <a asp-controller="Schools"
+                   asp-action="Index"
+                   class="more-link">
+                    Вижте повече...
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
