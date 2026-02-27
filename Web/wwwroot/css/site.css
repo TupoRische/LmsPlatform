@@ -1,37 +1,53 @@
+/* --- Глобални стилове и Променливи --- */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+body {
+    background: #E2DAD6;
+    margin: 0;
+    padding: 0;
 }
 
 main {
     padding-top: 120px;
 }
 
-body {
-  margin-bottom: 60px;
+/* --- Общи компоненти (Бутони, Карти, Фокус) --- */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.card:hover,
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
 }
 
 .dashboard-card {
-    transition: all 0.2s ease-in-out;
+    min-height: 120px;
+    transition: 0.2s ease;
 }
 
     .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
     }
 
 .icon-btn {
@@ -64,35 +80,101 @@ body {
         display: none;
     }
 
-.hero {
-/*    background: linear-gradient(135deg, #5B7DB1, #3E5C8A);*/
-    min-height: 70vh;
+
+
+/*Users card*/
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: 0.25s;
+    border: 2px solid #e5e7eb;
+}
+    .dashboard-card .card-body {
+        padding: 18px;
+    }
+    .dashboard-card h3 {
+        font-size: 28px;
+    }
+
+    .dashboard-card span:first-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+
+.users-card {
+    border-color: #3b82f6;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    transition: 0.3s;
+/* Горна част */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-* {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
+.card-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #6b7280;
 }
 
-body {
-    background: #E2DAD6;
-    margin: 0;
-    padding: 0;
+.card-count {
+    font-size: 28px;
+    font-weight: 700;
 }
 
-/* header */
+.card-icon {
+    font-size: 28px;
+    color: #3b82f6;
+}
+
+/* Разделител */
+.recent-users {
+    margin-top: 15px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+}
+
+/* Ред за потребител */
+.recent-user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.user-email {
+    color: #374151;
+}
+
+.user-role {
+    font-size: 12px;
+    background: #e5e7eb;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* --- Навигация (Header) --- */
 nav {
     position: fixed;
     top: 0;
     left: 0;
     height: 100px;
     width: 100%;
-    background-color: #6482AD; /* Твоето синьо за хедъра */
+    background-color: #6482AD;
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -109,15 +191,19 @@ nav {
         padding: 0 30px;
     }
 
-/* Лого */
+    nav ul {
+        list-style: none !important;
+        padding: 0;
+        margin: 0;
+    }
+
 .nav-bar .logo a {
     font-size: 28px;
     font-weight: 700;
-    color: #314c73; /* Твоят тъмен цвят за текст */
+    color: #314c73;
     text-decoration: none;
 }
 
-/* Меню (Център) */
 .nav-bar .menu .nav-links {
     display: flex;
     align-items: center;
@@ -130,7 +216,7 @@ nav {
 
     .nav-links li a {
         position: relative;
-        color: #314c73; /* Твоят тъмен цвят за линковете */
+        color: #314c73;
         font-size: 18px;
         font-weight: bold;
         padding: 10px 5px;
@@ -138,12 +224,10 @@ nav {
         transition: all 0.3s ease;
     }
 
-        /* Hover ефект: Текстът става светъл, както в стария ти код */
         .nav-links li a:hover {
             color: #F5EDED;
         }
 
-        /* Ефектът с точката */
         .nav-links li a::before {
             content: '';
             position: absolute;
@@ -153,7 +237,7 @@ nav {
             height: 6px;
             width: 6px;
             border-radius: 50%;
-            background-color: #F5EDED; /* Светла точка */
+            background-color: #F5EDED;
             opacity: 0;
             transition: all 0.3s ease;
         }
@@ -164,18 +248,6 @@ nav {
             bottom: 2px;
         }
 
-/* Премахва черните точки от всички списъци в навигацията */
-nav ul {
-    list-style: none !important;
-    padding: 0;
-    margin: 0;
-}
-
-/* За всеки случай, специфично за основното меню и падащите менюта */
-.nav-links, .dropdown-content {
-    list-style: none !important;
-}
-
 /* --- Падащо меню (Dropdown) --- */
 .dropdown-content {
     display: none;
@@ -183,7 +255,7 @@ nav ul {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #F5EDED; /* Твоят светъл фон */
+    background-color: #F5EDED;
     min-width: 200px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     border-radius: 8px;
@@ -219,8 +291,9 @@ nav ul {
     }
 }
 
-.dropdown-content a, .dropdown-content p {
-    color: #6482AD !important; /* Тъмен текст */
+.dropdown-content a,
+.dropdown-content p {
+    color: #6482AD !important;
     padding: 10px 20px;
     display: block;
     text-decoration: none;
@@ -230,42 +303,42 @@ nav ul {
 }
 
     .dropdown-content a:hover {
-        background-color: #E2DAD6; /* Твоят бежов цвят при ховър в менюто */
+        background-color: #E2DAD6;
         color: #6482AD !important;
     }
 
-/* --- Десен панел (Икони) --- */
+/* --- Десен панел и Търсачка --- */
 .right-content {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
-.search-toggle, .profile-icon, .lang-icon {
-    color: #314c73; /* Тъмният цвят за иконите */
+.search-toggle,
+.profile-icon,
+.lang-icon {
+    color: #314c73;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     transition: transform 0.2s, color 0.3s;
+    font-size: 20px;
 }
 
-    /* При ховър иконите стават светли */
-    .search-toggle:hover, .profile-icon:hover, .lang-icon:hover {
+    .search-toggle:hover,
+    .profile-icon:hover,
+    .lang-icon:hover {
         color: #F5EDED;
         transform: scale(1.1);
     }
 
-/* Търсачка Анимация */
 .searchBox {
     position: relative;
 }
 
-    .searchBox .cancel-icon {
-        display: none;
-    }
-
+    .searchBox .cancel-icon,
     .searchBox.active .search-icon {
         display: none;
     }
@@ -276,51 +349,65 @@ nav ul {
 
 .search-field {
     position: absolute;
-    top: 50px;
-    right: -10px;
-    background-color: #6482AD; /* Синьо като хедъра */
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    top: 65px;
+    right: 0;
+    background: #ffffff;
+    padding: 18px 22px;
+    border-radius: 30px;
+    width: 340px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
     opacity: 0;
+    transform: translateY(-8px);
     pointer-events: none;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
 .searchBox.active .search-field {
     opacity: 1;
-    pointer-events: auto;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .search-field input {
-    height: 40px;
-    width: 220px;
+    width: 100%;
     border: none;
     outline: none;
-    padding: 0 15px;
-    border-radius: 6px;
-    background: #F5EDED; /* Светло поле */
-    color: #314c73; /* Тъмен текст вътре */
-    font-size: 16px;
+    background: #f8fafc;
+    padding: 14px 18px;
+    border-radius: 20px;
+    font-size: 15px;
+    color: #314c73;
+    transition: 0.3s;
 }
 
-/* register/login/contact forms */
+    .search-field input:focus {
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(100,130,173,0.25);
+    }
+
+.search-inside-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+/* --- Профил и Форми --- */
 .profile-wrapper {
     position: relative;
 }
 
 .profile-dropdown {
     position: absolute;
-    top: 50px;
+    top: 45px;
     right: 0;
-    background: #F5EDED;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    width: 260px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     display: none;
-    min-width: 220px;
     z-index: 999;
 }
 
@@ -328,6 +415,50 @@ nav ul {
         display: block;
     }
 
+.profile-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#6482AD,#314c73);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.profile-greeting {
+    font-size: 13px;
+    color: #6c7a89;
+}
+
+.profile-email {
+    font-weight: 600;
+    font-size: 14px;
+    color: #314c73;
+}
+
+.profile-logout {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #f1f5f9;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .profile-logout:hover {
+        background: #e2e8f0;
+    }
+
+/* Форми */
 .container {
     max-width: 1000px;
     margin: 24px auto;
@@ -349,13 +480,24 @@ label {
     margin-bottom: 5px;
 }
 
-.form-control {
+.form-control, .custom-select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
     box-sizing: border-box;
 }
+
+.custom-select {
+    border-radius: 10px;
+    border-color: #cbd5e1;
+    transition: 0.3s;
+}
+
+    .custom-select:focus {
+        border-color: #6482AD;
+        box-shadow: 0 0 0 3px rgba(100,130,173,0.2);
+    }
 
 textarea {
     min-height: 120px;
@@ -369,7 +511,7 @@ textarea {
     justify-content: flex-end;
 }
 
-button.btn {
+button.btn, .custom-filter-btn {
     background: #6482AD;
     color: #F5EDED;
     border: none;
@@ -378,10 +520,37 @@ button.btn {
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
-    button.btn:hover {
+.custom-filter-btn {
+    background: linear-gradient(135deg, #6482AD, #314c73);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+    button.btn:hover, .custom-filter-btn:hover {
         background: #536b8f;
+        transform: translateY(-2px);
+    }
+
+    .custom-filter-btn:hover {
+        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+
+.custom-clear-btn {
+    background: #f1f5f9;
+    color: #314c73;
+    border: 1px solid #cbd5e1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .custom-clear-btn:hover {
+        background: #e2e8f0;
     }
 
 .reg-a {
@@ -409,8 +578,7 @@ legend {
     color: #314c73;
 }
 
-/* sections */
-
+/* --- Секции (Hero, Professions, Schools) --- */
 .section-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -418,17 +586,17 @@ legend {
 
     .section-header h2 {
         font-size: 2rem;
-        color: var(--primary-color);
+        color: #314c73;
         margin-bottom: 0.5rem;
     }
 
-/* hero section */
+/* Hero Section */
 .hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5em 0;
-    padding-bottom: 100px;
+    padding: 5em 0 100px 0;
+    min-height: 70vh;
 }
 
 .hero-content {
@@ -458,7 +626,11 @@ legend {
     height: auto;
 }
 
-/* professions section */
+/* Professions Section */
+.professions-section {
+    background-color: #7FA1C3;
+    padding: 60px 0;
+}
 
 .professions-grid {
     width: 90%;
@@ -491,11 +663,6 @@ legend {
         background: #bfdbfe;
     }
 
-.professions-section {
-    background-color: #7FA1C3;
-    padding: 60px 0;
-}
-
 .more-btn-wrapper {
     text-align: center;
     margin-top: 40px;
@@ -504,7 +671,7 @@ legend {
 .more-btn {
     display: inline-block;
     padding: 14px 40px;
-    background-color: #314c73;
+    background-color: #6482AD;
     color: #F5EDED;
     text-decoration: none;
     font-weight: bold;
@@ -514,73 +681,32 @@ legend {
 }
 
     .more-btn:hover {
-        background-color: #223a5c;
+        background-color: #6482AD;
+        color: #F5EDED;
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
-/* schools section */
+/* Schools Section */
+.schools-section-modern {
+    background-color: #cfc6bf;
+    padding: 80px 0;
+}
+
 .schools-section {
     padding: 60px 0;
     max-width: 90%;
     margin: 0 auto;
 }
 
-.school-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    transition: all 0.2s ease-in-out;
-}
-
-    .list-item:hover {
-        background-color: #f8fafc;
-    }
-
-    .list-item a {
-        text-decoration: none;
-        color: #6482AD;
-        text-align: center;
-    }
-
-.school {
-    font-size: 1.1rem;
-    color: #6482AD;
-}
-
-.city {
-    color: #64748b;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.schools-section-modern {
-    background-color: #cfc6bf;
-    padding: 80px 0;
-}
-
-    .schools-section-modern h2 {
-        font-weight: 700;
-        margin-bottom: 40px;
-    }
-
-.schools-list {
+.schools-list, .school-list {
     display: flex;
     flex-direction: column;
     gap: 25px;
 }
 
-.school-item {
-    background: #e9e9ea;
+.school-item, .list-item {
+    background: #fff;
     padding: 25px 35px;
     border-radius: 12px;
     display: flex;
@@ -589,29 +715,22 @@ legend {
     transition: 0.3s;
 }
 
-    .school-item:hover {
+    .school-item:hover, .list-item:hover {
         transform: translateY(-4px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        background-color: #f8fafc;
     }
 
-.school-name {
+.school-name, .school {
     font-size: 20px;
     font-weight: 600;
     color: #5a7aa6;
     text-decoration: none;
 }
 
-    .school-name:hover {
-        text-decoration: underline;
-    }
-
-.school-city {
+.school-city, .city {
     color: #6c7a89;
     font-weight: 500;
-}
-
-.more-item {
-    justify-content: center;
 }
 
 .more-link {
@@ -621,114 +740,111 @@ legend {
     text-decoration: none;
 }
 
-    .more-link:hover {
+/* --- Footer --- */
+/* --- Основен Футър --- */
+#footer {
+    background-color: #6482AD; /* Твоят основен син цвят */
+    color: #F5EDED;
+    padding-top: 40px;
+    padding-bottom: 0;
+    width: 100%;
+}
+
+/* Контейнер за трите колони */
+.layoutfooter {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 равни колони */
+    gap: 30px;
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+/* Заглавия в колоните */
+.footer-column h4 {
+    color: #314c73; /* Тъмният цвят за текст */
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Текст и Линкове в колоните */
+.footer-column p,
+.footer-column a {
+    color: #F5EDED;
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+    .footer-column a:hover {
+        color: #314c73;
         text-decoration: underline;
     }
 
-/*Professions form*/
-.custom-select {
-    border-radius: 10px;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    transition: 0.3s;
-}
-
-    .custom-select:focus {
-        border-color: #6482AD;
-        box-shadow: 0 0 0 3px rgba(100,130,173,0.2);
-    }
-
-/* Филтрирай бутон */
-.custom-filter-btn {
-    background: linear-gradient(135deg, #6482AD, #314c73);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-    .custom-filter-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-    }
-
-/* Изчисти бутон */
-.custom-clear-btn {
-    background: #f1f5f9;
-    color: #314c73;
-    border: 1px solid #cbd5e1;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-    .custom-clear-btn:hover {
-        background: #e2e8f0;
-    }
-
-/* footer */
-footer {
-    background: #6482AD;
-    color: #F5EDED;
-    padding-bottom: 30px;
-    padding-top: 10px;
-}
-
-.layoutfooter {
-    width: 90%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin: auto;
-}
-
-footer a {
-    color: white;
-    text-decoration: none;
-}
-
-footer h4 {
-    color: #314c73;
-    font-size: 19px;
+/* Специфичен стил за линка към анкетата */
+.poll-link {
+    display: inline-block;
+    margin-top: 10px;
     font-weight: bold;
+    border: 1px solid #F5EDED;
+    padding: 8px 15px;
+    border-radius: 5px;
 }
 
-.layoutfooter-column {
-    text-align: center;
-}
-
-.footer-top {
-    text-align: center;
-}
-
-/* responsive */
-
-@media (max-width: 900px) {
-    .professions-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .poll-link:hover {
+        background-color: #F5EDED;
+        color: #6482AD !important;
     }
 
-    .footer {
+/* --- Долен ред (Copyright) --- */
+.footer-bottom {
+    background-color: #6482AD; /* Същият цвят */
+    border-top: 1px solid rgba(49, 76, 115, 0.2); /* Тънка разделителна линия */
+    padding: 5px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+    .footer-bottom a {
+        color: #314c73;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .footer-bottom a:hover {
+            text-decoration: underline;
+        }
+
+/* Адаптивност за мобилни устройства */
+@media (max-width: 768px) {
+    .layoutfooter {
+        grid-template-columns: 1fr; /* На малък екран стават една под друга */
+        gap: 40px;
+    }
+}
+/* --- Responsive Styles --- */
+@media (max-width: 900px) {
+    .professions-grid, .layoutfooter {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 600px) {
-
-    header {
+    nav .nav-bar {
         flex-direction: column;
-        text-align: center;
+        height: auto;
         padding: 15px;
     }
 
-    .menu {
+    .nav-bar .menu .nav-links {
         flex-direction: column;
-        align-items: center;
         gap: 15px;
-        width: 100%;
         margin-top: 20px;
     }
 
@@ -744,37 +860,22 @@ footer h4 {
         padding: 0 20px;
     }
 
-    .hero-image {
-        width: 100%;
-    }
-
     .gradcap {
         max-width: 70%;
     }
 
-    .professions-grid {
+    .professions-grid, .layoutfooter {
         grid-template-columns: 1fr;
     }
 
-    .list-item {
+    .school-item, .list-item {
         flex-direction: column;
         text-align: center;
         gap: 10px;
     }
 
-        .list-item a {
-            display: block;
-        }
-
-    .footer {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 40px;
-    }
-
     .form-actions {
         justify-content: center;
         flex-direction: column;
-        text-align: center;
     }
 }

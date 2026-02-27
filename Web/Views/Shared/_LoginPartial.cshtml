@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@* @using Microsoft.AspNetCore.Identity
 @using Infrastructure.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -25,4 +25,44 @@ else
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Влез</a>
     </li>
 }
-</ul>
+</ul> *@
+
+@using Microsoft.AspNetCore.Identity
+@using Infrastructure.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+<div class="profile-wrapper">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="profile-info">
+            <div class="profile-avatar">
+                @User.Identity?.Name?.Substring(0, 1).ToUpper()
+            </div>
+
+            <div>
+                <div class="profile-greeting">Здравей,</div>
+                <div class="profile-email">@User.Identity?.Name</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              method="post">
+            <button type="submit" class="profile-logout">
+                Излез
+            </button>
+        </form>
+    }
+    else
+    {
+        <a asp-area="Identity"
+           asp-page="/Account/Login"
+           class="profile-login-btn">
+            Влез
+        </a>
+    }
+
+</div>

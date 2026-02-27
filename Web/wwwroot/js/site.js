@@ -45,16 +45,17 @@ document.addEventListener("click", (e) => {
     }
 });
 
-const profileToggle = document.getElementById("profileToggle");
-const profileMenu = document.getElementById("profileMenu");
+const toggle = document.getElementById("profileToggle");
+const menu = document.getElementById("profileMenu");
 
-profileToggle.addEventListener("click", () => {
-    profileMenu.classList.toggle("active");
-});
+if (toggle) {
+    toggle.addEventListener("click", () => {
+        menu.classList.toggle("active");
+    });
 
-document.addEventListener("click", (e) => {
-    if (!profileToggle.contains(e.target) &&
-        !profileMenu.contains(e.target)) {
-        profileMenu.classList.remove("active");
-    }
-});
+    document.addEventListener("click", (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove("active");
+        }
+    });
+}

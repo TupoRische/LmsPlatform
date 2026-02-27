@@ -1,9 +1,12 @@
 using Core.Contracts;
 using Core.Services;
 using Core.ViewModels.Home;
+using Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Web.ViewModels;
+using Core.ViewModels.Contacts;
 
 namespace Web.Controllers
 {
@@ -12,12 +15,14 @@ namespace Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IProfessionService professionService;
         private readonly ISchoolService schoolService;
+        private readonly IContactService _contactService;
 
-        public HomeController(ILogger<HomeController> logger, IProfessionService professionService, ISchoolService schoolService)
+        public HomeController(ILogger<HomeController> logger, IProfessionService professionService, ISchoolService schoolService, IContactService contactService)
         {
             _logger = logger;
             this.professionService = professionService;
             this.schoolService = schoolService;
+            _contactService = contactService;
         }
 
         public async Task<IActionResult> Index(int? pendingApproval)
@@ -37,6 +42,26 @@ namespace Web.Controllers
         {
             return View();
         }
+        public IActionResult Contact()
+        {
+            return View(new ContactFormVm());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contact(ContactFormVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _contactService.SaveMessageAsync(
+                model.Name,
+                model.Email,
+                model.Message);
+
+            TempData["Success"] = "Съобщението беше изпратено успешно!";
+            return RedirectToAction(nameof(Contact));
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -44,5 +69,6 @@ namespace Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        
     }
 }

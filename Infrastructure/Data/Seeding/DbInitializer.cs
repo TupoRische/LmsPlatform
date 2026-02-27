@@ -39,11 +39,17 @@ namespace Infrastructure.Data.Seeding
                     Email = adminEmail,
                     EmailConfirmed = true,
                     IsApproved = true,
-                    CreatedOn = DateTime.UtcNow
+                    CreatedOn = DateTime.UtcNow,
+                    FirstName = "System",
+                    LastName = "Admin"
                 };
 
-                await userManager.CreateAsync(admin, "Admin123!");
-                await userManager.AddToRoleAsync(admin, "Admin");
+                var result = await userManager.CreateAsync(admin, "Admin123!");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
             }
 
             // 1) SCHOOLS

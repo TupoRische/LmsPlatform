@@ -16,50 +16,41 @@
         <nav>
             <div class="nav-bar">
                 <span class="logo">
-                    <a asp-controller="Home" asp-action="Index">Проект</a>
+                    <a asp-controller="Home" asp-action="Index">LmsPlatform</a>
                 </span>
 
                 <div class="menu">
                     <ul class="nav-links">
                         <li>
-                            <a asp-controller="Home"
-                               asp-action="Index"
-                               class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                            <a asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
                                 Начало
                             </a>
                         </li>
 
-                        <li class="dropdown">
-                            <a href="#">За платформата</a>
-                            <ul class="dropdown-content">
-                                <li><p>Кратко описание...</p></li>
-                            </ul>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="#">Вид професия</a>
-                            <ul class="dropdown-content">
-                                <li>
-                                    <a asp-controller="Professions" asp-action="Details" asp-route-id="1">
-                                        Приложен програмист
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Professions" asp-action="Details" asp-route-id="2">
-                                        Танцьор
-                                    </a>
-                                </li>
-                                <li><hr /></li>
-                                <li>
-                                    <a asp-controller="Professions" asp-action="Index">
-                                        Вижте повече...
-                                    </a>
-                                </li>
-                            </ul>
+                        <li>
+                            <a asp-area=""
+                               asp-controller="Professions"
+                               asp-action="Index">
+                                Вид професия
+                            </a>
                         </li>
 
                         <li>
-                            <a asp-controller="Home" asp-action="Contact">Контакти</a>
+                            <a asp-area=""
+                               asp-controller="Schools"
+                               asp-action="Index">
+                                Училища
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-area=""
+                               asp-controller="Home"
+                               asp-action="Contact">
+                                Контакти
+                            </a>
                         </li>
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -91,16 +82,19 @@
 
                 <div class="right-content">
                     <div class="searchBox">
-                        <div class="search-toggle">
-                            <svg class="search-icon" viewBox="0 0 24 24" width="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            <svg class="cancel-icon" viewBox="0 0 24 24" width="22" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <div class="search-toggle" id="searchToggle">
+                            <i class="bi bi-search"></i>
                         </div>
-                        <div class="search-field">
+
+                        <div class="search-field" id="searchField">
                             <form asp-controller="Search" asp-action="Index" method="get">
-                                <input type="text" name="query" placeholder="Търси..." />
+                                <div class="search-input-wrapper">
+                                    <i class="bi bi-search search-inside-icon"></i>
+                                    <input type="text" name="query" placeholder="Търси професия, училище..." />
+                                </div>
                             </form>
                         </div>
-                    </div>
+                    </div>  
 
                     <div class="profile-wrapper">
                         <div class="profile-icon" id="profileToggle">
@@ -123,24 +117,38 @@
     </main>
 
     <footer id="footer">
-        <div class="footer-top">
-            <h1 class="logo">
-                <a asp-controller="Home" asp-action="Index">Проект</a>
-            </h1>
-        </div>
-
         <div class="layoutfooter">
             <div class="footer-column">
                 <h4>Навигация</h4>
-                <p><a asp-controller="Home" asp-action="Index">Начало</a></p>
-                <p><a asp-controller="Professions" asp-action="Index">Професии</a></p>
-                <p><a asp-controller="Schools" asp-action="Index">Професионални гимназии</a></p>
+                <div class="footer-links">
+                    <p><a asp-controller="Home" asp-action="Index">Начало</a></p>
+                    <p><a asp-controller="Professions" asp-action="Index">Професии</a></p>
+                    <p><a asp-controller="Schools" asp-action="Index">Професионални гимназии</a></p>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4>Въпросник</h4>
+                <div class="poll-content">
+                    <p>
+                        Тук може да намерите кратка анкета, която да Ви помогне с избора на професия, ако се чудите къде да запишете детето си
+
+                    </p>
+                    <a href="#" class="poll-link">Попълни анкетата</a>
+                </div>
             </div>
 
             <div class="footer-column">
                 <h4>Контакти</h4>
-                <p>Имейл: pmg-dobrich@abv.bg</p>
-                <p>гр. Добрич</p>
+                <div class="contact-info">
+                    <p>Имейл: slavina.i.tsoneva@gmail.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                &copy; 2026 - LmsPlatform - <a asp-area="" asp-controller="Home" asp-action="Privacy">Правата са запазени.</a>
             </div>
         </div>
     </footer>
@@ -148,8 +156,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
+    <partial name="_ValidationScriptsPartial" />
 </body>
 </html>

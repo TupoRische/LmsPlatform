@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Core.ViewModels.Admin.Professions;
+using Core.ViewModels.Admin.Schools;
+using Core.ViewModels.Admin.Students;
+using Core.ViewModels.Admin.Teachers;
+using Core.ViewModels.Admin.Users;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,5 +25,19 @@ namespace Core.ViewModels.Admin
         public List<SimpleUserVm> LatestPendingTeachers { get; set; } = new();
         public List<SimpleUserVm> LatestTeachers { get; set; } = new();
         public List<SimpleUserVm> LatestStudents { get; set; } = new();
+        public int UsersCount { get; set; }
+    public int TeachersCount { get; set; }
+    public int StudentsCount { get; set; }
+
+        public IEnumerable<RecentUserVm> RecentUsers { get; set; } = new List<RecentUserVm>();
+        public IEnumerable<RandomTeacherVm> RandomTeachers { get; set; } = new List<RandomTeacherVm>();
+        public IEnumerable<RandomStudentVm> RandomStudents { get; set; }
+    = new List<RandomStudentVm>();
+        public IEnumerable<PendingTeacherVm> PendingTeachersPreview { get; set; }
+    = new List<PendingTeacherVm>();
+        public IEnumerable<RandomSchoolVm> RandomSchools { get; set; }
+    = new List<RandomSchoolVm>();
+        public IEnumerable<RandomProfessionVm> RandomProfessions { get; set; }
+    = new List<RandomProfessionVm>();
     }
 }

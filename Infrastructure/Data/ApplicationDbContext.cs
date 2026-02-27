@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Data.Entities;
+using Infrastructure.Data.Models;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace Infrastructure.Data
         public DbSet<MaterialCategory> MaterialCategories => Set<MaterialCategory>();
         public DbSet<Comment> Comments => Set<Comment>();
         public DbSet<QuizResult> QuizResults => Set<QuizResult>();
-
+        public DbSet<ContactMessage> ContactMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
