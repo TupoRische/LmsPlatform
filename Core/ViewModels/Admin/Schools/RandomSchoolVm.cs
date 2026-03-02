@@ -9,7 +9,7 @@ namespace Core.ViewModels.Admin.Schools
     public class RandomSchoolVm
     {
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
+        public string Abbreviation { get; set; } = null!;
         public string City { get; set; } = null!;
     }
 

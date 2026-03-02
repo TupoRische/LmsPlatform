@@ -30,5 +30,6 @@ namespace Core.Contracts
         Task<IEnumerable<PendingTeacherVm>>GetPendingTeachersPreviewAsync(int count = 3);
         Task<IEnumerable<RandomSchoolVm>>GetRandomSchoolsAsync(int count = 3);
         Task<IEnumerable<RandomProfessionVm>>GetRandomProfessionsAsync(int count = 3);
+        Task<IEnumerable<TeacherListVm>> GetTeachersAsync();
     }
 }

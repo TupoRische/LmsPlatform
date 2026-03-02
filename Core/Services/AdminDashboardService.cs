@@ -7,6 +7,7 @@ using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Admin.Users;
 using Infrastructure.Data;
 using Infrastructure.Identity;
+using Infrastructure.Repositories.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,11 +22,13 @@ namespace Core.Services
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IRepository<ApplicationUser> userRepository;
 
-        public AdminDashboardService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AdminDashboardService(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IRepository<ApplicationUser> userRepository)
         {
             this.context = context;
             this.userManager = userManager;
+            this.userRepository = userRepository;
         }
 
         public async Task<AdminDashboardVm> GetStatsAsync()
@@ -148,7 +151,7 @@ namespace Core.Services
                 .Select(s => new RandomSchoolVm
                 {
                     Id = s.Id,
-                    Name = s.Name,
+                    Abbreviation = s.Abbreviation,
                     City = s.City
                 })
                 .ToList();
@@ -167,7 +170,28 @@ namespace Core.Services
                 })
                 .ToListAsync();
         }
-       
+
+        public async Task<IEnumerable<TeacherListVm>> GetTeachersAsync()
+        {
+            return await userRepository
+                .AllReadonly()
+                .Include(u => u.School)
+                .Where(u => u.IsApproved)
+                .Where(u => context.UserRoles.Any(r =>
+                    r.UserId == u.Id &&
+                    context.Roles.Any(role =>
+                        role.Id == r.RoleId &&
+                        role.Name == "Teacher")))
+                .Select(u => new TeacherListVm
+                {
+                    Id = u.Id,
+                    FullName = u.FirstName + " " + u.LastName,
+                    School = u.School != null
+    ? u.School.Abbreviation + " - " + u.School.City
+    : ""
+                })
+                .ToListAsync();
+        }
 
         public async Task<int> GetUsersCountAsync()
         {

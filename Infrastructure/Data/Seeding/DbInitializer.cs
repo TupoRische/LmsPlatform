@@ -3,210 +3,399 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Seeding
+namespace Infrastructure.Data.Seeding;
+
+public static class DbInitializer
 {
-    public static class DbInitializer
+    public static async Task SeedAsync(IServiceProvider services)
     {
-        public static async Task SeedAsync(IServiceProvider services)
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // Apply migrations safely
+        if ((await context.Database.GetPendingMigrationsAsync()).Any())
         {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
             await context.Database.MigrateAsync();
-
-            // Roles
-            string[] roles = { "Admin", "Teacher", "Student" };
-            foreach (var role in roles)
-                if (!await roleManager.RoleExistsAsync(role))
-                    await roleManager.CreateAsync(new IdentityRole(role));
-
-            // Admin user
-            var adminEmail = "admin@lms.com";
-            var admin = await userManager.FindByEmailAsync(adminEmail);
-
-            if (admin == null)
-            {
-                admin = new ApplicationUser
-                {
-                    UserName = adminEmail,
-                    Email = adminEmail,
-                    EmailConfirmed = true,
-                    IsApproved = true,
-                    CreatedOn = DateTime.UtcNow,
-                    FirstName = "System",
-                    LastName = "Admin"
-                };
-
-                var result = await userManager.CreateAsync(admin, "Admin123!");
-
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(admin, "Admin");
-                }
-            }
-
-            // 1) SCHOOLS
-            if (!context.Schools.Any())
-            {
-                var schools = new[]
-                {
-                    new School
-                    {
-                        Name = "Природо-математическа гимназия \"Иван Вазов\"",
-                        City = "Добрич",
-                        Description = "Профилирана гимназия с фокус върху математика, информатика и природни науки."
-                    },
-                    new School
-                    {
-                        Name = "Финансово-стопанска гимназия \"Васил Левски\"",
-                        City = "Добрич",
-                        Description = "Професионално обучение в областта на икономика, счетоводство и бизнес администрация."
-                    },
-                    new School
-                    {
-                        Name = "Средно училище \"Свети Климент Охридски\"",
-                        City = "Добрич",
-                        Description = "Общообразователно училище с разнообразни профили и извънкласни дейности."
-                    },
-                    new School
-                    {
-                        Name = "Професионална гимназия по ветеринарна медицина \"Проф. д-р Г. Павлов\"",
-                        City = "Добрич",
-                        Description = "Специализирано обучение по ветеринарна медицина и селско стопанство."
-                    },
-                    new School
-                    {
-                        Name = "Професионална гимназия по туризъм \"П. К. Яворов\"",
-                        City = "Добрич",
-                        Description = "Подготовка на кадри в туризма, ресторантьорството и хотелиерството."
-                    },
-                    new School
-                    {
-                        Name = "Професионална гимназия по компютърно моделиране и компютърни системи \"Академик Благовест Сендов\"",
-                        City = "Варна",
-                        Description = "Обучение в сферата на софтуерните технологии, програмирането и компютърните системи."
-                    },
-                    new School
-                    {
-                        Name = "Професионална гимназия по електротехника",
-                        City = "Варна",
-                        Description = "Професионално образование в областта на електротехниката, автоматизацията и електрониката."
-                    },
-                    new School
-                    {
-                        Name = "Свищовска професионална гимназия \"Алеко Константинов\"",
-                        City = "Свищов",
-                        Description = "Професионална подготовка в технически и икономически специалности."
-                    },
-                    new School
-                    {
-                        Name = "Професионална гимназия по строителство, архитектура и геодезия „Васил Левски“",
-                        City = "Варна",
-                        Description = "Специализирано обучение в строителството, архитектурата и геодезията."
-                    }
-                };
-
-                context.Schools.AddRange(schools);
-                await context.SaveChangesAsync();
-            }
-
-            // helper за намиране на SchoolId по Name + City
-            int GetSchoolId(string name, string city) =>
-                context.Schools
-                    .Where(s => s.Name == name && s.City == city)
-                    .Select(s => s.Id)
-                    .First();
-
-            // 2) PROFESSIONS (с връзка към училище)
-            if (!context.Professions.Any())
-            {
-                var map = new (string Profession, string Description, string SchoolName, string City)[]
-                {
-                    ("Графичен дизайнер",
-                        "Създава визуални материали: лого, плакати, брошури, банери и дизайн за социални мрежи.",
-                        "Средно училище \"Свети Климент Охридски\"", "Добрич"),
-
-                    ("Оперативен счетоводител",
-                        "Обработва първични документи, фактури, каса/банка и подпомага счетоводното отчитане.",
-                        "Финансово-стопанска гимназия \"Васил Левски\"", "Добрич"),
-
-                    ("Приложен програмист",
-                        "Разработва уеб/десктоп приложения, работи с бази данни и поддръжка на софтуер.",
-                        "Природо-математическа гимназия \"Иван Вазов\"", "Добрич"),
-
-                    ("Системен програмист",
-                        "Работи със системен софтуер, мрежи, конфигурация и поддръжка на компютърни системи.",
-                        "Професионална гимназия по компютърно моделиране и компютърни системи \"Академик Благовест Сендов\"", "Варна"),
-
-                    ("Електронна търговия",
-                        "Организира онлайн продажби, управление на продукти, поръчки, маркетинг и обслужване на клиенти.",
-                        "Финансово-стопанска гимназия \"Васил Левски\"", "Добрич"),
-
-                    ("Електротехник",
-                        "Монтаж и поддръжка на електроинсталации, табла, измервания и безопасност.",
-                        "Професионална гимназия по електротехника", "Варна"),
-
-                    ("Техник на комуникационни системи",
-                        "Инсталира и поддържа комуникационни мрежи, устройства и кабелни системи.",
-                        "Професионална гимназия по електротехника", "Варна"),
-
-                    ("Техник по транспортна техника",
-                        "Диагностика и поддръжка на транспортна техника, основни ремонти и технически прегледи.",
-                        "Свищовска професионална гимназия \"Алеко Константинов\"", "Свищов"),
-
-                    ("Строителен техник",
-                        "Организация на строителни дейности, измервания, документация и контрол на качеството.",
-                        "Професионална гимназия по строителство, архитектура и геодезия „Васил Левски“", "Варна"),
-
-                    ("Ветеринарен техник",
-                        "Подпомага ветеринарната дейност: грижа за животни, манипулации, хигиена и документация.",
-                        "Професионална гимназия по ветеринарна медицина \"Проф. д-р Г. Павлов\"", "Добрич"),
-
-                    ("Готвач",
-                        "Приготвя храна по технологични рецепти, организация на кухня и контрол на качеството.",
-                        "Професионална гимназия по туризъм \"П. К. Яворов\"", "Добрич"),
-
-                    ("Хотелиер",
-                        "Работа с гости, резервации, настаняване, обслужване и организация на хотелския процес.",
-                        "Професионална гимназия по туризъм \"П. К. Яворов\"", "Добрич"),
-                };
-
-                foreach (var (profession, description, schoolName, city) in map)
-                {
-                    var schoolId = GetSchoolId(schoolName, city);
-
-                    context.Professions.Add(new Profession
-                    {
-                        Name = profession,
-                        Description = description,
-                        SchoolId = schoolId
-                    });
-                }
-
-                await context.SaveChangesAsync();
-            }
-
-
-            //Материали
-            if (!context.MaterialCategories.Any())
-            {
-                context.MaterialCategories.AddRange(
-                    new MaterialCategory { Name = "Теория" },
-                    new MaterialCategory { Name = "Практика" },
-                    new MaterialCategory { Name = "Презентации" },
-                    new MaterialCategory { Name = "Задачи" },
-                    new MaterialCategory { Name = "Допълнителни материали" }
-                );
-
-                await context.SaveChangesAsync();
-            }
         }
+
+        await SeedRoles(roleManager);
+        await SeedSchools(context);
+        var users = await SeedUsers(userManager, context);
+        await SeedProfessions(context);
+        await SeedMaterialCategories(context);
+        await SeedMaterials(context, users);
+    }
+
+    // ---------------- ROLES ----------------
+
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        string[] roles = { "Admin", "Teacher", "Student" };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+                await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // ---------------- SCHOOLS ----------------
+
+    private static async Task SeedSchools(ApplicationDbContext context)
+    {
+        if (context.Schools.Any())
+            return;
+
+        context.Schools.AddRange(
+    new School
+    {
+        Name = "Природо-математическа гимназия \"Иван Вазов\"",
+        Abbreviation = "ПМГ „Иван Вазов“",
+        City = "Добрич",
+        Description = "Профилирана гимназия с фокус върху математика, информатика и природни науки."
+    },
+new School
+{
+    Name = "Финансово-стопанска гимназия \"Васил Левски\"",
+    Abbreviation = "ФСГ „Васил Левски“",
+    City = "Добрич",
+    Description = "Професионално обучение в областта на икономика, счетоводство и бизнес администрация."
+},
+new School
+{
+    Name = "Средно училище \"Свети Климент Охридски\"",
+    Abbreviation = "СУ „Свети Климент Охридски“",
+    City = "Добрич",
+    Description = "Общообразователно училище с разнообразни профили и извънкласни дейности."
+},
+new School
+{
+    Name = "Професионална гимназия по ветеринарна медицина \"Проф. д-р Г. Павлов\"",
+    Abbreviation = "ПГВМ „Проф. д-р Г. Павлов“",
+    City = "Добрич",
+    Description = "Специализирано обучение по ветеринарна медицина и селско стопанство."
+},
+new School
+{
+    Name = "Професионална гимназия по туризъм \"П.К. Яворов\"",
+    Abbreviation = "ПГТ „П.К. Яворов“",
+    City = "Добрич",
+    Description = "Подготовка на кадри в туризма, ресторантьорството и хотелиерството."
+},
+new School
+{
+    Name = "Професионална гимназия по компютърно моделиране и компютърни системи \"Академик Благовест Сендов\"",
+    Abbreviation = "ПГКМКС „Акад. Благовест Сендов“",
+    City = "Варна",
+    Description = "Обучение в сферата на софтуерните технологии, програмирането и компютърните системи."
+},
+new School
+{
+    Name = "Професионална гимназия по електротехника",
+    Abbreviation = "ПГ по електротехника",
+    City = "Варна",
+    Description = "Професионално образование в областта на електротехниката, автоматизацията и електрониката."
+},
+new School
+{
+    Name = "Свищовска професионална гимназия \"Алеко Константинов\"",
+    Abbreviation = "СПГ „Алеко Константинов“",
+    City = "Свищов",
+    Description = "Професионална подготовка в технически и икономически специалности."
+},
+new School
+{
+    Name = "Професионална гимназия по строителство, архитектура и геодезия „Васил Левски“",
+    Abbreviation = "ПГСАГ „Васил Левски“",
+    City = "Варна",
+    Description = "Специализирано обучение в строителството, архитектурата и геодезията."
+}
+);
+
+        await context.SaveChangesAsync();
+    }
+
+    // ---------------- USERS ----------------
+
+    private static async Task<(ApplicationUser admin,
+                           ApplicationUser teacher1,
+                           ApplicationUser teacher2)>
+    SeedUsers(UserManager<ApplicationUser> userManager,
+              ApplicationDbContext context)
+    {
+        var pmg = context.Schools.First(s => s.Abbreviation == "ПМГ „Иван Вазов“");
+        var fsg = context.Schools.First(s => s.Abbreviation == "ФСГ „Васил Левски“");
+
+        async Task<ApplicationUser> CreateUser(
+    string email,
+    string first,
+    string last,
+    string? role,
+    bool approved,
+    string password,
+    bool requestedTeacher = false,
+    int? schoolId = null)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    FirstName = first,
+                    LastName = last,
+                    CreatedOn = DateTime.UtcNow,
+                    IsApproved = approved,
+                    RequestedTeacher = requestedTeacher,
+                    SchoolId = schoolId
+                };
+
+                await userManager.CreateAsync(user, password);
+
+                if (!string.IsNullOrEmpty(role))
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
+            }
+
+            return user;
+        }
+
+        var admin = await CreateUser(
+            "admin@lms.com",
+            "System",
+            "Admin",
+            "Admin",
+            true,
+            "Admin123!");
+
+        var teacher1 = await CreateUser(
+            "teacher1@lms.com",
+            "Иван",
+            "Иванов",
+            "Teacher",
+            true,
+            "Teacher123!",
+            false,
+            pmg.Id);
+
+        var teacher2 = await CreateUser(
+            "teacher2@lms.com",
+            "Мария",
+            "Петрова",
+            "Teacher",
+            true,
+            "Teacher123!",
+            false,
+            fsg.Id);
+
+        // Pending teacher (без Teacher роля)
+        await CreateUser(
+            "teacher3@lms.com",
+            "Георги",
+            "Стоянов",
+            null,
+            false,
+            "Teacher123!",
+            true,
+            pmg.Id);
+
+        // Students
+        await CreateUser(
+            "student1@lms.com",
+            "Петър",
+            "Петров",
+            "Student",
+            true,
+            "Student123!");
+
+        await CreateUser(
+            "student2@lms.com",
+            "Анна",
+            "Илиева",
+            "Student",
+            true,
+            "Student123!");
+
+        return (admin, teacher1, teacher2);
+    }
+
+    // ---------------- PROFESSIONS ----------------
+
+    private static async Task SeedProfessions(ApplicationDbContext context)
+    {
+        if (context.Professions.Any())
+            return;
+
+        int GetSchoolId(string name, string city) =>
+            context.Schools
+                .Where(s => s.Name == name && s.City == city)
+                .Select(s => s.Id)
+                .First();
+
+        if (!context.Professions.Any())
+        {
+            context.Professions.AddRange(
+
+                new Profession
+                {
+                    Name = "Графичен дизайнер",
+                    Description = "Създава визуални материали: лого, плакати, брошури, банери и дизайн за социални мрежи.",
+                    SchoolId = GetSchoolId(
+                        "Средно училище \"Свети Климент Охридски\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Оперативен счетоводител",
+                    Description = "Обработва първични документи, фактури, каса/банка и подпомага счетоводното отчитане.",
+                    SchoolId = GetSchoolId(
+                        "Финансово-стопанска гимназия \"Васил Левски\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Приложен програмист",
+                    Description = "Разработва уеб/десктоп приложения, работи с бази данни и поддръжка на софтуер.",
+                    SchoolId = GetSchoolId(
+                        "Природо-математическа гимназия \"Иван Вазов\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Системен програмист",
+                    Description = "Работи със системен софтуер, мрежи, конфигурация и поддръжка на компютърни системи.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по компютърно моделиране и компютърни системи \"Академик Благовест Сендов\"", "Варна")
+                },
+
+                new Profession
+                {
+                    Name = "Електронна търговия",
+                    Description = "Организира онлайн продажби, управление на продукти, поръчки, маркетинг и обслужване на клиенти.",
+                    SchoolId = GetSchoolId(
+                        "Финансово-стопанска гимназия \"Васил Левски\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Електротехник",
+                    Description = "Монтаж и поддръжка на електроинсталации, табла, измервания и безопасност.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по електротехника", "Варна")
+                },
+
+                new Profession
+                {
+                    Name = "Техник на комуникационни системи",
+                    Description = "Инсталира и поддържа комуникационни мрежи, устройства и кабелни системи.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по електротехника", "Варна")
+                },
+
+                new Profession
+                {
+                    Name = "Техник по транспортна техника",
+                    Description = "Диагностика и поддръжка на транспортна техника, основни ремонти и технически прегледи.",
+                    SchoolId = GetSchoolId(
+                        "Свищовска професионална гимназия \"Алеко Константинов\"", "Свищов")
+                },
+
+                new Profession
+                {
+                    Name = "Строителен техник",
+                    Description = "Организация на строителни дейности, измервания, документация и контрол на качеството.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по строителство, архитектура и геодезия „Васил Левски“", "Варна")
+                },
+
+                new Profession
+                {
+                    Name = "Ветеринарен техник",
+                    Description = "Подпомага ветеринарната дейност: грижа за животни, манипулации, хигиена и документация.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по ветеринарна медицина \"Проф. д-р Г. Павлов\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Готвач",
+                    Description = "Приготвя храна по технологични рецепти, организация на кухня и контрол на качеството.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по туризъм \"П.К. Яворов\"", "Добрич")
+                },
+
+                new Profession
+                {
+                    Name = "Хотелиер",
+                    Description = "Работа с гости, резервации, настаняване, обслужване и организация на хотелския процес.",
+                    SchoolId = GetSchoolId(
+                        "Професионална гимназия по туризъм \"П.К. Яворов\"", "Добрич")
+                }
+            );
+
+            await context.SaveChangesAsync();
+        }
+    }
+
+    // ---------------- CATEGORIES ----------------
+
+    private static async Task SeedMaterialCategories(ApplicationDbContext context)
+    {
+        if (context.MaterialCategories.Any())
+            return;
+
+        context.MaterialCategories.AddRange(
+            new MaterialCategory { Name = "Теория" },
+            new MaterialCategory { Name = "Практика" },
+            new MaterialCategory { Name = "Презентации" },
+            new MaterialCategory { Name = "Задачи" }
+        );
+
+        await context.SaveChangesAsync();
+    }
+
+    // ---------------- MATERIALS ----------------
+
+    private static async Task SeedMaterials(
+        ApplicationDbContext context,
+        (ApplicationUser admin,
+         ApplicationUser teacher1,
+         ApplicationUser teacher2) users)
+    {
+        if (context.Materials.Any())
+            return;
+
+        var category = context.MaterialCategories.First();
+        var profession = context.Professions.First();
+
+        context.Materials.AddRange(
+
+            new Material
+            {
+                Title = "Въведение в C#",
+                Description = "Основи на C# програмирането",
+                TeacherId = users.teacher1.Id,
+                ProfessionId = profession.Id,
+                MaterialCategoryId = category.Id,
+                CreatedOn = DateTime.UtcNow
+            },
+
+            new Material
+            {
+                Title = "HTML Основи",
+                Description = "Структура на HTML документ",
+                TeacherId = users.teacher2.Id,
+                ProfessionId = profession.Id,
+                MaterialCategoryId = category.Id,
+                CreatedOn = DateTime.UtcNow
+            }
+        );
+
+        await context.SaveChangesAsync();
     }
 }

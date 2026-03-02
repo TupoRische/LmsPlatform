@@ -12,8 +12,6 @@ namespace Infrastructure.Identity
     {
         public bool IsApproved { get; set; } = false;
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-
-        // Navigation (по желание, но полезно)
         public ICollection<Material> MaterialsCreated { get; set; } = new HashSet<Material>();
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
         public ICollection<QuizResult> QuizResults { get; set; } = new HashSet<QuizResult>();

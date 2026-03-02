@@ -1,4 +1,6 @@
-﻿using Core.ViewModels.Admin.Users;
+﻿using Core.Contracts;
+using Core.Services;
+using Core.ViewModels.Admin.Users;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,10 +13,12 @@ namespace Web.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAdminDashboardService service;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, IAdminDashboardService service)
         {
             _userManager = userManager;
+            this.service = service;
         }
 
         public IActionResult Index()
@@ -44,17 +48,23 @@ namespace Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //public async Task<IActionResult> Teachers()
+        //{
+        //    var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
+
+        //    var model = teachers.Select(t => new RecentUserVm
+        //    {
+        //        Id = t.Id,
+        //        Email = t.Email!,
+        //        FullName = $"{t.FirstName} {t.LastName}",
+        //        Role = "Teacher"
+        //    });
+
+        //    return View(model);
+        //}
         public async Task<IActionResult> Teachers()
         {
-            var teachers = await _userManager.GetUsersInRoleAsync("Teacher");
-
-            var model = teachers.Select(t => new RecentUserVm
-            {
-                Id = t.Id,
-                Email = t.Email!,
-                Role = "Teacher"
-            });
-
+            var model = await service.GetTeachersAsync();
             return View(model);
         }
     }
