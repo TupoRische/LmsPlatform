@@ -31,5 +31,10 @@ namespace Core.Contracts
         Task<IEnumerable<RandomSchoolVm>>GetRandomSchoolsAsync(int count = 3);
         Task<IEnumerable<RandomProfessionVm>>GetRandomProfessionsAsync(int count = 3);
         Task<IEnumerable<TeacherListVm>> GetTeachersAsync();
+        Task<TeacherDetailsVm> GetTeacherDetailsAsync(string id);
+        Task<IEnumerable<TeacherMaterialVm>> GetTeacherMaterialsAsync(string id);
+        Task<TeacherEditVm> GetTeacherForEditAsync(string id);
+        Task UpdateTeacherAsync(TeacherEditVm model);
+        Task<IEnumerable<SchoolOptionVm>> GetSchoolsAsync();
     }
 }

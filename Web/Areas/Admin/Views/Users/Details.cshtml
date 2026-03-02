@@ -1,0 +1,23 @@
+﻿@using Core.ViewModels.Admin.Teachers
+@model TeacherDetailsVm
+
+<h2>Детайли за учител</h2>
+
+<div>
+    <p><b>Име:</b> @Model.FirstName @Model.LastName</p>
+    <p><b>Email:</b> @Model.Email</p>
+    <p><b>Училище:</b> @Model.School</p>
+    <p><b>Град:</b> @Model.City</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+Редактирай
+</a>
+
+<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+    Изтрий
+</a>
+
+<a asp-action="Teachers" class="btn btn-secondary">
+    Назад
+</a>
