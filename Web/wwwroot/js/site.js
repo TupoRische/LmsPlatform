@@ -33,7 +33,6 @@
 const searchBox = document.querySelector(".searchBox");
 const searchToggle = document.querySelector(".search-toggle");
 
-// Отваряне и затваряне на търсачката
 searchToggle.addEventListener("click", () => {
     searchBox.classList.toggle("active");
 });
@@ -47,6 +46,7 @@ document.addEventListener("click", (e) => {
 
 const toggle = document.getElementById("profileToggle");
 const menu = document.getElementById("profileMenu");
+
 
 if (toggle) {
     toggle.addEventListener("click", () => {

@@ -382,7 +382,8 @@ new School
                 TeacherId = users.teacher1.Id,
                 ProfessionId = profession.Id,
                 MaterialCategoryId = category.Id,
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                FilePath = "/uploads/materials/IntroToCSharp.pptx"
             },
 
             new Material
@@ -392,7 +393,8 @@ new School
                 TeacherId = users.teacher2.Id,
                 ProfessionId = profession.Id,
                 MaterialCategoryId = category.Id,
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                FilePath = "/uploads/materials/HtmlBasics.pdf"
             }
         );
 

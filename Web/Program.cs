@@ -33,6 +33,7 @@ builder.Services.AddScoped<IAdminTeacherRequestsService, AdminTeacherRequestsSer
 builder.Services.AddScoped<ITeacherDashboardService, TeacherDashboardService>();
 builder.Services.AddScoped<ITeacherMaterialsService, TeacherMaterialsService>();
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

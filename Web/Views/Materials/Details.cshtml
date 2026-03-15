@@ -1,96 +1,226 @@
 ﻿@using Core.ViewModels.Materials
 @model MaterialDetailsVm
 
-<h2 class="mb-3">@Model.Title</h2>
-
-<div class="text-muted mb-2">
-    Професия: @Model.ProfessionName
-</div>
-
-<div class="text-muted mb-2">
-    Категория: @Model.CategoryName
-</div>
-
-<div class="text-muted mb-2">
-    Качено от: @Model.TeacherName
-</div>
-
-<div class="text-muted mb-3">
-    Дата: @Model.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-</div>
-
-@if (!string.IsNullOrWhiteSpace(Model.Description))
-{
-    <p>@Model.Description</p>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.Url))
-{
-    <a class="btn btn-outline-primary me-2" href="@Model.Url" target="_blank">
-        Отвори ресурс
-    </a>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.FilePath))
-{
-    <a class="btn btn-outline-success" href="@Model.FilePath" target="_blank">
-        Изтегли файл
-    </a>
-}
-
-<a class="btn btn-secondary mt-3" href="javascript:history.back()">Назад</a>
-
-<hr />
-<h4 class="mb-3">Коментари</h4>
-
-@if (User.Identity?.IsAuthenticated ?? false)
-{
-    <form asp-controller="Comments" asp-action="Create" method="post" class="mb-3">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="materialId" value="@Model.Id" />
-
-        <div class="mb-2">
-            <textarea name="Content" class="form-control" rows="3" maxlength="1000"
-                  placeholder="Напиши коментар..."></textarea>
+<div class="container mb-5 mt-4">
+    @* --- Хедър: Баджове и Заглавие --- *@
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="d-flex gap-2 mb-3">
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: #7FA1C3; color: white;">
+                            <i class="bi bi-briefcase me-1"></i> @Model.ProfessionName
+                        </span>
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: #6482AD; color: white;">
+                            <i class="bi bi-book me-1"></i> @Model.CategoryName
+                        </span>
+                    </div>
+                    <h1 class="display-5 fw-bold m-0" style="color: #314c73;">@Model.Title</h1>
+                    <div class="mt-2 text-muted small">
+                        <i class="bi bi-person me-1"></i> @Model.TeacherName
+                    </div>
+                </div>
+                <a class="btn btn-light border shadow-sm rounded-pill px-4 fw-bold"
+                   style="color: #6482AD;" href="javascript:history.back()">
+                    <i class="bi bi-arrow-left me-1"></i> Назад
+                </a>
+            </div>
         </div>
-        <button class="btn btn-primary">Публикувай</button>
-    </form>
-}
-else
-{
-    <div class="alert alert-info">
-        За да коментираш, трябва да си влязъл в профил.
     </div>
-}
 
-@if (!Model.Comments.Any())
-{
-    <div class="text-muted">Няма коментари.</div>
-}
-else
-{
-    <div class="list-group">
-        @foreach (var c in Model.Comments)
-        {
-            <div class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <strong>@c.AuthorName</strong>
-                    <small class="text-muted">@c.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+    @* --- Основна карта --- *@
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        @* Ляво: Описание и Бутони *@
+                        <div class="col-md-8 p-4 p-md-5 bg-white">
+                            <h5 class="fw-bold mb-3" style="color: #314c73;">Описание на ресурса</h5>
+                            <p class="text-secondary mb-5" style="line-height: 1.6; min-height: 60px;">
+                                @(!string.IsNullOrWhiteSpace(Model.Description) ? Model.Description : "Няма предоставено описание за този материал.")
+                            </p>
+
+                            <div class="d-flex flex-row gap-3 mt-4">
+                                @if (!string.IsNullOrWhiteSpace(Model.FilePath))
+                                {
+                                    <button type="button" class="btn-details-custom btn-preview shadow-sm"
+                                            data-bs-toggle="modal" data-bs-target="#previewModal">
+                                        <i class="bi bi-eye me-2"></i> Преглед
+                                    </button>
+
+                                    <a class="btn-details-custom btn-download shadow-sm"
+                                       href="@Model.FilePath" download>
+                                        <i class="bi bi-download me-2"></i> Изтегли
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        @* Дясно: Инфо панел *@
+                        <div class="col-md-4 p-4 d-flex flex-column justify-content-center border-start" style="background-color: #fcfcfc;">
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Преподавател</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-person-circle me-1"></i> @Model.TeacherName</span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Дата на публикуване</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-calendar3 me-1"></i> @Model.CreatedOn.ToString("dd.MM.yyyy")</span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Професия</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-briefcase me-1"></i> @Model.ProfessionName</span>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Категория</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-tag me-1"></i> @Model.CategoryName</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* --- Коментари --- *@
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h4 class="fw-bold m-0" style="color: #314c73;">Коментари (@Model.Comments.Count())</h4>
                 </div>
 
-                <div class="mt-2">@c.Content</div>
+                <div class="card-body p-4">
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <form asp-controller="Comments" asp-action="Create" method="post" class="mb-4">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="materialId" value="@Model.Id" />
+                            <div class="d-flex flex-column flex-md-row gap-3">
+                                <textarea name="Content" class="form-control border-0 rounded-3 shadow-sm bg-light p-3"
+                                      placeholder="Напиши твоя коментар тук..." rows="2" required style="resize: none;"></textarea>
 
-                @if (User.Identity?.IsAuthenticated == true
-                        && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == c.AuthorId)
+                                <button type="submit" class="btn btn-primary rounded-3 shadow-sm border-0 align-self-md-end"
+                                        style="background-color: #6482AD; height: 50px; min-width: 120px; padding: 0 !important;">
+                                    Изпрати
+                                </button>
+                            </div>
+                        </form>
+                    }
+
+                    <div class="comments-list">
+                        @foreach (var c in Model.Comments)
+                        {
+                            <div class="d-flex gap-3 mb-3 p-3 rounded-3" style="background-color: #fbfbfb; border: 1px solid #f1f1f1;">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                     style="width: 40px; height: 40px; background: #7FA1C3; flex-shrink: 0;">
+                                    @c.AuthorName.Substring(0, 1).ToUpper()
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold" style="color: #314c73;">@c.AuthorName</span>
+                                        <small class="text-muted" style="font-size: 0.75rem;">@c.CreatedOn.ToString("dd.MM HH:mm")</small>
+                                    </div>
+                                    <p class="mb-0 text-secondary small">@c.Content</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom px-4">
+                <h5 class="modal-title fw-bold" id="previewModalLabel" style="color: #314c73;">Преглед на материал</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                @if (!string.IsNullOrWhiteSpace(Model.FilePath))
                 {
-                    <form asp-controller="Comments" asp-action="Delete" method="post" class="mt-2">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@c.Id" />
-                        <input type="hidden" name="materialId" value="@Model.Id" />
-                        <button class="btn btn-sm btn-outline-danger">Изтрий</button>
-                    </form>
+                    var cleanPath = Model.FilePath.Trim();
+                    var isPdf = cleanPath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                    var isPptx = cleanPath.EndsWith(".pptx", StringComparison.OrdinalIgnoreCase);
+
+                    if (isPdf)
+                    {
+                        <iframe src="@cleanPath" width="100%" height="750px" style="border: none; display: block;"></iframe>
+                    }
+                    else if (isPptx)
+                    {
+                        <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@(Context.Request.Scheme + "://" + Context.Request.Host + cleanPath)"
+                                width="100%" height="750px" frameborder="0">
+                        </iframe>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-file-earmark-zip display-1 text-muted opacity-25"></i>
+                            <p class="mt-3 text-muted">Този тип файл (@System.IO.Path.GetExtension(cleanPath)) не поддържа директен преглед.</p>
+                            <a href="@cleanPath" class="btn btn-success rounded-pill px-4" download>Изтегли и разгледай</a>
+                        </div>
+                    }
                 }
             </div>
-        }
+        </div>
     </div>
-}
+</div>
+
+<style>
+    body {
+        background-color: #E2DAD6 !important;
+    }
+
+    main {
+        padding-top: 100px !important;
+    }
+
+    /* Бутони на един ред */
+    .btn-details-custom {
+        height: 54px;
+        flex: 1;
+        min-width: 160px;
+        max-width: 250px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px !important;
+        font-weight: 600;
+        transition: 0.3s ease;
+        border-width: 2px !important;
+        padding: 0 !important; /* Премахва премигването/разпъването от глобален CSS */
+        text-decoration: none;
+        outline: none !important;
+    }
+
+        .btn-details-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+    .btn-preview {
+        background-color: #6482AD !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .btn-download {
+        background-color: transparent !important;
+        color: #198754 !important;
+        border-color: #198754 !important;
+    }
+
+        .btn-download:hover {
+            background-color: #198754 !important;
+            color: white !important;
+        }
+
+    .rounded-4 {
+        border-radius: 1.25rem !important;
+    }
+
+    textarea.form-control:focus {
+        background-color: white !important;
+        box-shadow: 0 0 0 3px rgba(100,130,173,0.1) !important;
+    }
+</style>

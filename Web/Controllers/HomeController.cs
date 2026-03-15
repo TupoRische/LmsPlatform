@@ -16,13 +16,15 @@ namespace Web.Controllers
         private readonly IProfessionService professionService;
         private readonly ISchoolService schoolService;
         private readonly IContactService _contactService;
+        private readonly IHomeService homeService;
 
-        public HomeController(ILogger<HomeController> logger, IProfessionService professionService, ISchoolService schoolService, IContactService contactService)
+        public HomeController(ILogger<HomeController> logger, IProfessionService professionService, ISchoolService schoolService, IContactService contactService, IHomeService homeService)
         {
             _logger = logger;
             this.professionService = professionService;
             this.schoolService = schoolService;
             _contactService = contactService;
+            this.homeService = homeService;
         }
 
         public async Task<IActionResult> Index(int? pendingApproval)
@@ -69,6 +71,12 @@ namespace Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        
+        [HttpGet]
+        public async Task<IActionResult> Search(string query)
+        {
+            var results = await homeService.SearchAsync(query);
+            return View(results);
+        }
+
     }
 }
