@@ -12,16 +12,6 @@
         <h2 class="mb-1">Учебни материали</h2>
         <p class="text-muted mb-0">Разгледайте наличните учебни материали.</p>
     </div>
-
-    @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
-    {
-        <a asp-area="Admin"
-           asp-controller="Materials"
-           asp-action="Create"
-           class="btn btn-primary">
-            Добави материал
-        </a>
-    }
 </div>
 
 <form method="get" asp-area="Student" asp-controller="Materials" asp-action="Index" class="row g-3 mb-4">

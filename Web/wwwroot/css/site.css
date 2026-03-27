@@ -558,10 +558,8 @@ textarea {
 button.btn, .custom-filter-btn {
     background: #6482AD;
     color: #F5EDED;
-    border: none;
-    padding: 12px 20px;
-    margin-top: 10px;
-    border-radius: 6px;
+    border: #6482AD;
+    border-radius: .25rem;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
