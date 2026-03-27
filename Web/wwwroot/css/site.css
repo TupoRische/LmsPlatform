@@ -981,3 +981,77 @@ legend {
     padding: 6px 10px;
     border-radius: 999px;
 }
+
+/*Кошче за коментари*/
+/* Картата на коментара */
+.comment-card {
+    background-color: #ffffff !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .comment-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    }
+
+/* Аватар */
+.avatar-circle {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #7FA1C3, #6482AD);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Текст на коментара */
+.comment-text {
+    color: #4a5568;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.text-muted-custom {
+    color: #a0aec0;
+    font-size: 0.75rem;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Роли (Баджове) */
+.badge-role {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-admin {
+    background-color: #ebf4ff;
+    color: #3182ce;
+}
+
+.role-user {
+    background-color: #f7fafc;
+    color: #718096;
+}
+
+/* Минималистично кошче */
+.btn-delete-minimal {
+    background: transparent;
+    border: none;
+    color: #cbd5e0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+    .btn-delete-minimal:hover {
+        color: #e53e3e;
+        background-color: #fff5f5;
+    }

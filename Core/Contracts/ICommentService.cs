@@ -13,5 +13,7 @@ namespace Core.Contracts
         Task CreateAsync(int materialId, string userId, string content);
         Task<bool> CanDeleteAsync(int commentId, string userId);
         Task DeleteAsync(int commentId);
+        Task<List<CommentListVm>> GetCommentsByMaterialAsync(int materialId);
+        Task<List<CommentThreadVm>> GetAllThreadsAsync();
     }
 }
