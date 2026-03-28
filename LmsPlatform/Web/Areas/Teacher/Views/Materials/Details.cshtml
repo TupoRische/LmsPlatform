@@ -1,0 +1,123 @@
+﻿@model Core.ViewModels.Teacher.Materials.TeacherMaterialDetailsVm
+
+@{
+    ViewData["Title"] = "Детайли за материал";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card shadow-sm border-0 material-details-card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                        <div>
+                            <h2 class="details-title mb-1">@Model.Title</h2>
+                            <p class="text-muted mb-0">
+                                Детайли за учебния материал
+                            </p>
+                        </div>
+
+                        <span class="badge bg-light text-dark details-date-badge">
+                            @Model.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <hr />
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <div class="mb-4">
+                            <h6 class="section-label">Описание</h6>
+                            <div class="details-box">
+                                @Model.Description
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Url))
+                    {
+                        <div class="mb-4">
+                            <h6 class="section-label">Линк към материала</h6>
+                            <div class="details-box">
+                                <a href="@Model.Url" target="_blank" class="text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i>
+                                    Отвори материал
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between mt-4">
+                        <a class="btn btn-outline-primary px-4"
+                           asp-area="Teacher"
+                           asp-controller="Materials"
+                           asp-action="My">
+                            Назад
+                        </a>
+
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-secondary px-4"
+                               asp-area="Teacher"
+                               asp-controller="Materials"
+                               asp-action="Edit"
+                               asp-route-id="@Model.Id">
+                                Редактирай
+                            </a>
+
+                            <form method="post"
+                                  asp-area="Teacher"
+                                  asp-controller="Materials"
+                                  asp-action="Delete"
+                                  asp-route-id="@Model.Id"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit"
+                                        class="btn btn-outline-danger px-4"
+                                        onclick="return confirm('Сигурни ли сте, че искате да изтриете този материал?');">
+                                    Изтрий
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .material-details-card {
+        border-radius: 18px;
+    }
+
+    .details-title {
+        font-weight: 700;
+        color: #4a6285;
+    }
+
+    .section-label {
+        font-weight: 600;
+        color: #355070;
+        margin-bottom: 0.75rem;
+    }
+
+    .details-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        color: #334155;
+        line-height: 1.6;
+    }
+
+    .details-date-badge {
+        border: 1px solid #d7deea;
+        border-radius: 999px;
+        padding: 0.6rem 0.9rem;
+        font-weight: 500;
+    }
+</style>

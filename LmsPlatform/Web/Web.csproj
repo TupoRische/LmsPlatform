@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-Web-f7a7f211-6f52-4162-9865-ed310f2aa462</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\Data\**" />
+    <Content Remove="Areas\Identity\Data\**" />
+    <EmbeddedResource Remove="Areas\Identity\Data\**" />
+    <None Remove="Areas\Identity\Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Student\Data\" />
+    <Folder Include="Areas\Student\Models\" />
+    <Folder Include="Areas\Teacher\Data\" />
+    <Folder Include="Areas\Teacher\Models\" />
+    <Folder Include="wwwroot\presentations\" />
+  </ItemGroup>
+
+</Project>

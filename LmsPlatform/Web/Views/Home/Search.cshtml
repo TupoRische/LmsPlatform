@@ -1,0 +1,21 @@
+﻿@using Core.ViewModels.Home
+@model IEnumerable<SearchResultVm>
+
+<h2>Резултати</h2>
+
+@if (!Model.Any())
+{
+    <p>Няма намерени резултати.</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>
+                <strong>@item.ProfessionName</strong> –
+                @item.SchoolName (@item.City)
+            </li>
+        }
+    </ul>
+}

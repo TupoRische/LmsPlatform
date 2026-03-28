@@ -1,0 +1,138 @@
+﻿@model Core.ViewModels.Teacher.Materials.EditMaterialVm
+
+@{
+    ViewData["Title"] = "Редактирай материал";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card shadow-sm border-0 material-form-card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="mb-4">
+                        <h2 class="mb-1 form-title">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            Редактирай материал
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Актуализирайте информацията за учебния материал.
+                        </p>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Име</label>
+                            <input asp-for="Title" class="form-control form-input" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Описание</label>
+                            <textarea asp-for="Description" class="form-control form-input" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ProfessionId" class="form-label">Професия</label>
+                                <select asp-for="ProfessionId" class="form-select form-input">
+                                    <option value="">-- Избери професия --</option>
+                                    @foreach (var p in Model.Professions)
+                                    {
+                                        <option value="@p.Id">@p.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ProfessionId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaterialCategoryId" class="form-label">Категория</label>
+                                <select asp-for="MaterialCategoryId" class="form-select form-input">
+                                    <option value="">-- Избери категория --</option>
+                                    @foreach (var c in Model.Categories)
+                                    {
+                                        <option value="@c.Id">@c.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="MaterialCategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="File" class="form-label">Нов файл</label>
+                            <input asp-for="File" type="file" class="form-control form-input" />
+                            <span asp-validation-for="File" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Url" class="form-label">Линк (URL)</label>
+                            <input asp-for="Url" class="form-control form-input" placeholder="https://..." />
+                            <span asp-validation-for="Url" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                            <a class="btn btn-outline-secondary px-4"
+                               asp-area="Teacher"
+                               asp-controller="Materials"
+                               asp-action="My">
+                                Назад
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg me-1"></i>
+                                Запази промените
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .material-form-card {
+        border-radius: 18px;
+    }
+
+    .form-title {
+        font-weight: 700;
+        color: #4a6285;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #355070;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid #d7deea;
+        box-shadow: none;
+    }
+
+    textarea.form-input {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .form-input:focus {
+        border-color: #7aa7e0;
+        box-shadow: 0 0 0 0.2rem rgba(122, 167, 224, 0.15);
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

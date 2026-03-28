@@ -1,0 +1,82 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<section class="auth-page">
+    <div class="auth-shell auth-shell--single">
+        <section class="auth-card">
+            <span class="auth-chip">Създай нов акаунт</span>
+            <h1 class="auth-title">@ViewData["Title"]</h1>
+            <p class="auth-subtitle">Попълнете данните си и изберете какъв тип профил желаете.</p>
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form">
+                <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary" role="alert"></div>
+
+                <div class="auth-grid">
+                    <div class="auth-field">
+                        <label asp-for="Input.FirstName" class="form-label">Име</label>
+                        <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="Име" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.LastName" class="form-label">Фамилия</label>
+                        <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Фамилия" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label asp-for="Input.SchoolId" class="form-label">Училище</label>
+                    <select asp-for="Input.SchoolId" class="form-select" asp-items="Model.Schools">
+                        <option value="">Избери училище</option>
+                    </select>
+                    <span asp-validation-for="Input.SchoolId" class="text-danger"></span>
+                </div>
+
+                <label asp-for="Input.RequestTeacher" class="auth-check-card">
+                    <span class="auth-check-card-main">
+                        <input asp-for="Input.RequestTeacher" class="form-check-input" />
+                        <span>
+                            <strong>Искам да се регистрирам като учител</strong>
+                            <small>При този избор профилът ще изчака одобрение, преди да получите пълен достъп.</small>
+                        </span>
+                    </span>
+                </label>
+
+                <div class="auth-field">
+                    <label asp-for="Input.Email" class="form-label">Имейл</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="auth-grid">
+                    <div class="auth-field">
+                        <label asp-for="Input.Password" class="form-label">Парола</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Минимум 6 символа" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Потвърди парола</label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Повтори паролата" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button id="registerSubmit" type="submit" class="btn btn-primary auth-submit">Регистрирай се</button>
+
+                <div class="auth-link-row">
+                    <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Вече имате профил? Влезте</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Към началната страница</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

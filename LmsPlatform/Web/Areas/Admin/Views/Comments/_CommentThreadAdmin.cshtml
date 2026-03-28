@@ -1,0 +1,55 @@
+@using Core.ViewModels.Comments
+@model CommentListVm
+@{
+    var materialId = ViewData["MaterialId"];
+    var roleLabel = Model.Role switch
+    {
+        "Admin" => "Администратор",
+        "Teacher" => "Учител",
+        "Student" => "Ученик",
+        _ => Model.Role
+    };
+}
+
+<div class="admin-comment-thread @(Model.ParentCommentId.HasValue ? "admin-comment-thread--reply" : string.Empty)">
+    <div class="admin-comment-card">
+        <div class="admin-comment-card__body">
+            <div class="admin-comment-card__meta">
+                <div>
+                    <div class="admin-comment-author">@Model.AuthorName</div>
+                    <span class="admin-comment-role @(Model.Role == "Admin" ? "admin-comment-role--admin" : "admin-comment-role--user")">
+                        @roleLabel
+                    </span>
+                </div>
+
+                <form asp-action="Delete" method="post" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този коментар и всички негови отговори?');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="commentId" value="@Model.Id" />
+                    <input type="hidden" name="materialId" value="@materialId" />
+                    <button type="submit" class="admin-comment-delete">
+                        <i class="bi bi-trash"></i>
+                        Изтрий
+                    </button>
+                </form>
+            </div>
+
+            <p class="admin-comment-text">@Model.Content</p>
+            <small class="admin-comment-date">@Model.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
+        </div>
+
+        @if (Model.Replies.Any())
+        {
+            <div class="admin-comment-replies">
+                @foreach (var reply in Model.Replies)
+                {
+                    <partial name="_CommentThreadAdmin"
+                             model="reply"
+                             view-data='new ViewDataDictionary(ViewData)
+                             {
+                                 ["MaterialId"] = materialId
+                             }' />
+                }
+            </div>
+        }
+    </div>
+</div>

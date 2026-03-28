@@ -1,0 +1,177 @@
+@using Core.ViewModels.Admin.Teachers
+@model TeacherDetailsVm
+
+<div class="teacher-details-page mb-4">
+    <div class="teacher-profile-card">
+        <div class="teacher-profile-top">
+            <div class="teacher-profile-avatar">
+                @($"{Model.FirstName} {Model.LastName}"[..1].ToUpperInvariant())
+            </div>
+
+            <div>
+                <span class="profile-kicker">Профил на учител</span>
+                <h1>@Model.FirstName @Model.LastName</h1>
+                <p>@Model.Email</p>
+            </div>
+        </div>
+
+        <div class="teacher-profile-grid">
+            <div>
+                <span>Училище</span>
+                <strong>@Model.School</strong>
+            </div>
+            <div>
+                <span>Град</span>
+                <strong>@Model.City</strong>
+            </div>
+        </div>
+
+        <div class="teacher-profile-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="profile-link">Редактирай</a>
+            <a asp-action="Materials" asp-route-id="@Model.Id" class="profile-link profile-link--soft">Материали</a>
+            <a asp-action="Teachers" class="profile-link profile-link--ghost">Назад</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .teacher-details-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .teacher-profile-card {
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.15rem 1.25rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .teacher-profile-top {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .teacher-profile-avatar {
+        width: 2.9rem;
+        height: 2.9rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #7ea4d3, #4f78a8);
+        color: white;
+        font-size: 1.05rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .profile-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .teacher-profile-card h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .teacher-profile-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+    }
+
+    .teacher-profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .teacher-profile-grid div {
+        background: white;
+        border: 1px solid rgba(63, 110, 165, 0.08);
+        border-radius: 14px;
+        padding: 0.7rem 0.8rem;
+    }
+
+    .teacher-profile-grid span {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 0.25rem;
+        font-size: 0.75rem;
+    }
+
+    .teacher-profile-grid strong {
+        color: var(--text);
+        font-size: 0.9rem;
+    }
+
+    .teacher-profile-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .profile-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        padding: 0.56rem 0.78rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .profile-link:hover,
+    .profile-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .profile-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .profile-link--soft:hover,
+    .profile-link--soft:focus {
+        background: var(--accent-soft);
+        color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
+    }
+
+    .profile-link--ghost {
+        background: #f5f8fb;
+        color: var(--text);
+    }
+
+    .profile-link--ghost:hover,
+    .profile-link--ghost:focus {
+        background: #f5f8fb;
+        color: var(--text);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.10);
+    }
+</style>

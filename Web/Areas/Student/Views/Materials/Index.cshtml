@@ -1,0 +1,117 @@
+﻿@model Core.ViewModels.Materials.MaterialIndexVm
+
+@{
+    ViewData["Title"] = "Учебни материали";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Учебни материали</h2>
+        <p class="text-muted mb-0">Разгледайте наличните учебни материали.</p>
+    </div>
+
+    @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+    {
+        <a href="/Teacher/Materials/Create"
+           class="btn btn-primary"
+           style="position: relative; z-index: 1000;">
+            Добави материал
+        </a>
+    }
+</div>
+
+<form method="get" asp-area="Student" asp-controller="Materials" asp-action="Index" class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <label class="form-label" for="professionId">Професия</label>
+        <select name="professionId" id="professionId" class="form-select">
+            <option value="">Всички</option>
+            @foreach (var profession in Model.Professions)
+            {
+                if (Model.ProfessionId == profession.Id)
+                {
+                    <option value="@profession.Id" selected>@profession.Name</option>
+                }
+                else
+                {
+                    <option value="@profession.Id">@profession.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label" for="materialCategoryId">Категория</label>
+        <select name="materialCategoryId" id="materialCategoryId" class="form-select">
+            <option value="">Всички</option>
+            @foreach (var category in Model.Categories)
+            {
+                if (Model.MaterialCategoryId == category.Id)
+                {
+                    <option value="@category.Id" selected>@category.Name</option>
+                }
+                else
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end gap-2 ps-md-2">
+        <button type="submit" class="btn btn-primary filter-btn px-4">
+            Филтрирай
+        </button>
+
+        <a asp-area="Student"
+           asp-controller="Materials"
+           asp-action="Index"
+           class="btn btn-outline-secondary filter-btn px-4">
+            Изчисти
+        </a>
+    </div>
+</form>
+
+@if (!Model.Materials.Any())
+{
+    <div class="alert alert-info">
+        Все още няма добавени материали.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var material in Model.Materials)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm material-card position-relative">
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-secondary material-category-badge">
+                            @material.CategoryName
+                        </span>
+                        <h5 class="card-title material-title">@material.Title</h5>
+
+                        <p class="material-meta mb-2">
+                            <span class="material-label">Професия:</span> @material.ProfessionName
+                        </p>
+
+                        <p class="material-date">
+                            <i class="bi bi-calendar3"></i>
+                            @material.CreatedOn.ToString("dd.MM.yyyy")
+                        </p>
+
+                        <div class="mt-auto">
+                            <a href="/materials/details/@material.Id"
+                               class="btn btn-outline-primary w-100 material-btn">
+                                Детайли
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

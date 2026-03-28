@@ -1,0 +1,319 @@
+@using Core.ViewModels.Admin.Professions
+@model ProfessionsPageVm
+
+<div class="admin-spotlight professions-page mb-4">
+    <div class="professions-hero">
+        <div>
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Професии</h1>
+            <p>Подреден преглед на професиите в системата, училищата към които принадлежат и наличните материали по всяка от тях.</p>
+        </div>
+
+        <a asp-area=""
+           asp-controller="Professions"
+           asp-action="Index"
+           class="hero-link">
+            Публичен списък
+        </a>
+    </div>
+
+    <div class="professions-stats">
+        <article class="stat-card">
+            <span>Общо професии</span>
+            <strong>@Model.TotalProfessions</strong>
+        </article>
+        <article class="stat-card">
+            <span>Училища с професии</span>
+            <strong>@Model.SchoolsRepresented</strong>
+        </article>
+        <article class="stat-card">
+            <span>Професии с материали</span>
+            <strong>@Model.WithMaterialsCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Общо материали</span>
+            <strong>@Model.TotalMaterials</strong>
+        </article>
+    </div>
+
+    @if (!Model.Professions.Any())
+    {
+        <div class="admin-empty-state">
+            Все още няма професии в системата.
+        </div>
+    }
+    else
+    {
+        <div class="professions-grid">
+            @foreach (var profession in Model.Professions)
+            {
+                var summary = !string.IsNullOrWhiteSpace(profession.Description)
+                    ? profession.Description
+                    : "Няма добавено описание за тази професия.";
+                var materialsLabel = profession.MaterialsCount == 1
+                    ? "материал"
+                    : "материала";
+
+                if (summary.Length > 180)
+                {
+                    summary = summary[..177] + "...";
+                }
+
+                <article class="profession-card">
+                    <div class="profession-card__head">
+                        <div>
+                            <span class="profession-school">@profession.SchoolName</span>
+                            <h3>@profession.Name</h3>
+                        </div>
+
+                        <span class="profession-count">@profession.MaterialsCount @materialsLabel</span>
+                    </div>
+
+                    <p>@summary</p>
+
+                    <div class="profession-actions">
+                        <a asp-area=""
+                           asp-controller="Professions"
+                           asp-action="Details"
+                           asp-route-id="@profession.Id"
+                           class="profession-link">
+                            Детайли
+                        </a>
+
+                        <a asp-area="Student"
+                           asp-controller="Materials"
+                           asp-action="Index"
+                           asp-route-professionId="@profession.Id"
+                           class="profession-link profession-link--soft">
+                            Материали
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .professions-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --surface: #ffffff;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .professions-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.15rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        align-items: center;
+        min-height: 148px;
+        margin-bottom: 1rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .professions-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .professions-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.88rem;
+    }
+
+    .hero-link {
+        background: var(--accent);
+        color: white;
+        text-decoration: none;
+        padding: 0.58rem 0.82rem;
+        border-radius: 999px;
+        font-weight: 700;
+        white-space: nowrap;
+        font-size: 0.82rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-link:hover,
+    .hero-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
+    }
+
+    .professions-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0.8rem 0.9rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-card strong {
+        color: var(--text);
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    .professions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 0.9rem;
+    }
+
+    .profession-card {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1rem 1.05rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .profession-card__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 0.85rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .profession-school {
+        display: inline-block;
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+    }
+
+    .profession-card h3 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1.02rem;
+        line-height: 1.4;
+    }
+
+    .profession-count {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.34rem 0.62rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.76rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .profession-card p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        line-height: 1.6;
+        min-height: 4.4rem;
+        font-size: 0.92rem;
+    }
+
+    .profession-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+        margin-top: auto;
+        padding-top: 0.3rem;
+    }
+
+    .profession-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 108px;
+        padding: 0.62rem 0.9rem;
+        border-radius: 999px;
+        text-decoration: none;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        font-size: 0.88rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .profession-link:hover,
+    .profession-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.14);
+    }
+
+    .profession-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .profession-link--soft:hover,
+    .profession-link--soft:focus {
+        background: var(--accent-soft);
+        color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.10);
+    }
+
+    .admin-empty-state {
+        background: white;
+        border: 1px dashed var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    @@media (max-width: 992px) {
+        .professions-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .professions-hero {
+            align-items: start;
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .professions-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -1,0 +1,219 @@
+﻿@model Core.ViewModels.Teacher.Materials.CreateMaterialFormVm
+
+@{
+    ViewData["Title"] = "Добави материал";
+}
+
+<div class="container page-container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card shadow-sm border-0 material-form-card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="mb-4">
+                        <h2 class="mb-1 form-title">
+                            <i class="bi bi-journal-plus me-2"></i>
+                            Добави учебен материал
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Попълнете информацията за новия материал.
+                        </p>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Material.Title" class="form-label">Име</label>
+                            <input asp-for="Material.Title" class="form-control form-input" placeholder="Въведете заглавие на материала" />
+                            <span asp-validation-for="Material.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Material.Description" class="form-label">Описание</label>
+                            <textarea asp-for="Material.Description"
+                                      class="form-control form-input"
+                                      rows="5"
+                                      placeholder="Добавете кратко описание на материала"></textarea>
+                            <span asp-validation-for="Material.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Material.ProfessionId" class="form-label">Професия</label>
+                                <select asp-for="Material.ProfessionId" class="form-select form-input">
+                                    <option value="">-- Избери професия --</option>
+                                    @foreach (var p in Model.Professions)
+                                    {
+                                        <option value="@p.Id">@p.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Material.ProfessionId" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Material.MaterialCategoryId" class="form-label">Категория</label>
+                                <select asp-for="Material.MaterialCategoryId" class="form-select form-input">
+                                    <option value="">-- Избери категория --</option>
+                                    @foreach (var c in Model.Categories)
+                                    {
+                                        <option value="@c.Id">@c.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Material.MaterialCategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Material.File" class="form-label">Прикачи файл</label>
+
+                            <input asp-for="Material.File" type="file" id="fileInput" class="d-none" />
+
+                            <label for="fileInput" class="upload-box">
+                                <i class="bi bi-paperclip upload-box-icon"></i>
+                                <span class="upload-box-text">Натисни, за да избереш файл</span>
+                                <span class="upload-box-subtext">Максимален размер: 20 MB</span>
+                            </label>
+
+                            <div id="selectedFileName" class="small text-muted mt-2"></div>
+
+                            <span asp-validation-for="Material.File" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Material.Url" class="form-label">Или линк (URL)</label>
+                            <input asp-for="Material.Url" class="form-control form-input" placeholder="https://..." />
+                            <span asp-validation-for="Material.Url" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                            <a asp-area="Student"
+                               asp-controller="Materials"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary px-4">
+                                Назад
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg me-1"></i>
+                                Запази
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .material-form-card {
+        border-radius: 18px;
+    }
+
+    .form-title {
+        font-weight: 700;
+        color: #4a6285;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #355070;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        min-height: 48px;
+        border-radius: 12px;
+        border: 1px solid #d7deea;
+        box-shadow: none;
+    }
+
+    textarea.form-input {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .form-input:focus {
+        border-color: #7aa7e0;
+        box-shadow: 0 0 0 0.2rem rgba(122, 167, 224, 0.15);
+    }
+
+    .upload-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #c9d6ea;
+        border-radius: 16px;
+        background: #f8fbff;
+        padding: 28px 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+        .upload-box:hover {
+            border-color: #7aa7e0;
+            background: #f1f7ff;
+        }
+
+    .upload-box-icon {
+        font-size: 2rem;
+        color: #6c8ebf;
+        margin-bottom: 10px;
+    }
+
+    .upload-box-text {
+        font-weight: 600;
+        color: #355070;
+    }
+
+    .upload-box-subtext {
+        font-size: 0.9rem;
+        color: #7b8794;
+        margin-top: 4px;
+    }
+    .upload-icon {
+        font-size: 2.5rem;
+        color: #6c8ebf;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .file-preview {
+        background: #ffffff;
+        border: 1px solid #dbe5f1;
+        border-radius: 12px;
+        padding: 14px 16px;
+    }
+
+    .file-type-icon {
+        font-size: 2rem;
+        color: #4a6285;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('fileInput');
+            const selectedFileName = document.getElementById('selectedFileName');
+
+            if (!fileInput || !selectedFileName) return;
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    selectedFileName.textContent = 'Избран файл: ' + fileInput.files[0].name;
+                } else {
+                    selectedFileName.textContent = '';
+                }
+            });
+        });
+    </script>
+}
