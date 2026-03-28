@@ -3,8 +3,11 @@ using Core.ViewModels.Admin.Schools;
 using Core.ViewModels.Admin.Students;
 using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Admin.Users;
+<<<<<<< HEAD
 using Core.ViewModels.Admin.Materials;
 using Core.ViewModels.Comments;
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +44,12 @@ namespace Core.ViewModels.Admin
     = new List<RandomSchoolVm>();
         public IEnumerable<RandomProfessionVm> RandomProfessions { get; set; }
     = new List<RandomProfessionVm>();
+<<<<<<< HEAD
         public IEnumerable<RandomMaterialVm> RandomMaterials { get; set; }
     = new List<RandomMaterialVm>();
         public IEnumerable<CommentThreadVm> RandomCommentThreads { get; set; }
     = new List<CommentThreadVm>();
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
     }
 }

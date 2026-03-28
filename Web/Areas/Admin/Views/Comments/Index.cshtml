@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @using Core.ViewModels.Comments
 @model List<CommentThreadVm>
 
@@ -184,3 +185,47 @@
         color: var(--muted);
     }
 </style>
+=======
+﻿@using Core.ViewModels.Comments
+@model List<CommentThreadVm>
+
+<h2 class="mb-4">Коментари по материали</h2>
+<hr />
+
+<div class="row g-4">
+    @foreach (var thread in Model)
+    {
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold text-primary">@thread.MaterialTitle</h5>
+                    <hr />
+
+                    <div class="small mb-2">
+                        <strong><i class="bi bi-people"></i> Участници:</strong><br />
+                        <span class="text-muted">@string.Join(", ", thread.Participants)</span>
+                    </div>
+
+                    <div class="small mb-2">
+                        <strong><i class="bi bi-chat-left-text"></i> Последен коментар:</strong><br />
+                        <span class="text-muted">"@thread.LastComment"</span>
+                    </div>
+
+                    <div class="small mb-3">
+                        <strong>Брой коментари:</strong>
+                        <span class="badge bg-secondary">@thread.CommentsCount</span>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a asp-action="Details"
+                           asp-route-materialId="@thread.MaterialId"
+                           class="btn btn-outline-primary w-100">
+                            Виж разговора
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56

@@ -63,6 +63,7 @@ namespace Infrastructure.Data
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+<<<<<<< HEAD
             // Comment -> Replies
             builder.Entity<Comment>()
                 .HasOne(c => c.ParentComment)
@@ -70,6 +71,8 @@ namespace Infrastructure.Data
                 .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             // QuizResult -> User
             builder.Entity<QuizResult>()
                 .HasOne(q => q.User)

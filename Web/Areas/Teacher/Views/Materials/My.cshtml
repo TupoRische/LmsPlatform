@@ -1,5 +1,6 @@
 ﻿@model Core.ViewModels.Teacher.Materials.TeacherMaterialsMyVm
 
+<<<<<<< HEAD
 @{
     ViewData["Title"] = "Моите материали";
 }
@@ -143,3 +144,58 @@
         color: #94a3b8;
     }
 </style>
+=======
+<h2>Моите материали</h2>
+<hr />
+
+<p>
+    <a class="btn btn-primary"
+       asp-area="Teacher" asp-controller="Materials" asp-action="Create">
+        + Добави материал
+    </a>
+</p>
+
+@if (!Model.Materials.Any())
+{
+    <div class="alert alert-info">Няма добавени материали.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th class="text-end"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model.Materials)
+            {
+                <tr>
+                    <td>@m.Title</td>
+                    <td>@m.CreatedOn.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary"
+                           asp-area="Teacher" asp-controller="Materials" asp-action="Details" asp-route-id="@m.Id">
+                            Детайли
+                        </a>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           asp-area="Teacher" asp-controller="Materials" asp-action="Edit" asp-route-id="@m.Id">
+                            Редактиране
+                        </a>
+                        <form class="d-inline" method="post"
+                              asp-area="Teacher" asp-controller="Materials" asp-action="Delete" asp-route-id="@m.Id">
+                            @Html.AntiForgeryToken()
+                            <button class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Delete this material?');">
+                               Изтриване
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56

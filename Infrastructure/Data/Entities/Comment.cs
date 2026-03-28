@@ -25,11 +25,14 @@ namespace Infrastructure.Data.Entities
         [Required]
         public string UserId { get; set; } = null!;
         public ApplicationUser User { get; set; } = null!;
+<<<<<<< HEAD
 
         // Reply / threading support
         public int? ParentCommentId { get; set; }
         public Comment? ParentComment { get; set; }
         public ICollection<Comment> Replies { get; set; } = new HashSet<Comment>();
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
     }
 
 }

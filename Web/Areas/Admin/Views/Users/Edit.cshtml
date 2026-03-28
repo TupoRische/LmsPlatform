@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @using Core.ViewModels.Admin.Teachers
 @model TeacherEditVm
 
@@ -171,3 +172,46 @@
         }
     }
 </style>
+=======
+﻿@using Core.ViewModels.Admin.Teachers
+@model TeacherEditVm
+
+<h2>Редакция на учител</h2>
+
+<form asp-action="Edit">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label>Име</label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Фамилия</label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Училище</label>
+        <select asp-for="SchoolId" class="form-control">
+            @foreach (var school in Model.Schools)
+            {
+                <option value="@school.Id">@school.Name</option>
+            }
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">
+        Запази
+    </button>
+
+</form>
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56

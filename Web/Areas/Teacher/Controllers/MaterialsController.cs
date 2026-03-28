@@ -11,13 +11,22 @@ using System.Security.Claims;
 namespace Web.Areas.Teacher.Controllers
 {
     [Area("Teacher")]
+<<<<<<< HEAD
     [Authorize(Roles = "Teacher,Admin")]
+=======
+    [Authorize(Roles = "Teacher")]
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
     public class MaterialsController : Controller
     {
         private readonly ITeacherMaterialsService materials;
         private readonly IWebHostEnvironment _env;
 
+<<<<<<< HEAD
         public MaterialsController(ITeacherMaterialsService materials, IWebHostEnvironment env)
+=======
+        public MaterialsController(ITeacherMaterialsService materials, IWebHostEnvironment env,
+    ApplicationDbContext context)
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
         {
             this.materials = materials;
             _env = env;
@@ -76,9 +85,12 @@ namespace Web.Areas.Teacher.Controllers
             var id = await materials.CreateAsync(User, model, filePath);
             return RedirectToAction(nameof(Details), new { id });
         }
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
         //private async Task LoadDropdownsAsync()
         //{
         //    ViewBag.Professions = new List<SelectListItem>(); // TODO
@@ -95,6 +107,7 @@ namespace Web.Areas.Teacher.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditMaterialVm model)
         {
+<<<<<<< HEAD
             if (id != model.Id)
             {
                 return BadRequest();
@@ -135,6 +148,10 @@ namespace Web.Areas.Teacher.Controllers
             await materials.EditAsync(User, id, model, newFilePath);
 
             TempData["SuccessMessage"] = "Материалът е редактиран успешно.";
+=======
+            if (!ModelState.IsValid) return View(model);
+            await materials.EditAsync(User, id, model);
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             return RedirectToAction(nameof(Details), new { id });
         }
 

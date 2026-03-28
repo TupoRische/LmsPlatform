@@ -41,9 +41,12 @@ namespace Infrastructure.Migrations
                     b.Property<int>("MaterialId")
                         .HasColumnType("int");
 
+<<<<<<< HEAD
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -52,8 +55,11 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("MaterialId");
 
+<<<<<<< HEAD
                     b.HasIndex("ParentCommentId");
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
@@ -475,11 +481,14 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< HEAD
                     b.HasOne("Infrastructure.Data.Entities.Comment", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     b.HasOne("Infrastructure.Identity.ApplicationUser", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
@@ -488,8 +497,11 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Material");
 
+<<<<<<< HEAD
                     b.Navigation("ParentComment");
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     b.Navigation("User");
                 });
 
@@ -611,11 +623,14 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Infrastructure.Data.Entities.Comment", b =>
                 {
                     b.Navigation("Replies");
                 });
 
+=======
+>>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             modelBuilder.Entity("Infrastructure.Data.Entities.Material", b =>
                 {
                     b.Navigation("Comments");
