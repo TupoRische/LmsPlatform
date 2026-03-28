@@ -13,15 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-<<<<<<< HEAD
     options.UseSqlServer(connectionString, sqlOptions =>
     {
         sqlOptions.CommandTimeout(60);
         sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
     }));
-=======
-    options.UseSqlServer(connectionString));
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
@@ -42,10 +38,7 @@ builder.Services.AddScoped<ITeacherDashboardService, TeacherDashboardService>();
 builder.Services.AddScoped<ITeacherMaterialsService, TeacherMaterialsService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
-<<<<<<< HEAD
 builder.Services.AddScoped<ICommentService, CommentService>();
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -85,42 +78,4 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedAsync(scope.ServiceProvider);
 }
 
-<<<<<<< HEAD
 app.Run();
-=======
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-    // Create Admin role if not exists
-    if (!roleManager.RoleExistsAsync("Admin").Result)
-    {
-        roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
-    }
-
-    var admins = userManager.GetUsersInRoleAsync("Admin").Result;
-
-    if (!admins.Any())
-    {
-        var admin = new ApplicationUser
-        {
-            UserName = "admin@lms.com",
-            Email = "admin@lms.com",
-            EmailConfirmed = true
-        };
-
-        var result = userManager.CreateAsync(admin, "Admin123!").Result;
-
-        if (result.Succeeded)
-        {
-            userManager.AddToRoleAsync(admin, "Admin").Wait();
-        }
-    }
-}
-
-
-app.Run();
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56

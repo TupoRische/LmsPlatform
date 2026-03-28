@@ -5,11 +5,8 @@ using Core.ViewModels.Admin.Schools;
 using Core.ViewModels.Admin.Students;
 using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Admin.Users;
-<<<<<<< HEAD
 using Core.ViewModels.Admin.Materials;
 using Core.ViewModels.Comments;
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 using Infrastructure.Data;
 using Infrastructure.Data.Entities;
 using Infrastructure.Identity;
@@ -49,7 +46,6 @@ namespace Core.Services
                 var pendingTeachers = await userManager.Users
                     .CountAsync(u => u.RequestedTeacher && !u.IsApproved);
 
-<<<<<<< HEAD
                 var teacherRoleId = await context.Roles
                     .Where(r => r.Name == "Teacher")
                     .Select(r => r.Id)
@@ -67,10 +63,6 @@ namespace Core.Services
                 var students = string.IsNullOrWhiteSpace(studentRoleId)
                     ? 0
                     : await context.UserRoles.CountAsync(ur => ur.RoleId == studentRoleId);
-=======
-                var teachers = (await userManager.GetUsersInRoleAsync("Teacher")).Count;
-                var students = (await userManager.GetUsersInRoleAsync("Student")).Count;
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
                 var latestPending = await userManager.Users
                     .Where(u => u.RequestedTeacher && !u.IsApproved)
@@ -125,7 +117,6 @@ namespace Core.Services
             public async Task<IEnumerable<RandomTeacherVm>>
             GetRandomTeachersAsync(int count = 3)
             {
-<<<<<<< HEAD
                 const int previewPoolSize = 12;
                 var teacherRoleId = await context.Roles
                     .Where(r => r.Name == "Teacher")
@@ -142,34 +133,23 @@ namespace Core.Services
                     .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == teacherRoleId))
                     .OrderByDescending(u => u.CreatedOn)
                     .Take(Math.Max(count * 4, previewPoolSize))
-=======
-                var teachers = await userManager.GetUsersInRoleAsync("Teacher");
-
-                return teachers
-                    .OrderBy(x => Guid.NewGuid())
-                    .Take(count)
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     .Select(t => new RandomTeacherVm
                     {
                         Id = t.Id,
                         FullName = $"{t.FirstName} {t.LastName}",
                         Email = t.Email!
                     })
-<<<<<<< HEAD
                     .ToListAsync();
 
                 return teachers
                     .OrderBy(_ => Guid.NewGuid())
                     .Take(count)
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     .ToList();
             }
 
             public async Task<IEnumerable<RandomStudentVm>>
             GetRandomStudentsAsync(int count = 3)
                 {
-<<<<<<< HEAD
                     const int previewPoolSize = 12;
                     var studentRoleId = await context.Roles
                         .Where(r => r.Name == "Student")
@@ -186,26 +166,16 @@ namespace Core.Services
                         .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == studentRoleId))
                         .OrderByDescending(u => u.CreatedOn)
                         .Take(Math.Max(count * 4, previewPoolSize))
-=======
-                    var students = await userManager.GetUsersInRoleAsync("Student");
-
-                    return students
-                        .OrderBy(x => Guid.NewGuid())
-                        .Take(count)
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                         .Select(s => new RandomStudentVm
                         {
                             Id = s.Id,
                             FullName = $"{s.FirstName} {s.LastName}"
                         })
-<<<<<<< HEAD
                         .ToListAsync();
 
                     return students
                         .OrderBy(_ => Guid.NewGuid())
                         .Take(count)
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                         .ToList();
                 }
 
@@ -227,58 +197,41 @@ namespace Core.Services
 
         public async Task<IEnumerable<RandomSchoolVm>> GetRandomSchoolsAsync(int count = 3)
         {
-<<<<<<< HEAD
             const int previewPoolSize = 12;
 
             var schools = await context.Schools
                 .AsNoTracking()
                 .OrderByDescending(s => s.Id)
                 .Take(Math.Max(count * 4, previewPoolSize))
-=======
-            return await context.Schools
-                .OrderBy(x => Guid.NewGuid())
-                .Take(count)
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                 .Select(s => new RandomSchoolVm
                 {
                     Id = s.Id,
                     Abbreviation = s.Abbreviation,
                     City = s.City
                 })
-<<<<<<< HEAD
                 .ToListAsync();
 
             return schools
                 .OrderBy(_ => Guid.NewGuid())
                 .Take(count)
                 .ToList();
-=======
-                .ToListAsync(); 
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
         }
 
         public async Task<IEnumerable<RandomProfessionVm>>
              GetRandomProfessionsAsync(int count = 3)
             {
-<<<<<<< HEAD
                 const int previewPoolSize = 12;
 
                 var professions = await context.Professions
                     .AsNoTracking()
                     .OrderByDescending(p => p.Id)
                     .Take(Math.Max(count * 4, previewPoolSize))
-=======
-                return await context.Professions
-                    .OrderBy(x => Guid.NewGuid())
-                    .Take(count)
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                     .Select(p => new RandomProfessionVm
                     {
                         Id = p.Id,
                         Name = p.Name
                     })
                     .ToListAsync();
-<<<<<<< HEAD
 
                 return professions
                     .OrderBy(_ => Guid.NewGuid())
@@ -435,10 +388,6 @@ namespace Core.Services
             };
         }
 
-=======
-            }
-
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             public async Task<IEnumerable<TeacherListVm>> GetTeachersAsync()
             {
                 return await userRepository
@@ -540,7 +489,6 @@ namespace Core.Services
                 .ToListAsync();
         }
 
-<<<<<<< HEAD
         public async Task<IEnumerable<RandomMaterialVm>> GetRandomMaterialsAsync(int count = 3)
         {
             const int previewPoolSize = 12;
@@ -605,8 +553,6 @@ namespace Core.Services
         }
 
 
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
         public async Task<int> GetUsersCountAsync()
             {
                 return await userManager.Users.CountAsync();
@@ -614,7 +560,6 @@ namespace Core.Services
 
             public async Task<int> GetTeachersCountAsync()
             {
-<<<<<<< HEAD
                 var teacherRoleId = await context.Roles
                     .Where(r => r.Name == "Teacher")
                     .Select(r => r.Id)
@@ -623,15 +568,10 @@ namespace Core.Services
                 return string.IsNullOrWhiteSpace(teacherRoleId)
                     ? 0
                     : await context.UserRoles.CountAsync(ur => ur.RoleId == teacherRoleId);
-=======
-                var teachers = await userManager.GetUsersInRoleAsync("Teacher");
-                return teachers.Count;
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             }
 
             public async Task<int> GetStudentsCountAsync()
             {
-<<<<<<< HEAD
                 var studentRoleId = await context.Roles
                     .Where(r => r.Name == "Student")
                     .Select(r => r.Id)
@@ -640,10 +580,6 @@ namespace Core.Services
                 return string.IsNullOrWhiteSpace(studentRoleId)
                     ? 0
                     : await context.UserRoles.CountAsync(ur => ur.RoleId == studentRoleId);
-=======
-                var students = await userManager.GetUsersInRoleAsync("Student");
-                return students.Count;
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             }
 
             public async Task<int> GetPendingTeachersCountAsync()

@@ -1,4 +1,4 @@
-/* --- Глобални стилове и Променливи --- */
+/* --- Р“Р»РѕР±Р°Р»РЅРё СЃС‚РёР»РѕРІРµ Рё РџСЂРѕРјРµРЅР»РёРІРё --- */
 * {
     box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;
@@ -30,7 +30,7 @@ main {
     padding-top: 120px;
 }
 
-/* --- Общи компоненти (Бутони, Карти, Фокус) --- */
+/* --- РћР±С‰Рё РєРѕРјРїРѕРЅРµРЅС‚Рё (Р‘СѓС‚РѕРЅРё, РљР°СЂС‚Рё, Р¤РѕРєСѓСЃ) --- */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -122,7 +122,7 @@ main {
     border-color: #3b82f6;
 }
 
-/* Горна част */
+/* Р“РѕСЂРЅР° С‡Р°СЃС‚ */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -145,14 +145,14 @@ main {
     color: #3b82f6;
 }
 
-/* Разделител */
+/* Р Р°Р·РґРµР»РёС‚РµР» */
 .recent-users {
     margin-top: 15px;
     border-top: 1px solid #f1f5f9;
     padding-top: 12px;
 }
 
-/* Ред за потребител */
+/* Р РµРґ Р·Р° РїРѕС‚СЂРµР±РёС‚РµР» */
 .recent-user-row {
     display: flex;
     justify-content: space-between;
@@ -173,7 +173,7 @@ main {
     font-weight: 600;
 }
 
-/* --- Навигация (Header) --- */
+/* --- РќР°РІРёРіР°С†РёСЏ (Header) --- */
 nav {
     position: fixed;
     top: 0;
@@ -297,7 +297,7 @@ nav {
         transform: scale(1.05);
     }
 
-/* --- Падащо меню (Dropdown) --- */
+/* --- РџР°РґР°С‰Рѕ РјРµРЅСЋ (Dropdown) --- */
 .dropdown-content {
     display: none;
     position: absolute;
@@ -356,7 +356,7 @@ nav {
         color: #6482AD !important;
     }
 
-/* --- Десен панел и Търсачка --- */
+/* --- Р”РµСЃРµРЅ РїР°РЅРµР» Рё РўСЉСЂСЃР°С‡РєР° --- */
 .right-content {
     display: flex;
     align-items: center;
@@ -441,7 +441,7 @@ nav {
     color: #94a3b8;
 }
 
-/* --- Профил и Форми --- */
+/* --- РџСЂРѕС„РёР» Рё Р¤РѕСЂРјРё --- */
 .profile-wrapper {
     position: relative;
 }
@@ -506,7 +506,7 @@ nav {
         background: #e2e8f0;
     }
 
-/* Форми */
+/* Р¤РѕСЂРјРё */
 .page-container {
     max-width: 1000px;
     margin: 24px auto;
@@ -662,16 +662,16 @@ legend {
     box-shadow: 0 30px 60px rgba(49, 76, 115, 0.22);
 }
 
-    .auth-panel::after {
-        content: "";
-        position: absolute;
-        inset: auto -70px -90px auto;
-        width: 220px;
-        height: 220px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.12);
-        filter: blur(4px);
-    }
+.auth-panel::after {
+    content: "";
+    position: absolute;
+    inset: auto -70px -90px auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    filter: blur(4px);
+}
 
 .auth-panel--soft {
     background: linear-gradient(155deg, #395378 0%, #6482ad 52%, #92a9c7 100%);
@@ -731,26 +731,28 @@ legend {
     backdrop-filter: blur(6px);
 }
 
-    .auth-highlight i {
-        font-size: 1.2rem;
-        margin-top: 3px;
-    }
+.auth-highlight i {
+    font-size: 1.2rem;
+    margin-top: 3px;
+}
 
-    .auth-highlight strong {
-        display: block;
-        margin-bottom: 4px;
-        font-size: 1rem;
-    }
+.auth-highlight strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
 
-    .auth-highlight p {
-        margin: 0;
-        color: rgba(248, 251, 255, 0.86);
-        line-height: 1.55;
-    }
+.auth-highlight p {
+    margin: 0;
+    color: rgba(248, 251, 255, 0.86);
+    line-height: 1.55;
+}
 
 .auth-card {
     padding: 38px 34px;
-    background: radial-gradient(circle at top right, rgba(100, 130, 173, 0.16), transparent 30%), rgba(245, 237, 237, 0.96);
+    background:
+        radial-gradient(circle at top right, rgba(100, 130, 173, 0.16), transparent 30%),
+        rgba(245, 237, 237, 0.96);
     border: 1px solid rgba(100, 130, 173, 0.16);
     box-shadow: 0 24px 60px rgba(49, 76, 115, 0.14);
 }
@@ -782,31 +784,31 @@ legend {
     gap: 8px;
 }
 
-    .auth-field .form-label {
-        margin-bottom: 0;
-        color: #314c73;
-    }
+.auth-field .form-label {
+    margin-bottom: 0;
+    color: #314c73;
+}
 
-    .auth-field .form-control,
-    .auth-field .form-select {
-        min-height: 56px;
-        padding: 14px 16px;
-        border-radius: 16px;
-        border: 1px solid #c4d0df;
-        background: rgba(255, 255, 255, 0.92);
-        box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
-    }
+.auth-field .form-control,
+.auth-field .form-select {
+    min-height: 56px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid #c4d0df;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
 
-        .auth-field .form-control::placeholder {
-            color: #94a3b8;
-        }
+.auth-field .form-control::placeholder {
+    color: #94a3b8;
+}
 
-        .auth-field .form-control:focus,
-        .auth-field .form-select:focus {
-            border-color: #6482AD;
-            box-shadow: 0 0 0 4px rgba(100, 130, 173, 0.18);
-            background: #fff;
-        }
+.auth-field .form-control:focus,
+.auth-field .form-select:focus {
+    border-color: #6482AD;
+    box-shadow: 0 0 0 4px rgba(100, 130, 173, 0.18);
+    background: #fff;
+}
 
 .auth-checkbox,
 .auth-check-card {
@@ -830,11 +832,11 @@ legend {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-    .auth-check-card:hover {
-        transform: translateY(-1px);
-        border-color: rgba(100, 130, 173, 0.35);
-        box-shadow: 0 10px 22px rgba(49, 76, 115, 0.08);
-    }
+.auth-check-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(100, 130, 173, 0.35);
+    box-shadow: 0 10px 22px rgba(49, 76, 115, 0.08);
+}
 
 .auth-check-card-main {
     display: flex;
@@ -873,10 +875,10 @@ legend {
     box-shadow: 0 18px 30px rgba(49, 76, 115, 0.2);
 }
 
-    .auth-submit:hover,
-    .auth-submit:focus {
-        background: linear-gradient(135deg, #58759d, #2c4467);
-    }
+.auth-submit:hover,
+.auth-submit:focus {
+    background: linear-gradient(135deg, #58759d, #2c4467);
+}
 
 .auth-link-row {
     display: flex;
@@ -886,16 +888,16 @@ legend {
     padding-top: 4px;
 }
 
-    .auth-link-row a {
-        color: #4d678f;
-        font-weight: 600;
-        text-decoration: none;
-    }
+.auth-link-row a {
+    color: #4d678f;
+    font-weight: 600;
+    text-decoration: none;
+}
 
-        .auth-link-row a:hover {
-            color: #314c73;
-            text-decoration: underline;
-        }
+.auth-link-row a:hover {
+    color: #314c73;
+    text-decoration: underline;
+}
 
 .auth-validation-summary {
     padding: 14px 16px;
@@ -905,10 +907,10 @@ legend {
     margin-bottom: 2px;
 }
 
-    .auth-validation-summary ul {
-        margin: 0;
-        padding-left: 20px;
-    }
+.auth-validation-summary ul {
+    margin: 0;
+    padding-left: 20px;
+}
 
 .validation-summary-valid.auth-validation-summary:empty,
 .validation-summary-valid.auth-validation-summary {
@@ -927,7 +929,7 @@ legend {
     }
 }
 
-/* --- Секции (Hero, Professions, Schools) --- */
+/* --- РЎРµРєС†РёРё (Hero, Professions, Schools) --- */
 .section-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -1090,30 +1092,30 @@ legend {
 }
 
 /* --- Footer --- */
-/* --- Основен Футър --- */
+/* --- РћСЃРЅРѕРІРµРЅ Р¤СѓС‚СЉСЂ --- */
 #footer {
-    background-color: #6482AD; /* Твоят основен син цвят */
+    background-color: #6482AD; /* РўРІРѕСЏС‚ РѕСЃРЅРѕРІРµРЅ СЃРёРЅ С†РІСЏС‚ */
     color: #F5EDED;
     padding-top: 40px;
     padding-bottom: 0;
     width: 100%;
 }
 
-/* Контейнер за трите колони */
+/* РљРѕРЅС‚РµР№РЅРµСЂ Р·Р° С‚СЂРёС‚Рµ РєРѕР»РѕРЅРё */
 .layoutfooter {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 равни колони */
+    grid-template-columns: repeat(3, 1fr); /* 3 СЂР°РІРЅРё РєРѕР»РѕРЅРё */
     gap: 30px;
     padding-bottom: 40px;
     text-align: center;
 }
 
-/* Заглавия в колоните */
+/* Р—Р°РіР»Р°РІРёСЏ РІ РєРѕР»РѕРЅРёС‚Рµ */
 .footer-column h4 {
-    color: #314c73; /* Тъмният цвят за текст */
+    color: #314c73; /* РўСЉРјРЅРёСЏС‚ С†РІСЏС‚ Р·Р° С‚РµРєСЃС‚ */
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 20px;
@@ -1121,7 +1123,7 @@ legend {
     letter-spacing: 1px;
 }
 
-/* Текст и Линкове в колоните */
+/* РўРµРєСЃС‚ Рё Р›РёРЅРєРѕРІРµ РІ РєРѕР»РѕРЅРёС‚Рµ */
 .footer-column p,
 .footer-column a {
     color: #F5EDED;
@@ -1136,7 +1138,7 @@ legend {
         text-decoration: underline;
     }
 
-/* Специфичен стил за линка към анкетата */
+/* РЎРїРµС†РёС„РёС‡РµРЅ СЃС‚РёР» Р·Р° Р»РёРЅРєР° РєСЉРј Р°РЅРєРµС‚Р°С‚Р° */
 .poll-link {
     display: inline-block;
     margin-top: 10px;
@@ -1151,10 +1153,10 @@ legend {
         color: #6482AD !important;
     }
 
-/* --- Долен ред (Copyright) --- */
+/* --- Р”РѕР»РµРЅ СЂРµРґ (Copyright) --- */
 .footer-bottom {
-    background-color: #6482AD; /* Същият цвят */
-    border-top: 1px solid rgba(49, 76, 115, 0.2); /* Тънка разделителна линия */
+    background-color: #6482AD; /* РЎСЉС‰РёСЏС‚ С†РІСЏС‚ */
+    border-top: 1px solid rgba(49, 76, 115, 0.2); /* РўСЉРЅРєР° СЂР°Р·РґРµР»РёС‚РµР»РЅР° Р»РёРЅРёСЏ */
     padding: 5px 0;
     text-align: center;
     font-size: 14px;
@@ -1170,10 +1172,10 @@ legend {
             text-decoration: underline;
         }
 
-/* Адаптивност за мобилни устройства */
+/* РђРґР°РїС‚РёРІРЅРѕСЃС‚ Р·Р° РјРѕР±РёР»РЅРё СѓСЃС‚СЂРѕР№СЃС‚РІР° */
 @media (max-width: 768px) {
     .layoutfooter {
-        grid-template-columns: 1fr; /* На малък екран стават една под друга */
+        grid-template-columns: 1fr; /* РќР° РјР°Р»СЉРє РµРєСЂР°РЅ СЃС‚Р°РІР°С‚ РµРґРЅР° РїРѕРґ РґСЂСѓРіР° */
         gap: 40px;
     }
 }
@@ -1327,8 +1329,8 @@ legend {
     height: 46px;
 }
 
-/*Кошче за коментари*/
-/* Картата на коментара */
+/*РљРѕС€С‡Рµ Р·Р° РєРѕРјРµРЅС‚Р°СЂРё*/
+/* РљР°СЂС‚Р°С‚Р° РЅР° РєРѕРјРµРЅС‚Р°СЂР° */
 .comment-card {
     background-color: #ffffff !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1339,7 +1341,7 @@ legend {
         box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
     }
 
-/* Аватар */
+/* РђРІР°С‚Р°СЂ */
 .avatar-circle {
     width: 42px;
     height: 42px;
@@ -1353,7 +1355,7 @@ legend {
     flex-shrink: 0;
 }
 
-/* Текст на коментара */
+/* РўРµРєСЃС‚ РЅР° РєРѕРјРµРЅС‚Р°СЂР° */
 .comment-text {
     color: #4a5568;
     font-size: 0.92rem;
@@ -1367,7 +1369,7 @@ legend {
     margin-top: 4px;
 }
 
-/* Роли (Баджове) */
+/* Р РѕР»Рё (Р‘Р°РґР¶РѕРІРµ) */
 .badge-role {
     font-size: 0.65rem;
     padding: 2px 8px;
@@ -1386,7 +1388,7 @@ legend {
     color: #718096;
 }
 
-/* Минималистично кошче */
+/* РњРёРЅРёРјР°Р»РёСЃС‚РёС‡РЅРѕ РєРѕС€С‡Рµ */
 .btn-delete-minimal {
     background: transparent;
     border: none;
@@ -1400,3 +1402,25 @@ legend {
         color: #e53e3e;
         background-color: #fff5f5;
     }
+
+/*Main*/
+
+/* РўРѕРІР° С‰Рµ РґРѕР±Р°РІРё СЂР°Р·СЃС‚РѕСЏРЅРёРµ РѕС‚Р»СЏРІРѕ Рё РѕС‚РґСЏСЃРЅРѕ РЅР° СЃСЉРґСЉСЂР¶Р°РЅРёРµС‚Рѕ */
+main {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* РђРєРѕ РёСЃРєР°С€ РЅР° РіРѕР»СЏРј РµРєСЂР°РЅ (РєРѕРјРїСЋС‚СЉСЂ) СЂР°Р·СЃС‚РѕСЏРЅРёРµС‚Рѕ РґР° Рµ РјР°Р»РєРѕ РїРѕ-РіРѕР»СЏРјРѕ */
+@media (min-width: 768px) {
+    main {
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+}
+
+/* РџСЂРµРјР°С…РІР°РјРµ РјР°СЂРіРёРЅР° СЃР°РјРѕ Р·Р° РЅР°С‡Р°Р»РЅР°С‚Р° СЃС‚СЂР°РЅРёС†Р° */
+.home-page main {
+    margin-left: 0;
+    margin-right: 0;
+}

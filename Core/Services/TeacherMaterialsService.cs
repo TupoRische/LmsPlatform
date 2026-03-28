@@ -1,15 +1,8 @@
-<<<<<<< HEAD
 using Core.Contracts;
 using Core.ViewModels.Common;
 using Core.ViewModels.Teacher.Materials;
 using Infrastructure.Data;
 using Infrastructure.Data.Entities;
-=======
-﻿using Core.Contracts;
-using Core.ViewModels.Common;
-using Core.ViewModels.Teacher.Materials;
-using Infrastructure.Data;
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -34,16 +27,12 @@ namespace Core.Services
         }
 
         private string UserId(ClaimsPrincipal user) => _userManager.GetUserId(user)!;
-<<<<<<< HEAD
         private static bool CanManageAllMaterials(ClaimsPrincipal user) => user.IsInRole("Admin");
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
         public async Task<TeacherMaterialsMyVm> GetMineAsync(ClaimsPrincipal user)
         {
             var userId = UserId(user);
 
-<<<<<<< HEAD
             var materialsQuery = _context.Materials.AsQueryable();
 
             if (!CanManageAllMaterials(user))
@@ -53,11 +42,6 @@ namespace Core.Services
 
             var list = await materialsQuery
                 .OrderByDescending(m => m.CreatedOn)
-=======
-            var list = await _context.Materials
-                .Where(m => m.TeacherId == userId)               // <-- ако се казва друго: OwnerId / UserId / CreatedById
-                .OrderByDescending(m => m.CreatedOn)            // <-- ако е CreatedAt / CreatedOnUtc и т.н.
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                 .Select(m => new TeacherMaterialListItemVm
                 {
                     Id = m.Id,
@@ -113,7 +97,6 @@ namespace Core.Services
         {
             var userId = UserId(user);
 
-<<<<<<< HEAD
             var materialsQuery = _context.Materials.Where(m => m.Id == id);
 
             if (!CanManageAllMaterials(user))
@@ -122,10 +105,6 @@ namespace Core.Services
             }
 
             var material = await materialsQuery
-=======
-            var material = await _context.Materials
-                .Where(m => m.Id == id && m.TeacherId == userId)
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
                 .Select(m => new TeacherMaterialDetailsVm
                 {
                     Id = m.Id,
@@ -144,7 +123,6 @@ namespace Core.Services
         {
             var userId = UserId(user);
 
-<<<<<<< HEAD
             var materialsQuery = _context.Materials.Where(m => m.Id == id);
 
             if (!CanManageAllMaterials(user))
@@ -202,34 +180,11 @@ namespace Core.Services
             }
 
             var entity = await materialsQuery.FirstOrDefaultAsync();
-=======
-            var model = await _context.Materials
-                .Where(m => m.Id == id && m.TeacherId == userId)
-                .Select(m => new EditMaterialVm
-                {
-                    Title = m.Title,
-                    Description = m.Description,
-                    Url = m.Url
-                })
-                .FirstOrDefaultAsync();
-
-            if (model == null) throw new InvalidOperationException("Not found");
-            return model;
-        }
-
-        public async Task EditAsync(ClaimsPrincipal user, int id, EditMaterialVm model)
-        {
-            var userId = UserId(user);
-
-            var entity = await _context.Materials
-                .FirstOrDefaultAsync(m => m.Id == id && m.TeacherId == userId);
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
             if (entity == null) throw new InvalidOperationException("Not found");
 
             entity.Title = model.Title;
             entity.Description = model.Description;
-<<<<<<< HEAD
             entity.ProfessionId = model.ProfessionId;
             entity.MaterialCategoryId = model.MaterialCategoryId;
             entity.Url = model.Url;
@@ -239,10 +194,6 @@ namespace Core.Services
                 entity.FilePath = filePath;
             }
 
-=======
-            entity.Url = model.Url;
-
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             await _context.SaveChangesAsync();
         }
 
@@ -250,7 +201,6 @@ namespace Core.Services
         {
             var userId = UserId(user);
 
-<<<<<<< HEAD
             var materialsQuery = _context.Materials.Where(m => m.Id == id);
 
             if (!CanManageAllMaterials(user))
@@ -259,10 +209,6 @@ namespace Core.Services
             }
 
             var entity = await materialsQuery.FirstOrDefaultAsync();
-=======
-            var entity = await _context.Materials
-                .FirstOrDefaultAsync(m => m.Id == id && m.TeacherId == userId);
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
             if (entity == null) throw new InvalidOperationException("Not found");
 

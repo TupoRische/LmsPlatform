@@ -127,10 +127,7 @@ new School
     {
         var pmg = context.Schools.First(s => s.Abbreviation == "ПМГ „Иван Вазов“");
         var fsg = context.Schools.First(s => s.Abbreviation == "ФСГ „Васил Левски“");
-<<<<<<< HEAD
         var su = context.Schools.First(s => s.Abbreviation == "СУ „Свети Климент Охридски“");
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
         async Task<ApplicationUser> CreateUser(
     string email,
@@ -165,7 +162,6 @@ new School
                     await userManager.AddToRoleAsync(user, role);
                 }
             }
-<<<<<<< HEAD
             else
             {
                 var shouldUpdate = false;
@@ -210,8 +206,6 @@ new School
                     await userManager.AddToRoleAsync(user, role);
                 }
             }
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
             return user;
         }
@@ -262,13 +256,9 @@ new School
             "Петров",
             "Student",
             true,
-<<<<<<< HEAD
             "Student123!",
             false,
             pmg.Id);
-=======
-            "Student123!");
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
         await CreateUser(
             "student2@lms.com",
@@ -276,13 +266,9 @@ new School
             "Илиева",
             "Student",
             true,
-<<<<<<< HEAD
             "Student123!",
             false,
             su.Id);
-=======
-            "Student123!");
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
         return (admin, teacher1, teacher2);
     }
@@ -296,20 +282,10 @@ new School
 
         int GetSchoolId(string name, string city) =>
             context.Schools
-<<<<<<< HEAD
                 .First(s => s.Name == name && s.City == city)
                 .Id;
 
         context.Professions.AddRange(
-=======
-                .Where(s => s.Name == name && s.City == city)
-                .Select(s => s.Id)
-                .First();
-
-        if (!context.Professions.Any())
-        {
-            context.Professions.AddRange(
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
                 new Profession
                 {
@@ -408,12 +384,7 @@ new School
                 }
             );
 
-<<<<<<< HEAD
         await context.SaveChangesAsync();
-=======
-            await context.SaveChangesAsync();
-        }
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
     }
 
     // ---------------- CATEGORIES ----------------
@@ -474,9 +445,5 @@ new School
 
         await context.SaveChangesAsync();
     }
-<<<<<<< HEAD
 }
 
-=======
-}
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56

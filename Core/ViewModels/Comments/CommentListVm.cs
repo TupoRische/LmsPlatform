@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.ViewModels.Comments
 {
@@ -10,5 +14,7 @@ namespace Core.ViewModels.Comments
         public string Role { get; set; } = null!;
         public string AuthorId { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
+        public int? ParentCommentId { get; set; }
+        public List<CommentListVm> Replies { get; set; } = new();
     }
 }

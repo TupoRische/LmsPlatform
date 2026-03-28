@@ -1,6 +1,5 @@
 ﻿@model Core.ViewModels.Teacher.Materials.CreateMaterialFormVm
 
-<<<<<<< HEAD
 @{
     ViewData["Title"] = "Добави материал";
 }
@@ -217,62 +216,4 @@
             });
         });
     </script>
-=======
-<form method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
-
-    <div class="mb-3">
-        <label asp-for="Material.Title" class="form-label">Име</label>
-        <input asp-for="Material.Title" class="form-control" />
-        <span asp-validation-for="Material.Title" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Material.Description" class="form-label">Описание</label>
-        <textarea asp-for="Material.Description" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Material.Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Material.ProfessionId" class="form-label">Професия</label>
-        <select asp-for="Material.ProfessionId" class="form-select">
-            <option value="">-- Избери професия --</option>
-            @foreach (var p in Model.Professions)
-            {
-                <option value="@p.Id">@p.Name</option>
-            }
-        </select>
-        <span asp-validation-for="Material.ProfessionId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Material.MaterialCategoryId" class="form-label">Категория</label>
-        <select asp-for="Material.MaterialCategoryId" class="form-select">
-            <option value="">-- Избери категория --</option>
-            @foreach (var c in Model.Categories)
-            {
-                <option value="@c.Id">@c.Name</option>
-            }
-        </select>
-        <span asp-validation-for="Material.MaterialCategoryId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Material.File" class="form-label">Прикачи файл</label>
-        <input asp-for="Material.File" type="file" class="form-control" />
-        <span asp-validation-for="Material.File" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Material.Url" class="form-label">Или линк (URL)</label>
-        <input asp-for="Material.Url" class="form-control" />
-        <span asp-validation-for="Material.Url" class="text-danger"></span>
-    </div>
-
-    <button class="btn btn-primary">Save</button>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 }

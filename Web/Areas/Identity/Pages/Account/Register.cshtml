@@ -1,15 +1,9 @@
 ﻿@page
 @model RegisterModel
-<<<<<<< HEAD
-=======
-@using Microsoft.AspNetCore.Mvc.Rendering
-@using Core.Contracts;
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 @{
     ViewData["Title"] = "Регистрация";
 }
 
-<<<<<<< HEAD
 <section class="auth-page">
     <div class="auth-shell auth-shell--single">
         <section class="auth-card">
@@ -82,107 +76,6 @@
         </section>
     </div>
 </section>
-=======
-<h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Създай нов акаунт</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-
-            <!-- FirstName -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="Име" />
-                <label asp-for="Input.FirstName">Име</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-
-            <!-- LastName -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Фамилия" />
-                <label asp-for="Input.LastName">Фамилия</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-
-            <!-- School -->
-            <div class="mb-3">
-                <label asp-for="Input.SchoolId" class="form-label">Училище</label>
-                <select asp-for="Input.SchoolId" class="form-select" asp-items="Model.Schools">
-                    <option value="">Избери училище</option>
-                </select>
-                <span asp-validation-for="Input.SchoolId" class="text-danger"></span>
-            </div>
-
-            <!-- Request Teacher -->
-            <div class="form-check mb-3">
-                <input asp-for="Input.RequestTeacher" class="form-check-input" />
-                <label asp-for="Input.RequestTeacher" class="form-check-label">
-                    Искам да се регистрирам като учител (изисква одобрение)
-                </label>
-            </div>
-
-            <!-- Email -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Имейл</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-
-            <!-- Password -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Парола</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-
-            <!-- ConfirmPassword -->
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Потвърди парола</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрирай се</button>
-        </form>
-    </div>
-
-    @* <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this
-                            <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name"
-                                            title="Log in using your @provider.DisplayName account">
-                                        @provider.DisplayName
-                                    </button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div> *@
-</div>
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

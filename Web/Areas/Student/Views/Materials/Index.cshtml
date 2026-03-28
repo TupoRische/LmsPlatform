@@ -12,7 +12,6 @@
         <h2 class="mb-1">Учебни материали</h2>
         <p class="text-muted mb-0">Разгледайте наличните учебни материали.</p>
     </div>
-<<<<<<< HEAD
 
     @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
     {
@@ -22,8 +21,6 @@
             Добави материал
         </a>
     }
-=======
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
 </div>
 
 <form method="get" asp-area="Student" asp-controller="Materials" asp-action="Index" class="row g-3 mb-4">
@@ -64,7 +61,6 @@
         </select>
     </div>
 
-<<<<<<< HEAD
     <div class="col-md-4 d-flex align-items-end gap-2 ps-md-2">
         <button type="submit" class="btn btn-primary filter-btn px-4">
             Филтрирай
@@ -74,14 +70,6 @@
            asp-controller="Materials"
            asp-action="Index"
            class="btn btn-outline-secondary filter-btn px-4">
-=======
-    <div class="col-md-2 d-flex align-items-end gap-2">
-        <button type="submit" class="btn btn-primary">Търси</button>
-        <a asp-area="Student"
-           asp-controller="Materials"
-           asp-action="Index"
-           class="btn btn-outline-secondary">
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
             Изчисти
         </a>
     </div>
@@ -90,11 +78,7 @@
 @if (!Model.Materials.Any())
 {
     <div class="alert alert-info">
-<<<<<<< HEAD
         Все още няма добавени материали.
-=======
-        Няма добавени материали.
->>>>>>> b1645c236beb100f9b792702ab7ac3ba0a399b56
     </div>
 }
 else
