@@ -393,6 +393,7 @@ namespace Core.Services
                 return await userRepository
                     .AllReadonly()
                     .Include(u => u.School)
+                    .Include(u => u.MaterialsCreated)
                     .Where(u => u.IsApproved)
                     .Where(u => context.UserRoles.Any(r =>
                         r.UserId == u.Id &&
@@ -404,8 +405,9 @@ namespace Core.Services
                         Id = u.Id,
                         FullName = u.FirstName + " " + u.LastName,
                         School = u.School != null
-        ? u.School.Abbreviation + " - " + u.School.City
-        : ""
+                        ? u.School.Abbreviation + " - " + u.School.City
+                        : "",
+                        MaterialsCount = u.MaterialsCreated.Count()
                     })
                     .ToListAsync();
             }
@@ -449,12 +451,12 @@ namespace Core.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<TeacherEditVm> GetTeacherForEditAsync(string id)
+        public async Task<UserEditVm> GetTeacherForEditAsync(string id)
         {
             var teacher = await userManager.Users
                 .FirstAsync(u => u.Id == id);
 
-            return new TeacherEditVm
+            return new UserEditVm
             {
                 Id = teacher.Id,
                 FirstName = teacher.FirstName,
@@ -465,7 +467,7 @@ namespace Core.Services
             };
         }
 
-        public async Task UpdateTeacherAsync(TeacherEditVm model)
+        public async Task UpdateTeacherAsync(UserEditVm model)
         {
             var user = await userManager.FindByIdAsync(model.Id);
 
@@ -475,6 +477,37 @@ namespace Core.Services
             user.SchoolId = model.SchoolId;
 
             await userManager.UpdateAsync(user);
+        }
+
+        public async Task<UserEditVm> GetStudentForEditAsync(string id)
+        {
+            var student = await userManager.Users
+                .FirstAsync(u => u.Id == id);
+
+            return new UserEditVm
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                SchoolId = student.SchoolId,
+                Schools = await GetSchoolsAsync()
+            };
+        }
+
+        public async Task UpdateStudentAsync(UserEditVm model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+
+            if (user != null)
+            {
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.Email = model.Email;
+                user.SchoolId = model.SchoolId;
+
+                await userManager.UpdateAsync(user);
+            }
         }
 
         public async Task<IEnumerable<SchoolOptionVm>> GetSchoolsAsync()
@@ -582,7 +615,9 @@ namespace Core.Services
                     : await context.UserRoles.CountAsync(ur => ur.RoleId == studentRoleId);
             }
 
-            public async Task<int> GetPendingTeachersCountAsync()
+       
+
+        public async Task<int> GetPendingTeachersCountAsync()
             {
                 return await userManager.Users
                     .Where(u => u.RequestedTeacher && !u.IsApproved)

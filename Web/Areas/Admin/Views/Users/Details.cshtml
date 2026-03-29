@@ -29,7 +29,6 @@
         <div class="teacher-profile-actions">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="profile-link">Редактирай</a>
             <a asp-action="Materials" asp-route-id="@Model.Id" class="profile-link profile-link--soft">Материали</a>
-            <a asp-action="Teachers" class="profile-link profile-link--ghost">Назад</a>
         </div>
     </div>
 </div>
@@ -136,7 +135,7 @@
         text-decoration: none;
         font-weight: 700;
         font-size: 0.8rem;
-        background: var(--accent);
+        background: #5c85b1;
         color: white;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -150,8 +149,9 @@
     }
 
     .profile-link--soft {
-        background: var(--accent-soft);
-        color: var(--accent);
+        background: #f0f5fa;
+        color: #3f6ea5;
+        border: 1px solid rgba(63, 110, 165, 0.15);
     }
 
     .profile-link--soft:hover,

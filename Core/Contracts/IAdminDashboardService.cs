@@ -39,8 +39,10 @@ namespace Core.Contracts
         Task<AdminMaterialsPageVm> GetMaterialsPageAsync();
         Task<TeacherDetailsVm> GetTeacherDetailsAsync(string id);
         Task<IEnumerable<TeacherMaterialVm>> GetTeacherMaterialsAsync(string id);
-        Task<TeacherEditVm> GetTeacherForEditAsync(string id);
-        Task UpdateTeacherAsync(TeacherEditVm model);
+        Task<UserEditVm> GetTeacherForEditAsync(string id);
+        Task<UserEditVm> GetStudentForEditAsync(string id);
+        Task UpdateStudentAsync(UserEditVm model);
+        Task UpdateTeacherAsync(UserEditVm model);
         Task<IEnumerable<SchoolOptionVm>> GetSchoolsAsync();
         Task<IEnumerable<RandomMaterialVm>> GetRandomMaterialsAsync(int count = 3);
         Task<IEnumerable<CommentThreadVm>> GetRandomCommentThreadsAsync(int count = 3);

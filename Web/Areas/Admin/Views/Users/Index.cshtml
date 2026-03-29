@@ -96,9 +96,9 @@
                                 <td>@user.SchoolName</td>
                                 <td>@user.CreatedOn.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    @if (user.Role == "Teacher" && !user.IsApproved)
+                                    @if ((user.Role == "Teacher" && !user.IsApproved) || user.Role == "Без роля")
                                     {
-                                        <span class="status-pill status-pill--pending">Чака одобрение</span>
+                                        <span class="status-pill status-pill--pending">Изчакващ</span>
                                     }
                                     else
                                     {
@@ -319,18 +319,24 @@
     }
 
     .role-pill--student {
-        background: var(--accent-soft);
-        color: var(--accent);
+        background: #e1f5f3;
+        color: #0f766e; 
     }
 
     .status-pill {
-        background: var(--accent-soft);
-        color: var(--accent);
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
     }
 
+
+    /* .status-pill {
+        background: var(--accent-soft);
+        color: var(--accent);
+    } */
+
     .status-pill--pending {
-        background: #f6efe5;
-        color: #8b6842;
+        background: #eef2f7 !important;
+        color: #5f728a !important;
     }
 
     .admin-danger-btn {

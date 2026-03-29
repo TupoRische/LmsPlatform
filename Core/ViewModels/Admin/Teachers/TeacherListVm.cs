@@ -9,9 +9,8 @@ namespace Core.ViewModels.Admin.Teachers
     public class TeacherListVm
     {
         public string Id { get; set; } = null!;
-
         public string FullName { get; set; } = null!;
-
         public string School { get; set; } = null!;
+        public int MaterialsCount { get; set; }
     }
 }

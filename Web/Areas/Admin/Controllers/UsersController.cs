@@ -1,5 +1,4 @@
 ﻿using Core.Contracts;
-using Core.Services;
 using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Admin.Users;
 using Infrastructure.Identity;
@@ -47,25 +46,36 @@ namespace Web.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Materials(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return NotFound();
-
-            var materials = await service.GetTeacherMaterialsAsync(id);
-
-            return View(materials);
-        }
-
-        public async Task<IActionResult> Teachers()
-        {
-            var model = await service.GetTeachersAsync();
-            return View(model);
-        }
-
         public async Task<IActionResult> Students()
         {
             var model = await service.GetStudentsPageAsync();
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditStudent(string id)
+        {
+            var model = await service.GetStudentForEditAsync(id);
+            if (model == null) return NotFound();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditStudent(UserEditVm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Schools = await service.GetSchoolsAsync();
+                return View(model);
+            }
+
+            await service.UpdateStudentAsync(model);
+            return RedirectToAction(nameof(Students));
+        }
+        public async Task<IActionResult> Teachers()
+        {
+            var model = await service.GetTeachersAsync();
             return View(model);
         }
 
@@ -84,21 +94,34 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             var model = await service.GetTeacherForEditAsync(id);
+            if (model == null) return NotFound();
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(TeacherEditVm model) 
+        public async Task<IActionResult> Edit(UserEditVm model)
         {
             if (!ModelState.IsValid)
             {
                 model.Schools = await service.GetSchoolsAsync();
                 return View(model);
             }
+
             await service.UpdateTeacherAsync(model);
 
             return RedirectToAction(nameof(Teachers));
         }
 
+
+        public async Task<IActionResult> Materials(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            var materials = await service.GetTeacherMaterialsAsync(id);
+
+            return View(materials);
+        }
     }
 }

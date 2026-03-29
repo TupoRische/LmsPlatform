@@ -1,8 +1,9 @@
 ﻿using Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Web.Controllers
+namespace Web.Areas.Student.Controllers
 {
+    [Area("Student")]
     public class ProfessionsController : Controller
     {
         private readonly IProfessionService professions;

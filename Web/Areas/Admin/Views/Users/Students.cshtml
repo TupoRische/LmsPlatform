@@ -57,6 +57,8 @@
                             <h3>@student.FullName</h3>
                             <a href="mailto:@student.Email">@student.Email</a>
                         </div>
+
+                        
                     </div>
 
                     <dl class="student-facts">
@@ -77,9 +79,12 @@
                             <dd>@student.QuizResultsCount</dd>
                         </div>
                     </dl>
-
-                    <div class="student-tags">
-                        <span class="student-tag">Ученик</span>
+                    <div class="student-card__actions" style="margin-top: auto; display: flex; gap: 0.5rem;">
+                        <a asp-action="EditStudent"
+                           asp-route-id="@student.Id"
+                           class="student-link">
+                            Редактиране
+                        </a>
                     </div>
                 </article>
             }
@@ -97,6 +102,26 @@
         --muted: #6f86a0;
     }
 
+    .student-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.56rem 0.72rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: #5c85b1;
+        color: white;
+        transition: all 0.2s ease;
+    }
+
+        .student-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(63, 110, 165, 0.2);
+            color: white;
+        }
+
     .students-hero {
         background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
         border: 1px solid var(--line);
@@ -109,6 +134,7 @@
         min-height: 148px;
         margin-bottom: 1rem;
     }
+
 
     .hero-kicker {
         display: inline-block;
@@ -135,7 +161,7 @@
     }
 
     .hero-link {
-        background: var(--accent);
+        background: #5c85b1;
         color: white;
         text-decoration: none;
         padding: 0.58rem 0.82rem;

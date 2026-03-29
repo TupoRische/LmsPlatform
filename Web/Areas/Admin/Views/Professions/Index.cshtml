@@ -1,109 +1,116 @@
-@using Core.ViewModels.Admin.Professions
-@model ProfessionsPageVm
+@using Core.ViewModels.School
+@using Core.ViewModels.Professions
+@model Core.ViewModels.Admin.Professions.ProfessionsPageVm
 
-<div class="admin-spotlight professions-page mb-4">
-    <div class="professions-hero">
-        <div>
-            <span class="hero-kicker">Админ панел</span>
-            <h1>Професии</h1>
-            <p>Подреден преглед на професиите в системата, училищата към които принадлежат и наличните материали по всяка от тях.</p>
+@{
+    var schools = ViewBag.Schools as IEnumerable<SchoolDropdownVm> ?? Enumerable.Empty<SchoolDropdownVm>();
+    int? selected = ViewBag.SelectedSchoolId as int?;
+}
+
+<div class="teacher-edit-page px-4 py-3">
+    <div class="teacher-edit-shell">
+
+        <div class="professions-hero">
+            <div>
+                <span class="hero-kicker">Админ панел</span>
+                <h1>Професии</h1>
+                <p>Подреден преглед на професиите в системата, училищата към които принадлежат и наличните материали по всяка от тях.</p>
+            </div>
+
+            <a asp-area="Student"
+               asp-controller="Professions"
+               asp-action="Index"
+               class="hero-link">
+                Публичен списък
+            </a>
         </div>
 
-        <a asp-area=""
-           asp-controller="Professions"
-           asp-action="Index"
-           class="hero-link">
-            Публичен списък
-        </a>
+        <div class="professions-stats">
+            <article class="stat-card">
+                <span>Общо професии</span>
+                <strong>@Model.TotalProfessions</strong>
+            </article>
+            <article class="stat-card">
+                <span>Училища с професии</span>
+                <strong>@Model.SchoolsRepresented</strong>
+            </article>
+            <article class="stat-card">
+                <span>Професии с материали</span>
+                <strong>@Model.WithMaterialsCount</strong>
+            </article>
+            <article class="stat-card">
+                <span>Общо материали</span>
+                <strong>@Model.TotalMaterials</strong>
+            </article>
+        </div>
+
+        @* Филтриране 
+        <div class="filter-wrapper p-4 mb-4 shadow-sm" style="background: #fdfdfd; border-radius: 18px; border: 1px solid var(--line);">
+            <form method="get" class="row align-items-end g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small" style="color: var(--text);">ФИЛТРИРАЙ ПО УЧИЛИЩЕ</label>
+                    <select class="form-select shadow-none" name="schoolId" style="border-radius: 10px; border-color: var(--line);">
+                        <option value="">-- Всички училища --</option>
+                        @foreach (var s in schools)
+                        {
+                            <option value="@s.Id" selected="@(selected == s.Id)">@s.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="edit-link w-100 border-0" style="height: 42px;">Търси</button>
+                </div>
+                <div class="col-md-3">
+                    <a class="edit-link edit-link--soft w-100 text-center" style="height: 42px; display: block; line-height: 42px;" asp-action="Index">Изчисти</a>
+                </div>
+            </form>
+        </div>*@
+
+        @* Таблица *@
+        <div class="table-responsive shadow-sm" style="border-radius: 15px; background: white; border: 1px solid var(--line);">
+            <table class="table table-hover mb-0">
+                <thead style="background: #f9fbfe;">
+                    <tr>
+                        <th class="ps-4 py-3" style="color: var(--text); border-bottom: none;">ПРОФЕСИЯ</th>
+                        <th class="py-3" style="color: var(--text); border-bottom: none;">УЧИЛИЩЕ</th>
+                        <th class="text-center py-3" style="color: var(--text); border-bottom: none;">МАТЕРИАЛИ</th>
+                        <th class="text-end pe-4 py-3" style="border-bottom: none;">ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Professions)
+                    {
+                        <tr style="vertical-align: middle;">
+                            <td class="ps-4 py-3 fw-bold" style="color: var(--text);">@p.Name</td>
+                            <td class="py-3 text-muted">
+                                <span class="badge-pill px-3 py-1" style="background: var(--accent-soft); color: var(--accent); border-radius: 8px; font-size: 0.85rem;">
+                                    @p.SchoolName
+                                </span>
+                            </td>
+                            <td class="text-center py-3">
+                                <span class="fw-bold" style="color: var(--accent);">@p.MaterialsCount</span>
+                            </td>
+                            <td class="text-end pe-4 py-3">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a class="edit-link btn-sm py-1 px-3" style="font-size: 0.75rem; min-width: 80px;"
+                                       asp-action="Details" asp-route-id="@p.Id">Детайли</a>
+
+                                    <a class="edit-link edit-link--soft btn-sm py-1 px-3" style="font-size: 0.75rem; min-width: 80px; background: #fff3cd; color: #856404;"
+                                       asp-action="Edit" asp-route-id="@p.Id">Редакция</a>
+
+                                    <a class="edit-link edit-link--soft btn-sm py-1 px-3" style="font-size: 0.75rem; min-width: 80px; background: #f8d7da; color: #721c24;"
+                                       asp-action="Delete" asp-route-id="@p.Id">Изтрий</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <div class="professions-stats">
-        <article class="stat-card">
-            <span>Общо професии</span>
-            <strong>@Model.TotalProfessions</strong>
-        </article>
-        <article class="stat-card">
-            <span>Училища с професии</span>
-            <strong>@Model.SchoolsRepresented</strong>
-        </article>
-        <article class="stat-card">
-            <span>Професии с материали</span>
-            <strong>@Model.WithMaterialsCount</strong>
-        </article>
-        <article class="stat-card">
-            <span>Общо материали</span>
-            <strong>@Model.TotalMaterials</strong>
-        </article>
-    </div>
-
-    @if (!Model.Professions.Any())
-    {
-        <div class="admin-empty-state">
-            Все още няма професии в системата.
-        </div>
-    }
-    else
-    {
-        <div class="professions-grid">
-            @foreach (var profession in Model.Professions)
-            {
-                var summary = !string.IsNullOrWhiteSpace(profession.Description)
-                    ? profession.Description
-                    : "Няма добавено описание за тази професия.";
-                var materialsLabel = profession.MaterialsCount == 1
-                    ? "материал"
-                    : "материала";
-
-                if (summary.Length > 180)
-                {
-                    summary = summary[..177] + "...";
-                }
-
-                <article class="profession-card">
-                    <div class="profession-card__head">
-                        <div>
-                            <span class="profession-school">@profession.SchoolName</span>
-                            <h3>@profession.Name</h3>
-                        </div>
-
-                        <span class="profession-count">@profession.MaterialsCount @materialsLabel</span>
-                    </div>
-
-                    <p>@summary</p>
-
-                    <div class="profession-actions">
-                        <a asp-area=""
-                           asp-controller="Professions"
-                           asp-action="Details"
-                           asp-route-id="@profession.Id"
-                           class="profession-link">
-                            Детайли
-                        </a>
-
-                        <a asp-area="Student"
-                           asp-controller="Materials"
-                           asp-action="Index"
-                           asp-route-professionId="@profession.Id"
-                           class="profession-link profession-link--soft">
-                            Материали
-                        </a>
-                    </div>
-                </article>
-            }
-        </div>
-    }
 </div>
 
 <style>
-    .professions-page {
-        --accent: #3f6ea5;
-        --accent-soft: #edf4fb;
-        --surface: #ffffff;
-        --line: rgba(63, 110, 165, 0.12);
-        --text: #28496f;
-        --muted: #6f86a0;
-    }
-
     .professions-hero {
         background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
         border: 1px solid var(--line);
@@ -142,7 +149,7 @@
     }
 
     .hero-link {
-        background: var(--accent);
+        background: #5c85b1;
         color: white;
         text-decoration: none;
         padding: 0.58rem 0.82rem;
@@ -153,13 +160,13 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .hero-link:hover,
-    .hero-link:focus {
-        background: var(--accent);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
-    }
+        .hero-link:hover,
+        .hero-link:focus {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
+        }
 
     .professions-stats {
         display: grid;
@@ -169,151 +176,48 @@
     }
 
     .stat-card {
-        background: var(--surface);
+        background: #fff;
         border: 1px solid var(--line);
         border-radius: 18px;
         padding: 0.8rem 0.9rem;
         box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
     }
 
-    .stat-card span {
-        display: block;
-        color: var(--muted);
-        font-size: 0.8rem;
-        margin-bottom: 0.3rem;
+        .stat-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card strong {
+            color: var(--text);
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+
+    /* Запазваме твоите основни променливи */
+    .uppercase {
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    .stat-card strong {
-        color: var(--text);
-        font-size: 1.3rem;
-        line-height: 1;
-    }
-
-    .professions-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 0.9rem;
-    }
-
-    .profession-card {
-        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 1rem 1.05rem;
-        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .profession-card__head {
-        display: flex;
-        justify-content: space-between;
-        align-items: start;
-        gap: 0.85rem;
-        margin-bottom: 0.9rem;
-    }
-
-    .profession-school {
-        display: inline-block;
-        font-size: 0.82rem;
-        color: var(--muted);
-        margin-bottom: 0.35rem;
-    }
-
-    .profession-card h3 {
-        margin: 0;
-        color: var(--text);
-        font-size: 1.02rem;
-        line-height: 1.4;
-    }
-
-    .profession-count {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.34rem 0.62rem;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        font-size: 0.76rem;
+    .table thead th {
+        font-size: 0.75rem;
         font-weight: 700;
-        white-space: nowrap;
+        letter-spacing: 0.5px;
     }
 
-    .profession-card p {
-        margin: 0 0 1rem;
-        color: var(--muted);
-        line-height: 1.6;
-        min-height: 4.4rem;
-        font-size: 0.92rem;
-    }
-
-    .profession-actions {
-        display: flex;
-        gap: 0.65rem;
-        flex-wrap: wrap;
-        margin-top: auto;
-        padding-top: 0.3rem;
-    }
-
-    .profession-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 108px;
-        padding: 0.62rem 0.9rem;
-        border-radius: 999px;
+    .edit-link {
         text-decoration: none;
-        background: var(--accent);
-        color: white;
-        font-weight: 700;
-        font-size: 0.88rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 10px;
+        transition: 0.2s all;
+        display: inline-block;
+        font-weight: 600;
     }
 
-    .profession-link:hover,
-    .profession-link:focus {
-        background: var(--accent);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.14);
-    }
-
-    .profession-link--soft {
-        background: var(--accent-soft);
-        color: var(--accent);
-    }
-
-    .profession-link--soft:hover,
-    .profession-link--soft:focus {
-        background: var(--accent-soft);
-        color: var(--accent);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.10);
-    }
-
-    .admin-empty-state {
-        background: white;
-        border: 1px dashed var(--line);
-        border-radius: 18px;
-        padding: 1.5rem;
-        color: var(--muted);
-        text-align: center;
-    }
-
-    @@media (max-width: 992px) {
-        .professions-stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .professions-hero {
-            align-items: start;
-            flex-direction: column;
-        }
-    }
-
-    @@media (max-width: 576px) {
-        .professions-stats {
-            grid-template-columns: 1fr;
-        }
+    /* Добавяме малко "въздух" на редовете */
+    .table tbody tr:last-child td {
+        border-bottom: none;
     }
 </style>

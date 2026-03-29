@@ -1,47 +1,56 @@
-@using Core.ViewModels.Admin.Users
+﻿@using Core.ViewModels.Admin.Users
 @model UserEditVm
 
-<div class="teacher-edit-page mb-4">
+<div class="teacher-edit-page mb-4 student-theme">
+    @* Добавяме клас student-theme за различен цвят, ако желаеш *@
     <div class="teacher-edit-shell">
         <div class="teacher-edit-head">
             <div>
-                <span class="hero-kicker">Профил на учител</span>
+                <span class="hero-kicker">Профил на ученик</span>
                 <h1>Редакция</h1>
-                <p>Актуализирай основните данни за преподавателя</p>
+                <p>Актуализирай основните данни за ученика и неговото училище</p>
             </div>
         </div>
 
-        <form asp-action="Edit" method="post" class="teacher-edit-form">
+        <form asp-action="EditStudent" method="post" class="teacher-edit-form">
             <input type="hidden" asp-for="Id" />
 
+            @* Използваме твоето partial view за самите полета (Име, Фамилия, Училище) *@
             <div class="form-grid">
                 <partial name="UserEditForm" model="Model" />
             </div>
 
-
             <div class="teacher-edit-actions">
-                <a asp-action="TeacherDetails" asp-route-id="@Model.Id" class="edit-link edit-link--soft">Назад</a>
+                <a asp-action="Students" class="edit-link edit-link--soft">Назад</a>
                 <button type="submit" class="edit-link">Запази</button>
             </div>
         </form>
     </div>
 </div>
-@* 
-<style>
+
+@* <style>
+    /* Копираме дизайна на учителите */
     .teacher-edit-page {
         --accent: #3f6ea5;
         --accent-soft: #edf4fb;
-        --beige-soft: #f6efe5;
         --line: rgba(63, 110, 165, 0.12);
         --text: #28496f;
         --muted: #6f86a0;
     }
 
+    /* Опционално: Лилав акцент само за ученици, за да се различават от учителите */
+    .student-theme {
+        --accent: #6366f1;
+        --accent-soft: #f0f1ff;
+        --line: rgba(99, 102, 241, 0.12);
+        --text: #312e81;
+        --muted: #4f46e5;
+    }
+
     .teacher-edit-shell {
         max-width: 1120px;
-        width: 100%;
         margin: 0 auto;
-        display: block; 
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
         border: 1px solid var(--line);
         border-radius: 18px;
         padding: 1.2rem 1.3rem;
@@ -69,42 +78,19 @@
         color: var(--muted);
         font-size: 0.88rem;
         line-height: 1.5;
-        max-width: 760px;
     }
 
     .form-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        width: 100%;
-    }
-
-    .form-span-2 {
-        grid-column: 1 / -1;
-        width: 100%;
-    }
-
-    .form-label {
-        color: var(--text);
-        font-weight: 700;
-        margin-bottom: 0.4rem;
-    }
-
-    .teacher-edit-form .form-control,
-    .teacher-edit-form .form-select {
-        width: 100% !important;
-        max-width: none !important;
-        border-radius: 14px;
-        border-color: rgba(63, 110, 165, 0.14);
-        padding: 0.72rem 0.9rem;
-        box-shadow: none;
+        grid-template-columns: 1fr; /* По подразбиране е една колона за partial-а */
+        gap: 0.9rem;
     }
 
     .teacher-edit-actions {
         display: flex;
         gap: 0.55rem;
         justify-content: flex-end;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
     }
 
     .edit-link {
@@ -112,7 +98,7 @@
         align-items: center;
         justify-content: center;
         min-width: 96px;
-        padding: 0.58rem 0.82rem;
+        padding: 0.58rem 1.2rem;
         border: none;
         border-radius: 999px;
         text-decoration: none;
@@ -120,15 +106,14 @@
         font-size: 0.82rem;
         background: var(--accent);
         color: white;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
-        .edit-link:hover,
-        .edit-link:focus {
-            background: var(--accent);
-            color: white;
+        .edit-link:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            color: white;
         }
 
     .edit-link--soft {
@@ -136,17 +121,14 @@
         color: var(--accent);
     }
 
-        .edit-link--soft:hover,
-        .edit-link--soft:focus {
-            background: var(--accent-soft);
-            color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
-        }
-
-    @@media (max-width: 768px) {
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
+    /* Стилизиране на input полетата вътре в partial-а */
+    .teacher-edit-form input,
+    .teacher-edit-form select {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: white;
     }
-</style> *@
+</style>
+ *@

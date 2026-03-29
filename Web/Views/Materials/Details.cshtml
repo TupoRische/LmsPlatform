@@ -225,15 +225,26 @@
     }
 
     .btn-download {
-        background-color: transparent !important;
+        border: 2px solid #198754 !important;
         color: #198754 !important;
-        border-color: #198754 !important;
+        background-color: transparent !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 1.2rem !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+        font-weight: 600 !important;
     }
 
-    .btn-download:hover {
-        background-color: #198754 !important;
-        color: white !important;
-    }
+        .btn-download:hover {
+            background-color: #198754 !important;
+            color: white !important;
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2) !important;
+        }
+
+        .btn-download .bi-download {
+            color: inherit !important;
+        }
 
     .rounded-4 {
         border-radius: 1.25rem !important;

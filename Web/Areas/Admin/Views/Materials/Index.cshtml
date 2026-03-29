@@ -63,14 +63,6 @@
                     <div class="material-facts">
                         <span>Автор: @material.TeacherName</span>
                         <span>Публикувано: @material.CreatedOn.ToString("dd.MM.yyyy")</span>
-                        @if (material.HasFile)
-                        {
-                            <span>Има файл</span>
-                        }
-                        @if (material.HasExternalUrl)
-                        {
-                            <span>Има външен линк</span>
-                        }
                     </div>
 
                     <div class="material-card__actions">
