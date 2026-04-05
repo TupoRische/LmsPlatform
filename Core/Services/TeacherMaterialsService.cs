@@ -1,5 +1,6 @@
 using Core.Contracts;
 using Core.ViewModels.Common;
+using Core.ViewModels.Teacher;
 using Core.ViewModels.Teacher.Materials;
 using Infrastructure.Data;
 using Infrastructure.Data.Entities;

@@ -10,12 +10,12 @@ namespace Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<School> Schools => Set<School>();
-        public DbSet<Profession> Professions => Set<Profession>();
-        public DbSet<Material> Materials => Set<Material>();
-        public DbSet<MaterialCategory> MaterialCategories => Set<MaterialCategory>();
-        public DbSet<Comment> Comments => Set<Comment>();
-        public DbSet<QuizResult> QuizResults => Set<QuizResult>();
+        public DbSet<School> Schools { get; set; }
+        public DbSet<Profession> Professions { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<MaterialCategory> MaterialCategories { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<QuizResult> QuizResults { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {

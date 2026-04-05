@@ -13,6 +13,7 @@ namespace Core.ViewModels.Materials
         public string Title { get; set; } = null!;
 
         public string? Description { get; set; }
+        public string TeacherName { get; set; }
 
         public string ProfessionName { get; set; } = null!;
 

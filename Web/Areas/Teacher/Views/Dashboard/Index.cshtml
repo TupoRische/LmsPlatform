@@ -1,47 +1,458 @@
 ﻿@model Core.ViewModels.Teacher.TeacherDashboardVm
 
-<h2>Учителско табло</h2>
-<hr />
+<div class="teacher-dashboard-page mb-5">
+    @* ГОРНА СЕКЦИЯ (ХЕРО) - В СТИЛ АДМИН ПАНЕЛ *@
+    <section class="dashboard-hero">
+        <div class="dashboard-hero__copy">
+            <span class="hero-kicker">Преподавателски панел</span>
+            <h1>Моето табло</h1>
+            <p>Управлявайте вашите учебни материали и следете обратната връзка от учениците.</p>
+        </div>
 
-<div class="row g-4">
-    <div class="col-md-3">
-        <div class="card border-start border-primary border-4 shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Моите материали</h6>
-                <h3>@Model.MyMaterials</h3>
-                <a asp-area="Teacher" asp-controller="Materials" asp-action="My" class="text-decoration-none">Преглед</a>
+        <div class="dashboard-hero__stats">
+            <div class="hero-stat">
+                <span>Материали</span>
+                <strong>@Model.MaterialsCount</strong>
+            </div>
+            <div class="hero-stat hero-stat--highlight">
+                <span>Коментари</span>
+                <strong>@Model.NewCommentsCount</strong>
             </div>
         </div>
+    </section>
+
+    @* ОСНОВНИ КАРТИ - ПО-КОМПАКТНИ *@
+    <div class="dashboard-grid">
+
+        @* КАРТА 1: МОИТЕ МАТЕРИАЛИ *@
+        <article class="dashboard-card dashboard-card--blue">
+            <div class="dashboard-card__header">
+                <div>
+                    <span class="dashboard-label">Моите материали</span>
+                    <strong class="stat-number">@Model.MaterialsCount</strong>
+                </div>
+                <div class="dashboard-icon-wrap">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+            </div>
+            <div class="dashboard-card__body">
+                @foreach (var material in Model.RecentMaterials.Take(2))
+                {
+                    <div class="dashboard-list-item">
+                        <span class="dashboard-list-title">@material.Title</span>
+                        <span class="dashboard-pill dashboard-pill--blue">@material.CategoryName</span>
+                    </div>
+                }
+            </div>
+            <div class="dashboard-card__footer">
+                <span>Отвори секцията</span>
+                <i class="bi bi-arrow-right-short"></i>
+            </div>
+        </article>
+
+        @* КАРТА 2: КОМЕНТАРИ *@
+        <article class="dashboard-card dashboard-card--cyan">
+            <div class="dashboard-card__header">
+                <div>
+                    <span class="dashboard-label">Коментари</span>
+                    <strong class="stat-number">@Model.NewCommentsCount</strong>
+                </div>
+                <div class="dashboard-icon-wrap">
+                    <i class="bi bi-chat-left-dots"></i>
+                </div>
+            </div>
+            <div class="dashboard-card__body">
+                @foreach (var comment in Model.RecentComments.Take(2))
+                {
+                    <div class="dashboard-list-item">
+                        <span class="dashboard-list-title">
+                            @* Промяната е тук: достъпваме имената през User обекта *@
+                            @comment.AuthorName
+                        </span>
+                        <span class="dashboard-pill dashboard-pill--cyan">Ученик</span>
+                    </div>
+                }
+            </div>
+            <div class="dashboard-card__footer">
+                <span>Отвори секцията</span>
+                <i class="bi bi-arrow-right-short"></i>
+            </div>
+        </article>
+
+        @* КАРТА 3: ПОСЛЕДНА АКТИВНОСТ *@
+        <article class="dashboard-card dashboard-card--warning">
+            <div class="dashboard-card__header">
+                <div>
+                    <span class="dashboard-label">Последна активност</span>
+                    <strong class="stat-number"></strong>
+                </div>
+                <div class="dashboard-icon-wrap">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+            <div class="dashboard-card__body">
+                <div class="activity-item">
+                    <small>Последен материал</small>
+                    <p>@Model.LastMaterial</p>
+                </div>
+                <div class="activity-item">
+                    <small>Последен коментар</small>
+                    @* Тук автоматично ще се изпише сглобеният стринг с имената *@
+                    <p>@Model.LastComment</p>
+                </div>
+            </div>
+            <div class="dashboard-card__footer">
+                <span>Виж целия лог</span>
+                <i class="bi bi-arrow-right-short"></i>
+            </div>
+        </article>
     </div>
 
-    <div class="col-md-3">
-        <div class="card border-start border-success border-4 shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Моите коментари</h6>
-                <h3>@Model.MyComments</h3>
-            </div>
+    @* БЪРЗИ ДЕЙСТВИЯ *@
+    <section class="quick-actions mt-4">
+        <h3 class="section-title">Бързи действия</h3>
+        <div class="actions-wrapper">
+            <a asp-controller="Materials" asp-action="Create" class="btn-action">
+                <div class="btn-action__icon btn-action__icon--plus">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <span>Добави нов материал</span>
+            </a>
         </div>
-    </div>
+    </section>
+</div>
 </div>
 
-<hr class="my-4" />
+<style>
+    :root {
+        --bg-page: #e9e4de; /* Малко по-топъл фон от снимката */
+        --card-white: #ffffff;
+        --accent-blue: #3f6ea5;
+        --accent-cyan: #23b7de;
+        --accent-warning: #d19928;
+        --text-main: #28496f;
+        --text-muted: #6f86a0;
+        --line-color: rgba(63, 110, 165, 0.08);
+        --radius: 22px;
+    }
 
-<h5>Latest materials</h5>
-@if (!Model.LatestMaterials.Any())
-{
-    <div class="text-muted">Няма добавени материали.</div>
-}
-else
-{
-    <ul>
-        @foreach (var m in Model.LatestMaterials)
-        {
-            <li>
-                <a asp-area="Teacher" asp-controller="Materials" asp-action="Details" asp-route-id="@m.Id">
-                    @m.Title
-                </a>
-                <small class="text-muted">(@m.CreatedOn.ToLocalTime():dd.MM.yyyy)</small>
-            </li>
+    .teacher-dashboard-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+
+    /* ХЕРО СЕКЦИЯ - ГРАДИЕНТ И СТИЛ */
+    .dashboard-hero {
+        background: linear-gradient(135deg, #f5f9fd 0%, #f7f0e7 100%);
+        border: 1px solid var(--line-color);
+        border-radius: 18px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .hero-kicker {
+        color: var(--accent-blue);
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .dashboard-hero h1 {
+        color: #28496f;
+        font-size: 2rem;
+        margin: 0;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .dashboard-hero p {
+        color: #6f86a0;
+        margin-top: 0.5rem !important;
+        max-width: 600px;
+        margin: 0;
+    }
+
+    .dashboard-hero__stats {
+        display: flex;
+        gap: 1.2rem;
+    }
+
+    .hero-stat {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(63, 110, 165, 0.1);
+        border-radius: 16px;
+        padding: 0.8rem 0.9rem;.
+        min-width: 120px;
+    }
+
+    .hero-stat--highlight {
+        background: #fbf0d9;
+        border-color: #f2e1b8;
+    }
+
+    .hero-stat span {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+    }
+
+    .hero-stat strong {
+        font-size: 1.35rem;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    /* КАРТИ */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .dashboard-card {
+        background: var(--card-white);
+        border-radius: var(--radius);
+        border: 1px solid var(--line-color);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .dashboard-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
         }
-    </ul>
-}
+
+    .dashboard-card--blue::after {
+        background: var(--accent-blue);
+    }
+
+    .dashboard-card--cyan::after {
+        background: var(--accent-cyan);
+    }
+
+    .dashboard-card--warning::after {
+        background: var(--accent-warning);
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(40, 73, 111, 0.1);
+    }
+
+    .dashboard-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(63, 110, 165, 0.10);
+    }
+
+    .dashboard-label {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .dashboard-card strong {
+        font-size: 1.4rem;
+        color: var(--text-main);
+        display: block;
+        margin-top: 2px;
+    }
+
+    .dashboard-icon-wrap {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    .dashboard-card--blue .dashboard-icon-wrap {
+        background: #edf4fb;
+        color: var(--accent-blue);
+    }
+
+    .dashboard-card--cyan .dashboard-icon-wrap {
+        background: #e9f8fc;
+        color: var(--accent-cyan);
+    }
+
+    .dashboard-card--warning .dashboard-icon-wrap {
+        background: #fbf0d9;
+        color: var(--accent-warning);
+    }
+
+    .dashboard-card__body {
+        flex-grow: 1;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+        .dashboard-list-item:last-child {
+            border-bottom: none;
+        }
+
+    .dashboard-list-title {
+        color: var(--text-main);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .dashboard-pill {
+        font-size: 0.7rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .dashboard-pill--blue {
+        background: #edf4fb;
+        color: var(--accent-blue);
+    }
+
+    .dashboard-pill--cyan {
+        background: #e9f8fc;
+        color: var(--accent-cyan);
+    }
+
+    .activity-item {
+        padding: 0.75rem 0;
+    }
+
+        .activity-item small {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .activity-item p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .quick-actions {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-card__footer {
+        border-top: 1px solid var(--line-color);
+        padding-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--accent-blue);
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+
+    /* БЪРЗИ ДЕЙСТВИЯ */
+    .section-title {
+        font-weight: 800;
+        color: var(--text-main);
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .actions-wrapper {
+        display: flex;
+        gap: 1.2rem;
+    }
+
+    .btn-action {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+        color: var(--text-main);
+        font-weight: 700;
+        border: 1px solid var(--line-color);
+        transition: 0.2s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-color: var(--accent-blue);
+        }
+
+    .btn-action__icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-main);
+        font-size: 1.1rem;
+    }
+
+    .btn-action__icon--plus {
+        background: var(--accent-blue);
+        color: white;
+    }
+
+    @@media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-hero {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .actions-wrapper {
+            flex-direction: column;
+        }
+    }
+</style>

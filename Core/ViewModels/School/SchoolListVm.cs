@@ -7,6 +7,7 @@
         public string City { get; set; } = null!;
         public int ProfessionsCount { get; set; }
         public int UsersCount { get; set; }
+        public string? WebsiteUrl { get; set; }
     }
 
 }

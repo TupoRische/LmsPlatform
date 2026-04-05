@@ -8,8 +8,13 @@ namespace Core.ViewModels.Teacher
 {
     public class TeacherDashboardVm
     {
-        public int MyMaterials { get; set; }
-        public int MyComments { get; set; }
-        public List<LatestMaterialVm> LatestMaterials { get; set; } = new();
+        public int MaterialsCount { get; set; }
+        public int NewCommentsCount { get; set; }
+
+        public List<TeacherMaterialListItemVm> RecentMaterials { get; set; } = new();
+        public List<TeacherCommentVm> RecentComments { get; set; } = new();
+
+        public string LastMaterial { get; set; } = "Няма качени материали";
+        public string LastComment { get; set; } = "Няма нови коментари";
     }
 }

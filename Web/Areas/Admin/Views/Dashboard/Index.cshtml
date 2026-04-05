@@ -47,9 +47,9 @@
                             <span class="dashboard-list-title dashboard-list-title--normal">@user.FullName</span>
                             <span class="dashboard-pill @(user.Role switch
                             {
-                                "Admin" => "dashboard-pill--admin",
-                                "Teacher" => "dashboard-pill--teacher",
-                                "Student" => "dashboard-pill--student",
+                                "Админ" => "dashboard-pill--admin",
+                                "Учител" => "dashboard-pill--teacher",
+                                "Ученик" => "dashboard-pill--student",
                                 _ => "dashboard-pill--muted"
                             })">@user.Role</span>
                         </div>
@@ -351,24 +351,28 @@
     .hero-kicker {
         display: inline-block;
         text-transform: uppercase;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.12em;
         font-size: 0.7rem;
-        font-weight: 800;
+        font-weight: 700;
         color: var(--accent);
-        margin-bottom: 0.45rem;
+        margin-bottom: 0.5rem;
     }
 
     .dashboard-hero h1 {
         margin: 0 0 0.3rem;
-        color: var(--text);
-        font-size: clamp(1.55rem, 2.1vw, 2rem);
+        color: #28496f;
+        font-size: 2rem;
+        margin-top: 0;
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
     }
 
     .dashboard-hero p {
+        color: #6f86a0;
+        margin-top: 0.5rem !important;
+        max-width: 600px;
         margin: 0;
-        color: var(--muted);
-        line-height: 1.55;
-        font-size: 0.9rem;
     }
 
     .dashboard-hero__stats {

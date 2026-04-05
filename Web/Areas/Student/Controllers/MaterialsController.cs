@@ -1,9 +1,11 @@
 ﻿using Core.ViewModels.Common;
 using Core.ViewModels.Materials;
 using Infrastructure.Data;
+using Infrastructure.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Web.Areas.Student.Controllers
 {
@@ -22,6 +24,7 @@ namespace Web.Areas.Student.Controllers
             var materialsQuery = data.Materials
                 .Include(m => m.Profession)
                 .Include(m => m.MaterialCategory)
+                .Include(m => m.Teacher)
                 .AsQueryable();
 
 
@@ -59,17 +62,18 @@ namespace Web.Areas.Student.Controllers
                     .ToListAsync(),
 
                 Materials = await materialsQuery
-                    .OrderByDescending(m => m.CreatedOn)
-                    .Select(m => new MaterialListVm
-                    {
-                        Id = m.Id,
-                        Title = m.Title,
-                        Description = m.Description,
-                        ProfessionName = m.Profession.Name,
-                        CategoryName = m.MaterialCategory.Name,
-                        CreatedOn = m.CreatedOn
-                    })
-                    .ToListAsync()
+            .OrderByDescending(m => m.CreatedOn)
+            .Select(m => new MaterialListVm
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Description = m.Description,
+                ProfessionName = m.Profession.Name,
+                CategoryName = m.MaterialCategory.Name,
+                CreatedOn = m.CreatedOn,
+                TeacherName = m.Teacher.FirstName + " " + m.Teacher.LastName
+            })
+            .ToListAsync()
             };
 
             return View(model);

@@ -5,113 +5,278 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="mb-1">Учебни материали</h2>
-        <p class="text-muted mb-0">Разгледайте наличните учебни материали.</p>
+<div class="materials-page-root mb-5">
+    @* 1. Hero Header Секция *@
+    <div class="professions-hero">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="hero-kicker">Библиотека</span>
+                <h1>Учебни материали</h1>
+                <p>Разгледай наличните ресурси, научи нови умения и свали материали за своята подготовка.</p>
+            </div>
+            @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+            {
+                <a href="/Teacher/Materials/Create" class="btn-primary-custom rounded-pill text-decoration-none">
+                    <i class="bi bi-plus-lg"></i> Добави материал
+                </a>
+            }
+        </div>
     </div>
 
-    @if (User.IsInRole("Teacher") || User.IsInRole("Admin"))
+    @* 2. Филтри Секция - Добавен бутон Филтрирай *@
+    <form method="get" asp-action="Index" class="mb-5">
+        <div class="row g-3 align-items-end filter-row">
+            @* Колона 1: Професия *@
+            <div class="col-md-4">
+                <label class="form-label small text-muted" for="professionId">ПРОФЕСИЯ</label>
+                <select name="professionId" id="professionId" class="form-select custom-select">
+                    <option value="">Всички професии</option>
+                    @foreach (var profession in Model.Professions)
+                    {
+                        <option value="@profession.Id" selected="@(Model.ProfessionId == profession.Id)">@profession.Name</option>
+                    }
+                </select>
+            </div>
+
+            @* Колона 2: Категория *@
+            <div class="col-md-4">
+                <label class="form-label small text-muted" for="materialCategoryId">КАТЕГОРИЯ</label>
+                <select name="materialCategoryId" id="materialCategoryId" class="form-select custom-select">
+                    <option value="">Всички категории</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id" selected="@(Model.MaterialCategoryId == category.Id)">@category.Name</option>
+                    }
+                </select>
+            </div>
+
+            @* Колона 3: Бутони *@
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-2 filter-buttons-group">
+                    <button type="submit" class="btn-primary-custom rounded-pill border-0 py-2 flex-grow-1">
+                        <i class="bi bi-funnel"></i> Филтрирай
+                    </button>
+                    <a asp-action="Index" class="btn-outline-custom rounded-pill text-decoration-none py-2 text-center flex-grow-1">
+                        Изчисти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @* 3. Grid с карти за Материали *@
+    @if (!Model.Materials.Any())
     {
-        <a href="/Teacher/Materials/Create"
-           class="btn btn-primary"
-           style="position: relative; z-index: 1000;">
-            Добави материал
-        </a>
+        <div class="text-center py-5">
+            <i class="bi bi-folder2-open display-2 text-light"></i>
+            <p class="text-muted mt-3">Все още няма добавени материали за избраните филтри.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4 materials-grid">
+            @foreach (var material in Model.Materials)
+            {
+                <div class="col">
+                    <article class="material-card h-100 shadow-sm">
+                        <div class="card-body-custom">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                @* Професия *@
+                                <span class="text-muted small d-block mb-1">
+                                    <i class="bi bi-briefcase small"></i> @material.ProfessionName
+                                </span>
+
+                                @* Категория *@
+                                <span class="type-badge">@material.CategoryName</span>
+                            </div>
+
+                            <h5 class="card-title mt-2">@material.Title</h5>
+
+                            @* Описание *@
+                            <div class="material-description mt-3 mb-4">
+                                <p class="text-muted small mb-0">
+                                    @(!string.IsNullOrWhiteSpace(material.Description)
+                                                                ? (material.Description.Length > 120 ? material.Description[..117] + "..." : material.Description)
+                                                                : "Няма добавено описание.")
+                        </p>
+                    </div>
+
+                            @* Мета информация за учител *@
+                            <div class="meta-item mt-auto">
+                                <i class="bi bi-person-fill text-muted"></i>
+                                <span class="small text-muted ms-1">Добавен от: <strong>@material.TeacherName</strong></span>
+                            </div>
+
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3 text-muted"></i>
+                                <span class="small text-muted ms-1">@material.CreatedOn.ToString("dd.MM.yyyy")</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer-custom mt-auto">
+                            <a href="/materials/details/@material.Id" class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
+                                Към материала →
+                            </a>
+                        </div>
+                    </article>
+                </div>
+                }
+        </div>
     }
 </div>
 
-<form method="get" asp-area="Student" asp-controller="Materials" asp-action="Index" class="row g-3 mb-4">
+<style>
+    :root {
+        --primary: #5c85b1;
+        --primary-light: #f4f8fc;
+        --text-dark: #28496f;
+        --text-muted: #6f86a0;
+        --line: rgba(63, 110, 165, 0.1);
+    }
 
-    <div class="col-md-4">
-        <label class="form-label" for="professionId">Професия</label>
-        <select name="professionId" id="professionId" class="form-select">
-            <option value="">Всички</option>
-            @foreach (var profession in Model.Professions)
-            {
-                if (Model.ProfessionId == profession.Id)
-                {
-                    <option value="@profession.Id" selected>@profession.Name</option>
-                }
-                else
-                {
-                    <option value="@profession.Id">@profession.Name</option>
-                }
-            }
-        </select>
-    </div>
+    .materials-page-root {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-dark);
+    }
 
-    <div class="col-md-4">
-        <label class="form-label" for="materialCategoryId">Категория</label>
-        <select name="materialCategoryId" id="materialCategoryId" class="form-select">
-            <option value="">Всички</option>
-            @foreach (var category in Model.Categories)
-            {
-                if (Model.MaterialCategoryId == category.Id)
-                {
-                    <option value="@category.Id" selected>@category.Name</option>
-                }
-                else
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            }
-        </select>
-    </div>
+    .professions-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
 
-    <div class="col-md-4 d-flex align-items-end gap-2 ps-md-2">
-        <button type="submit" class="btn btn-primary filter-btn px-4">
-            Филтрирай
-        </button>
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #3f6ea5;
+        margin-bottom: 0.5rem;
+    }
 
-        <a asp-area="Student"
-           asp-controller="Materials"
-           asp-action="Index"
-           class="btn btn-outline-secondary filter-btn px-4">
-            Изчисти
-        </a>
-    </div>
-</form>
+    .professions-hero h1 {
+        color: #28496f;
+        font-weight: 500;
+    }
 
-@if (!Model.Materials.Any())
-{
-    <div class="alert alert-info">
-        Все още няма добавени материали.
-    </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var material in Model.Materials)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm material-card position-relative">
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge bg-secondary material-category-badge">
-                            @material.CategoryName
-                        </span>
-                        <h5 class="card-title material-title">@material.Title</h5>
+    .professions-hero p {
+        color: #6f86a0;
+        font-size: 0.9rem;
+        max-width: 600px;
+        margin: 0;
+    }
 
-                        <p class="material-meta mb-2">
-                            <span class="material-label">Професия:</span> @material.ProfessionName
-                        </p>
+    .custom-select {
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        padding: 0.7rem 1rem;
+        color: var(--text-dark);
+        background-color: white;
+    }
 
-                        <p class="material-date">
-                            <i class="bi bi-calendar3"></i>
-                            @material.CreatedOn.ToString("dd.MM.yyyy")
-                        </p>
-
-                        <div class="mt-auto">
-                            <a href="/materials/details/@material.Id"
-                               class="btn btn-outline-primary w-100 material-btn">
-                                Детайли
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        .custom-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(92, 133, 177, 0.1);
         }
-    </div>
-}
+
+    .btn-clear-custom:hover {
+        color: var(--primary) !important;
+    }
+
+    /* Карта за материал */
+    .materials-grid .material-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s ease;
+    }
+
+        .materials-grid .material-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(40, 73, 111, 0.08) !important;
+        }
+
+    .card-body-custom {
+        padding: 1.5rem 2rem 1rem 2rem;
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .material-description p {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.5;
+    }
+
+    .type-badge {
+        background: #f0f3f6;
+        color: #7f94b1;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .material-card h5.card-title {
+        color: var(--text-dark);
+        font-weight: 700;
+        font-size: 1.35rem;
+        margin-bottom: 0;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.4rem;
+    }
+
+        .meta-item strong {
+            color: var(--text-dark);
+        }
+
+    .card-footer-custom {
+        padding: 0 2rem 1.5rem 2rem;
+        background: white;
+        text-align: center;
+    }
+
+    .btn-details-custom {
+        display: block;
+        width: 100%;
+        background-color: var(--primary);
+        color: white !important;
+        text-decoration: none !important;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+        .btn-details-custom:hover {
+            background-color: var(--text-dark);
+        }
+
+    .btn-primary-custom {
+        background-color: var(--primary);
+        color: white !important;
+        padding: 12px 24px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.2s;
+    }
+
+        .btn-primary-custom:hover {
+            background-color: var(--text-dark);
+        }
+</style>

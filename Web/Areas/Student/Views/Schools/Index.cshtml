@@ -1,29 +1,214 @@
 ﻿@using Core.ViewModels.School
 @model IEnumerable<SchoolListVm>
 
-<h2 class="mb-3">Училища</h2>
+<div class="student-schools-container mb-5">
+    @* --- Hero секция (Уеднаквена с Professions) --- *@
+    <div class="schools-hero">
+        <div>
+            <span class="hero-kicker">Образование и партньори</span>
+            <h1>Училища</h1>
+            <p>Разгледай списъка с училища, намери тяхното местоположение и посети официалните им страници за повече информация.</p>
+        </div>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Име</th>
-            <th>Град</th>
-            <th class="text-end"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var s in Model)
-        {
-            <tr>
-                <td>@s.Name</td>
-                <td>@s.City</td>
-                <td class="text-end">
-                    <a class="btn btn-sm btn-outline-primary"
-                       asp-controller="Schools" asp-action="Details" asp-route-id="@s.Id">
-                        Детайли
-                    </a>
-                </td>
-            </tr>
+    @* --- Списък с училища --- *@
+    <div class="schools-table-container mt-4">
+        <div class="schools-table-header d-none d-md-flex">
+            <div class="col-name">Име на институцията</div>
+            <div class="col-city">Град</div>
+            <div class="col-action text-end">Действие</div>
+        </div>
+
+        <div class="schools-table-body">
+            @foreach (var s in Model)
+            {
+                <div class="school-row">
+                    <div class="col-name">
+                        <div class="d-flex align-items-center">
+                            <div class="school-mini-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <span class="fw-bold text-dark">@s.Name</span>
+                        </div>
+                    </div>
+                    <div class="col-city">
+                        <span class="city-tag">
+                            <i class="bi bi-geo-alt"></i> @s.City
+                        </span>
+                    </div>
+                    <div class="col-action text-end">
+                        @if (!string.IsNullOrWhiteSpace(s.WebsiteUrl))
+                        {
+                            <a href="@s.WebsiteUrl" target="_blank" class="link-btn">
+                                Официален сайт <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted small italic">Няма сайт</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .student-schools-container {
+        --accent: #3f6ea5;
+        --line: rgba(63, 110, 165, 0.12);
+        --muted: #6f86a0;
+        --text: #28496f;
+    }
+
+    /* ПОПРАВЕНАТА HERO СЕКЦИЯ */
+    .schools-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.5rem; 
+        margin-bottom: 2rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.8rem;
+    }
+
+    .schools-hero h1 {
+        color: var(--text);
+        font-weight: 500;
+        font-size: 2.5rem; 
+    }
+
+    .schools-hero p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        max-width: 600px;
+        margin: 0;
+    }
+
+    /* Останалите стилове за списъка */
+    /* СТИЛ ЗА ИЗЧИСТЕН СПИСЪК */
+    .schools-table-container {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        overflow: hidden;
+    }
+
+    /* Хедър на таблицата */
+    .schools-table-header {
+        background: #f8fbfc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+    }
+
+    /* Ред от таблицата */
+    .school-row {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f0f3f5;
+        transition: background-color 0.2s ease;
+    }
+
+        .school-row:last-child {
+            border-bottom: none;
         }
-    </tbody>
-</table>
+
+        .school-row:hover {
+            background-color: #fcfdfe;
+        }
+
+    /* Колони */
+    .col-name {
+        flex: 0 0 60%; /* Имената заемат точно 60% от ширината */
+        padding-right: 20px; /* Гарантирано разстояние до следващата колона */
+    }
+
+    .col-city {
+        flex: 0 0 20%; /* Градовете заемат точно 20% */
+        display: flex;
+        align-items: center;
+    }
+
+    .col-action {
+        flex: 0 0 20%; /* Бутонът заема останалите 20% */
+        text-align: right;
+    }
+
+    /* Мини икона */
+    .school-mini-icon {
+        width: 32px;
+        height: 32px;
+        background: #edf2f7;
+        color: var(--accent);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 0.9rem;
+    }
+
+    /* Град таг */
+    .city-tag {
+        color: var(--muted);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .city-tag i {
+            color: #a0aec0;
+        }
+
+    /* Бутон/Линк */
+    .link-btn {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+    }
+
+        .link-btn:hover {
+            background: #f0f7ff;
+            border-color: #d0e3ff;
+            color: #2b507d;
+        }
+
+    /* Мобилна версия */
+   @@media (max-width: 768px) {
+   .school-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .col-action {
+        width: 100%;
+        text-align: left !important;
+    }
+
+    .link-btn {
+        padding-left: 0;
+    }
+
+    }</style>

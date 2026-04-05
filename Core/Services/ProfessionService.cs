@@ -28,12 +28,19 @@ namespace Core.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ProfessionListVm>> GetAllAsync(int? schoolId)
+        public async Task<IEnumerable<ProfessionListVm>> GetAllAsync(int? schoolId, string professionName)
         {
             var query = repo.AllReadonly();
 
             if (schoolId.HasValue)
+            {
                 query = query.Where(p => p.SchoolId == schoolId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(professionName))
+            {
+                query = query.Where(p => p.Name.ToLower().Contains(professionName.ToLower()));
+            }
 
             return await query
                 .Select(p => new ProfessionListVm
@@ -41,7 +48,8 @@ namespace Core.Services
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    SchoolName = p.School.Name
+                    SchoolName = p.School.Name,
+                    MaterialsCount = p.Materials.Count
                 })
                 .OrderBy(p => p.Name)
                 .ToListAsync();

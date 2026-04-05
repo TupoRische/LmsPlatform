@@ -10,8 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// 1. ��������� �� ������ �����
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString, sqlOptions =>
     {
@@ -23,31 +25,50 @@ builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
+
+        options.Password.RequiredLength = 6;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5); 
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+
+    options.Events.OnRedirectToLogout = context =>
+    {
+        context.Response.Redirect("/");
+        return Task.CompletedTask;
+    };
+});
 
 builder.Services.AddScoped<ISchoolService, SchoolService>();
 builder.Services.AddScoped<IProfessionService, ProfessionService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
 builder.Services.AddScoped<IAdminTeacherRequestsService, AdminTeacherRequestsService>();
 builder.Services.AddScoped<ITeacherDashboardService, TeacherDashboardService>();
 builder.Services.AddScoped<ITeacherMaterialsService, TeacherMaterialsService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
-builder.Services.AddScoped<ICommentService, CommentService>();
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -55,9 +76,11 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
-app.UseStaticFiles();
 
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -75,7 +98,15 @@ app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbInitializer.SeedAsync(scope.ServiceProvider);
+    try
+    {
+        await DbInitializer.SeedAsync(scope.ServiceProvider);
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "������ ��� ���������� �� ������!");
+    }
 }
 
 app.Run();

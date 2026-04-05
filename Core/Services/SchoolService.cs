@@ -22,6 +22,7 @@ namespace Core.Services
                     Id = s.Id,
                     Name = s.Name,
                     City = s.City,
+                    WebsiteUrl = s.WebsiteUrl,
                     ProfessionsCount = s.Professions.Count,
                     UsersCount = s.Users.Count
                 })
@@ -57,7 +58,7 @@ namespace Core.Services
                     Id = s.Id,
                     Name = s.Name,
                     City = s.City,
-                    Description = s.Description
+                    Description = s.Description,
                 })
                 .FirstOrDefaultAsync();
 

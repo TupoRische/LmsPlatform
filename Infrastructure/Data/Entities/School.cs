@@ -21,7 +21,7 @@ namespace Infrastructure.Data.Entities
         [MaxLength(2000)]
         public string? Description { get; set; }
         public string Abbreviation { get; set; } = null!;
-
+        public string? WebsiteUrl { get; set; }
         public ICollection<Profession> Professions { get; set; } = new HashSet<Profession>();
         public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     }

@@ -15,13 +15,22 @@ namespace Web.Areas.Student.Controllers
             this.schools = schools;
         }
 
-        public async Task<IActionResult> Index(int? schoolId)
+        [HttpGet]
+        public async Task<IActionResult> Index(int? schoolId, string professionName)
         {
             ViewBag.Schools = await schools.GetDropdownAsync();
-            var model = await professions.GetAllAsync(schoolId);
+
+            var allProfessions = await professions.GetAllAsync(null, null);
+            ViewBag.ProfessionNames = allProfessions
+                .Select(p => p.Name)
+                .Distinct()
+                .OrderBy(p => p)
+                .ToList();
+
+            var model = await professions.GetAllAsync(schoolId, professionName);
+
             return View(model);
         }
-
         public async Task<IActionResult> Details(int id)
         {
             var model = await professions.GetByIdAsync(id);

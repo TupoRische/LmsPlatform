@@ -30,6 +30,12 @@ main {
     padding-top: 120px;
 }
 
+
+.home-page main {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 /* --- Общи компоненти (Бутони, Карти, Фокус) --- */
 .btn:focus,
 .btn:active:focus,
@@ -1417,10 +1423,4 @@ main {
         margin-left: 40px;
         margin-right: 40px;
     }
-}
-
-/* Премахваме маргина само за началната страница */
-.home-page main {
-    margin-left: 0;
-    margin-right: 0;
 }

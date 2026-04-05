@@ -134,12 +134,18 @@ namespace Web.Areas.Identity.Pages.Account
                     {
                         return RedirectToRoute(new { area = "Admin", controller = "Dashboard", action = "Index" });
                     }
+
                     if (user != null && await _userManager.IsInRoleAsync(user, "Teacher"))
                     {
                         return RedirectToRoute(new { area = "Teacher", controller = "Dashboard", action = "Index" });
                     }
 
-                    return LocalRedirect(returnUrl ?? "~/");
+                    if (string.IsNullOrEmpty(returnUrl) || returnUrl.Contains("Logout"))
+                    {
+                        return LocalRedirect("~/");
+                    }
+
+                    return LocalRedirect(returnUrl);
                 }
 
                 if (result.RequiresTwoFactor)

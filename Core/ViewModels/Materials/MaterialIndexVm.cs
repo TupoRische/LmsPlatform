@@ -12,6 +12,7 @@ namespace Core.ViewModels.Materials
         public int? ProfessionId { get; set; }
 
         public int? MaterialCategoryId { get; set; }
+        
 
         public IEnumerable<DropdownOptionVm> Professions { get; set; }
             = new List<DropdownOptionVm>();

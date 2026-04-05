@@ -10,7 +10,7 @@ namespace Core.Contracts
     public interface IProfessionService
     : IService<ProfessionListVm, ProfessionDetailsVm, ProfessionFormVm>
     {
-        Task<IEnumerable<ProfessionListVm>> GetAllAsync(int? schoolId);
+        Task<IEnumerable<ProfessionListVm>> GetAllAsync(int? schoolId, string professionName);
         Task<IEnumerable<ProfessionIndexVm>> GetRandomThreeAsync();
     }
 }

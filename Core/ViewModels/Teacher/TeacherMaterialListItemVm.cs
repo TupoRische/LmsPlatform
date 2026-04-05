@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.ViewModels.Teacher.Materials
+namespace Core.ViewModels.Teacher
 {
     public class TeacherMaterialListItemVm
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
     }
 }
