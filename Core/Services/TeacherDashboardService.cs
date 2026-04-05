@@ -1,5 +1,7 @@
 ﻿using Core.Contracts;
+using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Teacher;
+using Core.ViewModels.Teacher.Materials;
 using Infrastructure.Data;
 using Infrastructure.Identity; // Увери се, че това е тук за ApplicationUser
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +25,6 @@ namespace Core.Services
 
         public async Task<TeacherDashboardVm> GetAsync(ClaimsPrincipal user)
         {
-            // Вече userManager няма да е null и този ред ще работи:
             var userId = userManager.GetUserId(user);
 
             // 1. Списък за материалите
@@ -81,6 +82,64 @@ namespace Core.Services
                 LastComment = lastC != null
                     ? $"От {lastC.User.FirstName} {lastC.User.LastName}: {lastC.Content}"
                     : "Няма нови коментари"
+            };
+        }
+
+        public async Task<TeacherMaterialsPageVm> GetTeacherMaterialsAsync(ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var materialsQuery = context.Materials
+                .Include(m => m.MaterialCategory)
+                .Include(m => m.Profession)
+                .Include(m => m.Comments)
+                .Where(m => m.TeacherId == userId);
+
+            var materialsList = await materialsQuery
+                .OrderByDescending(m => m.CreatedOn)
+                .Select(m => new TeacherMaterialDetailsVm
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Description = m.Description,
+                    CreatedOn = m.CreatedOn,
+                    CategoryName = m.MaterialCategory.Name,
+                    ProfessionName = m.Profession.Name,
+                    CommentsCount = m.Comments.Count,
+                    TeacherName = $"{m.Teacher.FirstName} {m.Teacher.LastName}"
+                })
+                .ToListAsync();
+
+            return new TeacherMaterialsPageVm
+            {
+                TotalMaterials = materialsList.Count,
+                WithFilesCount = await materialsQuery.CountAsync(m => m.FilePath != null),
+                WithExternalLinksCount = await materialsQuery.CountAsync(m => m.FilePath != null),
+                TotalComments = materialsList.Sum(m => m.CommentsCount),
+                Materials = materialsList
+            };
+        }
+
+        public async Task<TeacherCommentsPageVm> GetAllCommentsForTeacherAsync(string userId)
+        {
+            var comments = await context.Comments
+                .Where(c => c.Material.TeacherId == userId)
+                .OrderByDescending(c => c.CreatedOn)
+                .Select(c => new TeacherCommentVm
+                {
+                    Id = c.Id,
+                    AuthorName = $"{c.User.FirstName} {c.User.LastName}",
+                    Content = c.Content,
+                    CreatedOn = c.CreatedOn,
+                    // Тук можеш да добавиш заглавие на материала, ако го добавиш в VM
+                })
+                .ToListAsync();
+
+            return new TeacherCommentsPageVm
+            {
+                TotalComments = comments.Count,
+                NewCommentsToday = comments.Count(c => c.CreatedOn.Date == DateTime.Today),
+                Comments = comments
             };
         }
     }

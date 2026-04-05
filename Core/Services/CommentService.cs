@@ -202,6 +202,7 @@ namespace Core.Services
                 });
             }
 
+
             return BuildThreadTree(result);
         }
 
@@ -265,6 +266,41 @@ namespace Core.Services
 
             Visit(rootCommentId);
             return result;
+        }
+    public async Task<IEnumerable<CommentThreadVm>> GetAllForTeacherAsync(string teacherId)
+        {
+            var allComments = await commentsRepo.AllReadonly()
+                .Where(c => c.Material.TeacherId == teacherId) // Филтрираме само материалите на този учител
+                .Include(c => c.Material)
+                .Include(c => c.User)
+                .ToListAsync();
+
+            var threads = allComments
+                .GroupBy(c => c.MaterialId)
+                .Select(g =>
+                {
+                    var lastComment = g.OrderByDescending(c => c.CreatedOn).First();
+                    var participants = g
+                        .Select(c => c.User.FirstName + " " + c.User.LastName)
+                        .Distinct()
+                        .ToList();
+
+                    return new CommentThreadVm
+                    {
+                        MaterialId = g.Key,
+                        MaterialTitle = g.First().Material.Title,
+                        CommentsCount = g.Count(),
+                        LastComment = lastComment.Content.Length > 50
+                            ? lastComment.Content[..47] + "..."
+                            : lastComment.Content,
+                        LastCommentDate = lastComment.CreatedOn,
+                        Participants = participants
+                    };
+                })
+                .OrderByDescending(t => t.LastCommentDate)
+                .ToList();
+
+            return threads;
         }
     }
 }

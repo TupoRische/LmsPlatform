@@ -8,9 +8,10 @@ namespace Core.ViewModels.Home
 {
     public class SearchResultVm
     {
-        public int ProfessionId { get; set; }
-        public string ProfessionName { get; set; } = null!;
-        public string SchoolName { get; set; } = null!;
-        public string City { get; set; } = null!;
+        public int Id { get; set; } 
+        public string Title { get; set; } = null!;
+        public string Type { get; set; } = null!; // "Profession" или "School"
+        public string Description { get; set; } = null!;
+        public string Url { get; set; } = null!;
     }
 }

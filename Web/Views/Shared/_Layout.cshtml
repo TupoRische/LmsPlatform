@@ -94,14 +94,11 @@
                         </div>
 
                         <div class="search-field" id="searchField">
-                            <form asp-controller="Home" asp-action="Search" method="get" class="search-wrapper">
-
-                                <input type="text" name="query" placeholder="Търси професия, училище..." />
-
+                            <form asp-area="" asp-controller="Home" asp-action="Search" method="get" class="search-wrapper">
+                                <input type="text" name="query" placeholder="Търси професия, училище, материал..." />
                                 <button type="submit" class="search-btn">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
-
                             </form>
                         </div>
                     </div>  

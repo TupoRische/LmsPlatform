@@ -1,18 +1,18 @@
-@using Core.ViewModels.Comments
+﻿@using Core.ViewModels.Comments
 @model List<CommentThreadVm>
 
 <div class="comments-page mb-4">
     <div class="comments-hero">
         <div>
-            <span class="hero-kicker">Админ панел</span>
+            <span class="hero-kicker">Преподавателски панел</span>
             <h1>Коментари</h1>
-            <p>Разговорите са подредени по материал, за да влизаш бързо в активната нишка и да я модерираш.</p>
+            <p>Тук можете да следите активните дискусии под вашите материали и да отговаряте на въпроси от ученици.</p>
         </div>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="admin-empty-state">Все още няма коментари по материали.</div>
+        <div class="admin-empty-state">Все още няма коментари по вашите материали.</div>
     }
     else
     {
@@ -31,19 +31,19 @@
                     </div>
 
                     <div class="thread-block">
-                        <strong>Участници</strong>
+                        <strong>Активни ученици</strong>
                         <p>@string.Join(", ", thread.Participants)</p>
                     </div>
 
                     <div class="thread-block">
-                        <strong>Последен коментар</strong>
+                        <strong>Последно от тях</strong>
                         <p>"@thread.LastComment"</p>
                     </div>
 
                     <a asp-action="Details"
                        asp-route-materialId="@thread.MaterialId"
                        class="thread-link">
-                        Виж разговора
+                        Към дискусията
                     </a>
                 </article>
             }
@@ -52,6 +52,7 @@
 </div>
 
 <style>
+    /* Копираме точно твоя стил за 1:1 визия */
     .comments-page {
         --accent: #3f6ea5;
         --accent-soft: #edf4fb;
@@ -98,7 +99,9 @@
     .thread-card h3 {
         margin: 0;
         color: var(--text);
-        font-size: 0.95rem;
+        font-size: 1.1rem;
+        line-height: 1.3;
+        word-break: break-word;
     }
 
     .comments-hero p,
@@ -122,14 +125,6 @@
         flex-direction: column;
         gap: 0.7rem;
     }
-
-        .thread-card h3 {
-            margin: 0;
-            color: var(--text);
-            font-size: 1.1rem;
-            line-height: 1.3;
-            word-break: break-word;
-        }
 
     .thread-card__head {
         display: flex;
@@ -157,12 +152,12 @@
         padding: 0.65rem 0.72rem;
     }
 
-    .thread-block strong {
-        display: block;
-        color: var(--text);
-        margin-bottom: 0.28rem;
-        font-size: 0.84rem;
-    }
+        .thread-block strong {
+            display: block;
+            color: var(--text);
+            margin-bottom: 0.28rem;
+            font-size: 0.84rem;
+        }
 
     .thread-link {
         margin-top: auto;
@@ -179,13 +174,11 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .thread-link:hover,
-    .thread-link:focus {
-        background: var(--accent);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
-    }
+        .thread-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+            color: white;
+        }
 
     .admin-empty-state {
         padding: 1.5rem;
@@ -194,22 +187,14 @@
     }
 
     @@media (max-width: 1200px) {
-        .comments-grid
-
-    {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
+        .comments-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 
     @@media (max-width: 768px) {
-        .comments-grid
-
-    {
-        grid-template-columns: 1fr;
+        .comments-grid {
+            grid-template-columns: 1fr;
+        }
     }
-
-    }
-
-    
 </style>

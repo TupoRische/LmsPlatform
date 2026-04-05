@@ -17,5 +17,6 @@ namespace Core.Contracts
         Task DeleteAsync(int commentId);
         Task<List<CommentListVm>> GetCommentsByMaterialAsync(int materialId);
         Task<List<CommentThreadVm>> GetAllThreadsAsync();
+        Task<IEnumerable<CommentThreadVm>> GetAllForTeacherAsync(string teacherId);
     }
 }

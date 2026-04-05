@@ -210,8 +210,9 @@
     /* 3. Грид и Карти */
     .professions-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
+        align-items: start;
     }
 
     .profession-card {
@@ -268,10 +269,7 @@
         line-height: 1.6;
         margin-bottom: 1.5rem;
         flex-grow: 1;
-        /* ПОПРАВКА: Текстът няма да пречи на кликовете под него */
-        pointer-events: none;
     }
-
     /* 5. Бутони (Actions) */
     .profession-actions {
         display: flex;
@@ -316,5 +314,23 @@
         border-radius: 18px;
         color: var(--muted);
         border: 1px dashed var(--line);
+    }
+
+    @@media (max-width: 1200px) {
+        .professions-grid
+
+    {
+        grid-template-columns: repeat(2, 1fr); /* 2 колони за таблети */
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .professions-grid
+
+    {
+        grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
+    }
+
     }
 </style>

@@ -13,5 +13,9 @@ namespace Core.ViewModels.Teacher.Materials
         public string? Description { get; set; }
         public string? Url { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string CategoryName { get; set; } = null!;
+        public string ProfessionName { get; set; } = null!;
+        public int CommentsCount { get; set; }
+        public string TeacherName { get; set; } = null!;
     }
 }
