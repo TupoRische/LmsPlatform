@@ -114,7 +114,11 @@
                         </div>
 
                         <div class="card-footer-custom mt-auto">
-                            <a href="/materials/details/@material.Id" class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
+                            <a asp-area=""
+                               asp-controller="Materials"
+                               asp-action="Details"
+                               asp-route-id="@material.Id"
+                               class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
                                 Към материала →
                             </a>
                         </div>

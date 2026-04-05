@@ -3,6 +3,7 @@ using Core.ViewModels.Home;
 using Infrastructure.Data.Entities;
 using Infrastructure.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 public class HomeService : IHomeService
 {
@@ -58,7 +59,7 @@ public class HomeService : IHomeService
                 Title = m.Title,
                 Description = "Учебен материал / Ресурс",
                 Type = "Material",
-                Url = $"/Student/Materials/Details/{m.Id}" // Директен линк към детайлите
+                Url = $"/Materials/Details/{m.Id}" 
             }).ToListAsync();
 
         return professions.Concat(schools).Concat(materials);
