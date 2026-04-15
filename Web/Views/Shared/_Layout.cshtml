@@ -129,8 +129,8 @@
                 <h4>Навигация</h4>
                 <div class="footer-links">
                     <p><a asp-controller="Home" asp-action="Index">Начало</a></p>
-                    <p><a asp-controller="Professions" asp-action="Index">Професии</a></p>
-                    <p><a asp-controller="Schools" asp-action="Index">Професионални гимназии</a></p>
+                    <p><a asp-area="Student" asp-controller="Professions" asp-action="Index">Професии</a></p>
+                    <p><a asp-area="Student" asp-controller="Schools" asp-action="Index">Професионални гимназии</a></p>
                 </div>
             </div>
 
@@ -141,7 +141,7 @@
                         Тук може да намерите кратка анкета, която да Ви помогне с избора на професия, ако се чудите къде да запишете детето си
 
                     </p>
-                    <a href="#" class="poll-link">Попълни анкетата</a>
+                    <a asp-area="Student" asp-controller="Professions" asp-action="Quiz" class="poll-link">Попълни анкетата</a>
                 </div>
             </div>
 

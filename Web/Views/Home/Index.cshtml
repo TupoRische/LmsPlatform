@@ -48,6 +48,7 @@
                 <p>@profession.Description</p>
 
                 <a asp-controller="Professions"
+                   asp-area="Student"
                    asp-action="Details"
                    asp-route-id="@profession.Id">
                     Виж повече
@@ -60,6 +61,7 @@
     <!-- БУТОН ПО СРЕДАТА -->
     <div class="more-btn-wrapper">
         <a asp-controller="Professions"
+           asp-area="Student"
            asp-action="Index"
            class="more-btn">
             Вижте повече
@@ -82,6 +84,7 @@
                 <div class="school-item">
                     <div>
                         <a asp-controller="Schools"
+                           asp-area="Student"
                            asp-action="Details"
                            asp-route-id="@school.Id"
                            class="school-name">
@@ -97,6 +100,7 @@
 
             <div class="school-item more-item">
                 <a asp-controller="Schools"
+                   asp-area="Student"
                    asp-action="Index"
                    class="more-link">
                     Вижте повече...

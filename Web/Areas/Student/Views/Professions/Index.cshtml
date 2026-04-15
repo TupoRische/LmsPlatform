@@ -10,6 +10,15 @@
             <span class="hero-kicker">Твоето бъдеще</span>
             <h1>Професии</h1>
             <p>Разгледай специалностите, научи какво ще изучаваш и виж наличните материали за всяка професия.</p>
+            <div class="professions-hero-actions">
+                <a asp-area="Student"
+                   asp-controller="Professions"
+                   asp-action="Quiz"
+                   class="professions-quiz-link">
+                    Попълни въпросника
+                </a>
+                <span class="professions-hero-note">12 кратки въпроса и резултат веднага.</span>
+            </div>
         </div>
     </div>
     <form method="get" asp-action="Index" class="mb-5">
@@ -160,6 +169,39 @@
         font-size: 0.9rem;
         max-width: 600px;
         margin: 0;
+    }
+
+    .professions-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+        align-items: center;
+        margin-top: 1.15rem;
+    }
+
+    .professions-quiz-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.2rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6482AD, #314c73);
+        color: white;
+        transition: 0.2s ease;
+    }
+
+        .professions-quiz-link:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(40, 73, 111, 0.14);
+        }
+
+    .professions-hero-note {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 500;
     }
 
     /* Филтриране */
@@ -331,6 +373,14 @@
     {
         grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
     }
+
+        .professions-hero-actions {
+            align-items: stretch;
+        }
+
+        .professions-quiz-link {
+            width: 100%;
+        }
 
     }
 </style>

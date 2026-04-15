@@ -1,0 +1,710 @@
+@using System.Linq
+@using System.Text.Json
+@model Core.ViewModels.Professions.ProfessionQuizPageVm
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Въпросник";
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    var questionsJson = JsonSerializer.Serialize(Model.Questions, jsonOptions);
+    var resultsJson = JsonSerializer.Serialize(Model.Results, jsonOptions);
+    var quizSections = Model.Questions
+        .Select(question => question.Section)
+        .Distinct()
+        .ToList();
+}
+
+<div class="profession-quiz-page">
+    <section class="profession-quiz-intro">
+        <span class="profession-quiz-kicker">Въпросник</span>
+        <h1>Открий професия, която е близо до интересите и силните ти страни</h1>
+        <p>
+            Анкетата минава през учебни интереси, умения, професионални нагласи и предпочитана работна среда.
+            След последния въпрос резултатът се показва веднага, без презареждане на страницата.
+        </p>
+
+        <div class="profession-quiz-meta">
+            <span><i class="bi bi-ui-checks-grid"></i> @Model.Questions.Count въпроса</span>
+            <span><i class="bi bi-layers"></i> 5 тематични секции</span>
+            <span><i class="bi bi-lightning-charge"></i> Резултат веднага</span>
+        </div>
+
+        @* <div class="profession-quiz-section-strip">
+            @for (var index = 0; index < quizSections.Count; index++)
+            {
+                <span class="profession-quiz-section-chip" data-section-chip="@quizSections[index]">
+                    @(index + 1). @quizSections[index]
+                </span>
+            }
+        </div> *@
+    </section>
+
+    <section class="profession-quiz-shell" data-profession-quiz>
+        <div class="profession-quiz-progress-row">
+            <div>
+                <span class="profession-quiz-progress-label" data-quiz-progress-label>Въпрос 1 от @Model.Questions.Count</span>
+                <h2 class="profession-quiz-section-title" data-quiz-section>@Model.Questions.FirstOrDefault()?.Section</h2>
+            </div>
+
+            <span class="profession-quiz-progress-percent" data-quiz-progress-percent>8%</span>
+        </div>
+
+        <div class="profession-quiz-progress-bar">
+            <span data-quiz-progress-fill></span>
+        </div>
+
+        <div class="profession-quiz-card" data-quiz-stage>
+            <div class="profession-quiz-card-head">
+                <span class="profession-quiz-category" data-quiz-category>@Model.Questions.FirstOrDefault()?.Category</span>
+                <span class="profession-quiz-selection-note" data-quiz-selection-note></span>
+            </div>
+
+            <h3 class="profession-quiz-question" data-quiz-question>@Model.Questions.FirstOrDefault()?.Text</h3>
+            <p class="profession-quiz-helper" data-quiz-helper>@Model.Questions.FirstOrDefault()?.HelperText</p>
+
+            <div class="profession-quiz-options" data-quiz-options></div>
+            <p class="profession-quiz-validation" data-quiz-validation hidden></p>
+
+            <div class="profession-quiz-actions">
+                <button type="button" class="profession-quiz-secondary" data-quiz-back>Назад</button>
+
+                <div class="profession-quiz-actions-right">
+                    <a asp-area="Student"
+                       asp-controller="Professions"
+                       asp-action="Index"
+                       class="profession-quiz-link">
+                        Всички професии
+                    </a>
+
+                    <button type="button" class="profession-quiz-primary" data-quiz-next>Напред</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profession-quiz-card profession-quiz-card--result" data-quiz-result hidden>
+            <span class="profession-quiz-kicker profession-quiz-kicker--result">Твоят резултат</span>
+            <h2 data-quiz-result-title></h2>
+            <p class="profession-quiz-result-score">Най-висок резултат: <strong data-quiz-result-score></strong></p>
+            <p class="profession-quiz-result-text" data-quiz-result-text></p>
+
+            <div class="profession-quiz-actions profession-quiz-actions--result">
+                <a class="profession-quiz-primary" data-quiz-details hidden>Виж професията</a>
+                <button type="button" class="profession-quiz-secondary" data-quiz-restart>Започни отначало</button>
+                <a asp-area="Student"
+                   asp-controller="Professions"
+                   asp-action="Index"
+                   class="profession-quiz-link">
+                    Разгледай всички професии
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .profession-quiz-page {
+        --quiz-accent: #5c85b1;
+        --quiz-accent-dark: #28496f;
+        --quiz-accent-soft: #edf4fb;
+        --quiz-surface: #ffffff;
+        --quiz-line: rgba(63, 110, 165, 0.12);
+        --quiz-text-muted: #6f86a0;
+        --quiz-shadow: 0 18px 36px rgba(40, 73, 111, 0.08);
+        max-width: 960px;
+        margin: 0 auto 3rem;
+        color: var(--quiz-accent-dark);
+    }
+
+    .profession-quiz-intro,
+    .profession-quiz-shell {
+        background: var(--quiz-surface);
+        border: 1px solid var(--quiz-line);
+        border-radius: 24px;
+        box-shadow: var(--quiz-shadow);
+    }
+
+    .profession-quiz-intro {
+        padding: 2rem;
+        margin-bottom: 1.35rem;
+        background:
+            linear-gradient(180deg, rgba(237, 244, 251, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+    }
+
+    .profession-quiz-shell {
+        padding: 1.6rem;
+    }
+
+    .profession-quiz-kicker {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.38rem 0.82rem;
+        border-radius: 999px;
+        background: rgba(92, 133, 177, 0.12);
+        color: var(--quiz-accent);
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.95rem;
+    }
+
+    .profession-quiz-intro h1 {
+        margin: 0 0 0.85rem;
+        color: var(--quiz-accent-dark);
+        font-size: clamp(1.95rem, 4vw, 2.6rem);
+        line-height: 1.18;
+    }
+
+    .profession-quiz-intro p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--quiz-text-muted);
+        line-height: 1.75;
+    }
+
+    .profession-quiz-meta,
+    .profession-quiz-section-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .profession-quiz-meta {
+        margin-top: 1.25rem;
+    }
+
+    .profession-quiz-meta span,
+    .profession-quiz-section-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.58rem 0.92rem;
+        border-radius: 999px;
+        border: 1px solid var(--quiz-line);
+        background: #fff;
+        color: var(--quiz-accent-dark);
+        font-weight: 600;
+    }
+
+    .profession-quiz-section-strip {
+        margin-top: 1.1rem;
+    }
+
+    .profession-quiz-section-chip {
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .profession-quiz-section-chip.is-active {
+        background: var(--quiz-accent-soft);
+        border-color: rgba(92, 133, 177, 0.28);
+        color: var(--quiz-accent);
+    }
+
+    .profession-quiz-progress-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: flex-end;
+        margin-bottom: 0.85rem;
+    }
+
+    .profession-quiz-progress-label {
+        display: block;
+        margin-bottom: 0.45rem;
+        color: var(--quiz-text-muted);
+        font-size: 0.83rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .profession-quiz-section-title {
+        margin: 0;
+        color: var(--quiz-accent-dark);
+        font-size: clamp(1.3rem, 3vw, 1.65rem);
+    }
+
+    .profession-quiz-progress-percent {
+        color: var(--quiz-accent);
+        font-weight: 700;
+    }
+
+    .profession-quiz-progress-bar {
+        height: 10px;
+        border-radius: 999px;
+        background: #e7eef7;
+        overflow: hidden;
+        margin-bottom: 1.3rem;
+    }
+
+    .profession-quiz-progress-bar span {
+        display: block;
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #7fa1c3 0%, #5c85b1 100%);
+        transition: width 0.25s ease;
+    }
+
+    .profession-quiz-card {
+        border: 1px solid var(--quiz-line);
+        border-radius: 22px;
+        background: #fbfdff;
+        padding: 1.4rem;
+    }
+
+    .profession-quiz-card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .profession-quiz-category,
+    .profession-quiz-selection-note {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.42rem 0.82rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .profession-quiz-category {
+        background: rgba(92, 133, 177, 0.12);
+        color: var(--quiz-accent);
+    }
+
+    .profession-quiz-selection-note {
+        background: #fff;
+        border: 1px solid var(--quiz-line);
+        color: var(--quiz-text-muted);
+    }
+
+    .profession-quiz-question {
+        margin: 0 0 0.8rem;
+        font-size: clamp(1.35rem, 3vw, 1.85rem);
+        color: var(--quiz-accent-dark);
+        line-height: 1.32;
+    }
+
+    .profession-quiz-helper,
+    .profession-quiz-result-text {
+        margin: 0;
+        color: var(--quiz-text-muted);
+        line-height: 1.72;
+    }
+
+    .profession-quiz-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 0.9rem;
+        margin-top: 1.35rem;
+    }
+
+    .profession-quiz-option {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.85rem;
+        align-items: flex-start;
+        padding: 1rem;
+        border-radius: 18px;
+        border: 1px solid var(--quiz-line);
+        background: #fff;
+        text-align: left;
+        transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .profession-quiz-option:hover,
+    .profession-quiz-option.is-selected {
+        border-color: rgba(92, 133, 177, 0.3);
+        background: var(--quiz-accent-soft);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.06);
+        transform: translateY(-1px);
+    }
+
+    .profession-quiz-option-control {
+        width: 22px;
+        height: 22px;
+        margin-top: 0.1rem;
+        border: 2px solid rgba(92, 133, 177, 0.35);
+        background: #fff;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .profession-quiz-option-control.is-single {
+        border-radius: 50%;
+    }
+
+    .profession-quiz-option-control.is-multi {
+        border-radius: 7px;
+    }
+
+    .profession-quiz-option.is-selected .profession-quiz-option-control {
+        border-color: var(--quiz-accent);
+        background: var(--quiz-accent);
+    }
+
+    .profession-quiz-option.is-selected .profession-quiz-option-control::after {
+        content: "";
+        position: absolute;
+        inset: 5px;
+        background: #fff;
+    }
+
+    .profession-quiz-option.is-selected .profession-quiz-option-control.is-single::after {
+        border-radius: 50%;
+    }
+
+    .profession-quiz-option.is-selected .profession-quiz-option-control.is-multi::after {
+        inset: 4px 6px 6px 4px;
+        width: 6px;
+        height: 10px;
+        border-right: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        background: transparent;
+        transform: rotate(38deg);
+    }
+
+    .profession-quiz-option-text {
+        color: var(--quiz-accent-dark);
+        font-weight: 600;
+        line-height: 1.6;
+    }
+
+    .profession-quiz-validation {
+        margin: 0.9rem 0 0;
+        color: #b45309;
+        font-weight: 600;
+    }
+
+    .profession-quiz-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1.4rem;
+        flex-wrap: wrap;
+    }
+
+    .profession-quiz-actions-right,
+    .profession-quiz-actions--result {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .profession-quiz-primary,
+    .profession-quiz-secondary,
+    .profession-quiz-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.85rem 1.25rem;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .profession-quiz-primary {
+        border: none;
+        background: linear-gradient(135deg, #6482ad, #314c73);
+        color: #fff;
+    }
+
+    .profession-quiz-primary:hover:not(:disabled) {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(49, 76, 115, 0.16);
+    }
+
+    .profession-quiz-primary:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .profession-quiz-secondary,
+    .profession-quiz-link {
+        background: #fff;
+        color: var(--quiz-accent-dark);
+        border: 1px solid var(--quiz-line);
+    }
+
+    .profession-quiz-secondary:hover,
+    .profession-quiz-link:hover {
+        background: #f4f8fc;
+        color: var(--quiz-accent);
+        transform: translateY(-1px);
+    }
+
+    .profession-quiz-card--result {
+        background: linear-gradient(180deg, rgba(237, 244, 251, 0.96) 0%, #ffffff 100%);
+    }
+
+    .profession-quiz-kicker--result {
+        margin-bottom: 0.8rem;
+    }
+
+    .profession-quiz-card--result h2 {
+        margin: 0;
+        color: var(--quiz-accent-dark);
+        font-size: clamp(1.7rem, 4vw, 2.3rem);
+    }
+
+    .profession-quiz-result-score {
+        margin: 1rem 0 0.7rem;
+        color: var(--quiz-accent-dark);
+        font-size: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .profession-quiz-intro,
+        .profession-quiz-shell,
+        .profession-quiz-card {
+            padding: 1.2rem;
+        }
+
+        .profession-quiz-actions,
+        .profession-quiz-actions-right,
+        .profession-quiz-actions--result {
+            align-items: stretch;
+        }
+
+        .profession-quiz-primary,
+        .profession-quiz-secondary,
+        .profession-quiz-link {
+            width: 100%;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const quizRoot = document.querySelector("[data-profession-quiz]");
+
+            if (!quizRoot) {
+                return;
+            }
+
+            const questions = @Html.Raw(questionsJson);
+            const results = @Html.Raw(resultsJson);
+            const detailsBaseUrl = "/Student/Professions/Details/";
+
+            const progressLabel = quizRoot.querySelector("[data-quiz-progress-label]");
+            const progressPercent = quizRoot.querySelector("[data-quiz-progress-percent]");
+            const progressFill = quizRoot.querySelector("[data-quiz-progress-fill]");
+            const sectionEl = quizRoot.querySelector("[data-quiz-section]");
+            const categoryEl = quizRoot.querySelector("[data-quiz-category]");
+            const selectionNoteEl = quizRoot.querySelector("[data-quiz-selection-note]");
+            const questionEl = quizRoot.querySelector("[data-quiz-question]");
+            const helperEl = quizRoot.querySelector("[data-quiz-helper]");
+            const optionsEl = quizRoot.querySelector("[data-quiz-options]");
+            const validationEl = quizRoot.querySelector("[data-quiz-validation]");
+            const stageEl = quizRoot.querySelector("[data-quiz-stage]");
+            const resultEl = quizRoot.querySelector("[data-quiz-result]");
+            const backButton = quizRoot.querySelector("[data-quiz-back]");
+            const nextButton = quizRoot.querySelector("[data-quiz-next]");
+            const restartButton = quizRoot.querySelector("[data-quiz-restart]");
+            const resultTitle = quizRoot.querySelector("[data-quiz-result-title]");
+            const resultScore = quizRoot.querySelector("[data-quiz-result-score]");
+            const resultText = quizRoot.querySelector("[data-quiz-result-text]");
+            const detailsButton = quizRoot.querySelector("[data-quiz-details]");
+            const sectionChips = Array.from(document.querySelectorAll("[data-section-chip]"));
+
+            const state = {
+                currentIndex: 0,
+                answers: questions.map(() => [])
+            };
+
+            function renderQuestion() {
+                const question = questions[state.currentIndex];
+                const selections = state.answers[state.currentIndex];
+                const currentStep = state.currentIndex + 1;
+                const percent = Math.round((currentStep / questions.length) * 100);
+                const maxSelections = question.maxSelections ?? 1;
+                const isMulti = maxSelections > 1;
+
+                progressLabel.textContent = `Въпрос ${currentStep} от ${questions.length}`;
+                progressPercent.textContent = `${percent}%`;
+                progressFill.style.width = `${percent}%`;
+                sectionEl.textContent = question.section;
+                categoryEl.textContent = question.category;
+                questionEl.textContent = question.text;
+                helperEl.textContent = question.helperText || (isMulti ? `Избери до ${maxSelections} отговора.` : "Избери един отговор.");
+                selectionNoteEl.textContent = isMulti
+                    ? `Избрани ${selections.length} от ${maxSelections}`
+                    : (selections.length ? "Избран 1 отговор" : "Избери 1 отговор");
+
+                backButton.hidden = state.currentIndex === 0;
+                nextButton.textContent = state.currentIndex === questions.length - 1 ? "Виж резултата" : "Напред";
+                nextButton.disabled = selections.length === 0;
+                validationEl.hidden = true;
+                validationEl.textContent = "";
+
+                sectionChips.forEach((chip) => {
+                    chip.classList.toggle("is-active", chip.dataset.sectionChip === question.section);
+                });
+
+                optionsEl.innerHTML = question.options
+                    .map((option, optionIndex) => {
+                        const isSelected = selections.includes(optionIndex);
+                        const controlClass = isMulti ? "is-multi" : "is-single";
+
+                        return `
+                            <button type="button" class="profession-quiz-option${isSelected ? " is-selected" : ""}" data-option-index="${optionIndex}" aria-pressed="${isSelected}">
+                                <span class="profession-quiz-option-control ${controlClass}"></span>
+                                <span class="profession-quiz-option-text">${option.text}</span>
+                            </button>
+                        `;
+                    })
+                    .join("");
+            }
+
+            function calculateTotals() {
+                return state.answers.reduce((totals, answerIndexes, questionIndex) => {
+                    answerIndexes.forEach((answerIndex) => {
+                        const scores = questions[questionIndex].options[answerIndex].scores;
+
+                        Object.entries(scores).forEach(([professionName, points]) => {
+                            totals[professionName] = (totals[professionName] ?? 0) + Number(points);
+                        });
+                    });
+
+                    return totals;
+                }, {});
+            }
+
+            function resolveBestResult() {
+                const totals = calculateTotals();
+
+                return results.reduce((bestMatch, currentResult) => {
+                    const currentScore = totals[currentResult.professionName] ?? 0;
+
+                    if (!bestMatch || currentScore > bestMatch.score) {
+                        return {
+                            result: currentResult,
+                            score: currentScore
+                        };
+                    }
+
+                    return bestMatch;
+                }, null);
+            }
+
+            function showResult() {
+                const bestMatch = resolveBestResult();
+
+                if (!bestMatch) {
+                    return;
+                }
+
+                stageEl.hidden = true;
+                resultEl.hidden = false;
+                progressLabel.textContent = "Резултат";
+                progressPercent.textContent = "100%";
+                progressFill.style.width = "100%";
+                sectionEl.textContent = "Финално съвпадение";
+
+                sectionChips.forEach((chip) => chip.classList.remove("is-active"));
+
+                resultTitle.textContent = bestMatch.result.professionName;
+                resultScore.textContent = `${bestMatch.score} т.`;
+                resultText.textContent = bestMatch.result.summary;
+
+                if (bestMatch.result.professionId) {
+                    detailsButton.hidden = false;
+                    detailsButton.href = `${detailsBaseUrl}${bestMatch.result.professionId}`;
+                } else {
+                    detailsButton.hidden = true;
+                    detailsButton.removeAttribute("href");
+                }
+            }
+
+            optionsEl.addEventListener("click", function (event) {
+                const selectedButton = event.target.closest("[data-option-index]");
+
+                if (!selectedButton) {
+                    return;
+                }
+
+                const question = questions[state.currentIndex];
+                const maxSelections = question.maxSelections ?? 1;
+                const optionIndex = Number(selectedButton.dataset.optionIndex);
+                const currentSelections = [...state.answers[state.currentIndex]];
+                const existingIndex = currentSelections.indexOf(optionIndex);
+
+                if (maxSelections === 1) {
+                    state.answers[state.currentIndex] = [optionIndex];
+                    renderQuestion();
+
+                    if (state.currentIndex === questions.length - 1) {
+                        window.setTimeout(showResult, 140);
+                    }
+
+                    return;
+                }
+
+                if (existingIndex >= 0) {
+                    currentSelections.splice(existingIndex, 1);
+                } else if (currentSelections.length < maxSelections) {
+                    currentSelections.push(optionIndex);
+                } else {
+                    validationEl.hidden = false;
+                    validationEl.textContent = `Може да избереш до ${maxSelections} отговора.`;
+                    return;
+                }
+
+                state.answers[state.currentIndex] = currentSelections;
+                renderQuestion();
+            });
+
+            nextButton.addEventListener("click", function () {
+                if (state.answers[state.currentIndex].length === 0) {
+                    return;
+                }
+
+                if (state.currentIndex === questions.length - 1) {
+                    showResult();
+                    return;
+                }
+
+                state.currentIndex += 1;
+                renderQuestion();
+            });
+
+            backButton.addEventListener("click", function () {
+                if (state.currentIndex === 0) {
+                    return;
+                }
+
+                state.currentIndex -= 1;
+                renderQuestion();
+            });
+
+            restartButton.addEventListener("click", function () {
+                state.currentIndex = 0;
+                state.answers = questions.map(() => []);
+                resultEl.hidden = true;
+                stageEl.hidden = false;
+                detailsButton.hidden = true;
+                detailsButton.removeAttribute("href");
+                renderQuestion();
+            });
+
+            renderQuestion();
+        });
+    </script>
+}

@@ -31,6 +31,14 @@ namespace Web.Areas.Student.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Quiz()
+        {
+            var model = await professions.GetQuizAsync();
+            return View(model);
+        }
+
         public async Task<IActionResult> Details(int id)
         {
             var model = await professions.GetByIdAsync(id);
