@@ -7,7 +7,7 @@
 
 <section class="auth-page">
     <div class="auth-shell auth-shell--single">
-        <section class="auth-card">
+        <section class="auth-carrd">
             <span class="auth-chip">Добре дошли обратно</span>
             <h1 class="auth-title">@ViewData["Title"]</h1>
             <p class="auth-subtitle">Използвайте имейла и паролата, с които сте се регистрирали.</p>
@@ -32,7 +32,7 @@
                     <span>@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
                 </label>
 
-                <button id="login-submit" type="submit" class="btn btn-primary auth-submit">Влез</button>
+                <button id="login-submit" type="submit" class="btn btn-primary auth-submit" style="background: #6482AD !important;">Влез</button>
 
                 <div class="auth-link-row">
                     <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Нямате профил? Създайте регистрация</a>

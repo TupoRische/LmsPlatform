@@ -660,6 +660,12 @@ legend {
     overflow: hidden;
     animation: authFadeUp 0.55s ease both;
 }
+.auth-carrd {
+    border-radius: 30px;
+    position: relative;
+    overflow: hidden;
+    animation: authFadeUp 0.55s ease both;
+}
 
 .auth-panel {
     padding: 40px 34px;
@@ -759,6 +765,13 @@ legend {
     background:
         radial-gradient(circle at top right, rgba(100, 130, 173, 0.16), transparent 30%),
         rgba(245, 237, 237, 0.96);
+    border: 1px solid rgba(100, 130, 173, 0.16);
+    box-shadow: 0 24px 60px rgba(49, 76, 115, 0.14);
+}
+
+.auth-carrd {
+    padding: 38px 34px;
+    background: radial-gradient(circle at top right, rgba(100, 130, 173, 0.16), transparent 30%), rgba(245, 237, 237, 0.96);
     border: 1px solid rgba(100, 130, 173, 0.16);
     box-shadow: 0 24px 60px rgba(49, 76, 115, 0.14);
 }
@@ -1248,6 +1261,11 @@ legend {
 
     .auth-panel,
     .auth-card {
+        padding: 28px 20px;
+        border-radius: 24px;
+    }
+
+    .auth-carrd {
         padding: 28px 20px;
         border-radius: 24px;
     }
