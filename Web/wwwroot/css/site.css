@@ -459,7 +459,7 @@ nav {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    width: 260px;
+    width: 300px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     display: none;
     z-index: 999;
@@ -479,7 +479,7 @@ nav {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background: linear-gradient(135deg,#6482AD,#314c73);
+    background: #6482AD;
     color: white;
     display: flex;
     align-items: center;

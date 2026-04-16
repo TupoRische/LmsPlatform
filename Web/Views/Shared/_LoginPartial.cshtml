@@ -2,7 +2,7 @@
 @using Infrastructure.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 
-<div class="profile-wrapper">
+<div class="auth-card profile-card">
 
     @if (SignInManager.IsSignedIn(User))
     {
@@ -11,34 +11,106 @@
                 @User.Identity?.Name?.Substring(0, 1).ToUpper()
             </div>
 
-            <div>
+            <div class="profile-text">
                 <div class="profile-greeting">Здравей,</div>
                 <div class="profile-email">@User.Identity?.Name</div>
             </div>
         </div>
 
-        <hr />
+        <div class="profile-actions">
 
-        <form asp-area="Identity"
-              asp-page="/Account/Logout"
-              method="post">
-            <button type="submit" class="profile-logout">
-                Излез
-            </button>
-        </form>
+            <a asp-area="Identity"
+               asp-page="/Account/Manage/Index"
+               class="auth-btn secondary">
+                Редактирай профил
+            </a>
+
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  method="post">
+                <button type="submit" class="auth-btn danger">
+                    Излез
+                </button>
+            </form>
+
+        </div>
     }
     else
     {
         <a asp-area="Identity"
            asp-page="/Account/Login"
-           class="profile-login-btn">
+           class="auth-btn primary">
             Влез
-        </a><br />
+        </a>
+
         <a asp-area="Identity"
            asp-page="/Account/Register"
-           class="profile-login-btn">
+           class="auth-btn secondary">
             Регистрирай се
         </a>
     }
 
 </div>
+
+<style>
+.auth-card {
+    margin: 0 auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    font-family: Arial, sans-serif;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+        background: #6482AD;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.auth-btn.primary {
+    background: #2563eb;
+    color: white;
+}
+
+.auth-btn.secondary {
+    background: #e5e7eb;
+    color: #111;
+}
+
+.auth-btn.danger {
+    background: #ef4444;
+    color: white;
+}
+</style>
