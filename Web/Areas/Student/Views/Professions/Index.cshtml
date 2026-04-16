@@ -1,0 +1,381 @@
+﻿@model IEnumerable<Core.ViewModels.Professions.ProfessionListVm>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="student-professions-container mb-5">
+    <div class="professions-hero">
+        <div>
+            <span class="hero-kicker">Твоето бъдеще</span>
+            <h1>Професии</h1>
+            <p>Разгледай специалностите, научи какво ще изучаваш и виж наличните материали за всяка професия.</p>
+        </div>
+    </div>
+    <form method="get" asp-action="Index" class="mb-5">
+        <div class="row g-3 align-items-end filter-row">
+
+            <div class="col-md-4">
+                <label class="form-label small text-muted text-uppercase fw-bold">Професия</label>
+                <select name="professionName" class="form-select custom-select">
+                    <option value="">Всички професии</option>
+                    @if (ViewBag.ProfessionNames != null)
+                    {
+                        foreach (var name in ViewBag.ProfessionNames)
+                        {
+                            <option value="@name" selected="@(Context.Request.Query["professionName"] == name)">
+                                @name
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label small text-muted text-uppercase fw-bold">Училище</label>
+                <select name="schoolId" class="form-select custom-select">
+                    <option value="">Всички училища</option>
+                    @if (ViewBag.Schools != null)
+                    {
+                        foreach (var school in ViewBag.Schools)
+                        {
+                            <option value="@school.Id" selected="@(Context.Request.Query["schoolId"] == school.Id.ToString())">
+                                @school.Name
+                            </option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="submit" class="btn-primary-custom rounded-pill border-0 py-2 flex-grow-1 shadow-sm">
+                        <i class="bi bi-funnel"></i> Филтрирай
+                    </button>
+                    <a asp-action="Index" class="text-clear-link">
+                        Изчисти
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="admin-empty-state">
+            В момента няма намерени професии.
+        </div>
+    }
+    else
+    {
+        <div class="professions-grid">
+            @foreach (var profession in Model)
+            {
+                var summary = !string.IsNullOrWhiteSpace(profession.Description)
+                ? profession.Description
+                : "Няма добавено описание за тази професия.";
+
+                var materialsLabel = profession.MaterialsCount == 1 ? "материал" : "материала";
+
+                if (summary.Length > 180)
+                {
+                    summary = summary[..177] + "...";
+                }
+
+                <article class="profession-card">
+                    <div class="profession-card__head">
+                        <div>
+                            <span class="profession-school">@profession.SchoolName</span>
+                            <h3>@profession.Name</h3>
+                        </div>
+                        <span class="profession-count">@profession.MaterialsCount @materialsLabel</span>
+                    </div>
+
+                    <p>@summary</p>
+
+                    <div class="profession-actions">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-area="Student"
+                               asp-controller="Professions"
+                               asp-action="Details"
+                               asp-route-id="@profession.Id"
+                               class="profession-link">
+                                Детайли
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity"
+                               asp-page="/Account/Login"
+                               class="profession-link">
+                                Детайли
+                            </a>
+                        }
+
+                        @if (profession.MaterialsCount > 0)
+                        {
+                            <a asp-area="Student"
+                               asp-controller="Materials"
+                               asp-action="Index"
+                               asp-route-professionId="@profession.Id"
+                               class="profession-link profession-link--soft">
+                                Материали
+                            </a>
+                        }
+                    </div> @* Край на profession-actions *@
+                </article> @* Край на profession-card *@
+            }
+        </div>
+    }
+</div>
+
+<style>
+    /* 1. Основа и Променливи */
+    .student-professions-container {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --surface: #ffffff;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    /* 2. Hero Секция */
+    .professions-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+    }
+
+    .professions-hero h1 {
+        color: #28496f;
+    }
+
+    .professions-hero p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        max-width: 600px;
+        margin: 0;
+    }
+
+    .professions-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+        align-items: center;
+        margin-top: 1.15rem;
+    }
+
+    .professions-quiz-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.2rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        background: linear-gradient(135deg, #6482AD, #314c73);
+        color: white;
+        transition: 0.2s ease;
+    }
+
+        .professions-quiz-link:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(40, 73, 111, 0.14);
+        }
+
+    .professions-hero-note {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+
+    /* Филтриране */
+    .custom-select {
+        border-radius: 12px;
+        border: 1px solid rgba(63, 110, 165, 0.1);
+        padding: 0.7rem 1rem;
+        height: 48px; /* Еднаква височина за input и select */
+    }
+
+    .btn-primary-custom {
+        background-color: #5c85b1;
+        color: white !important;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    /* Стил за текстовия линк "Изчисти" */
+    .text-clear-link {
+        color: #6f86a0; /* Твоят --text-muted */
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
+        white-space: nowrap;
+    }
+
+        .text-clear-link:hover {
+            color: #dc3545; /* Става червен при посочване */
+            text-decoration: underline;
+        }
+
+    /* Консистенция за инпути и селекти */
+    .custom-select {
+        border-radius: 12px;
+        border: 1px solid rgba(63, 110, 165, 0.1);
+        padding: 0.7rem 1rem;
+        height: 48px;
+        background-color: white;
+        color: #28496f;
+    }
+
+        .custom-select:focus {
+            border-color: #5c85b1;
+            box-shadow: 0 0 0 0.25rem rgba(92, 133, 177, 0.1);
+        }
+
+    /* 3. Грид и Карти */
+    .professions-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .profession-card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease;
+        position: relative; /* ВАЖНО: Дефинира контекст за слоевете */
+    }
+
+        .profession-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .profession-card__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .profession-school {
+        font-size: 0.8rem;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .profession-card h3 {
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .profession-count {
+        background: var(--accent-soft);
+        color: var(--accent);
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* 4. Описание (Параграф) */
+    .profession-card p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+    /* 5. Бутони (Actions) */
+    .profession-actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: auto;
+        position: relative;
+        z-index: 10; /* Изкарваме ги най-отгоре */
+        pointer-events: auto; /* Връщаме кликаемостта само тук */
+    }
+
+    .profession-link {
+        padding: 0.6rem 1.2rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        background: #5c85b1;
+        color: white;
+        transition: 0.2s;
+        flex: 1;
+        text-align: center;
+        display: inline-block;
+        cursor: pointer !important;
+    }
+
+        .profession-link:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
+        }
+
+    .profession-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .admin-empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 18px;
+        color: var(--muted);
+        border: 1px dashed var(--line);
+    }
+
+    @@media (max-width: 1200px) {
+        .professions-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 колони за таблети */
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .professions-grid {
+            grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
+        }
+
+        .professions-hero-actions {
+            align-items: stretch;
+        }
+
+        .professions-quiz-link {
+            width: 100%;
+        }
+    }
+</style>

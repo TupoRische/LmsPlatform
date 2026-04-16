@@ -1,0 +1,29 @@
+﻿@using Core.ViewModels.School
+@model IEnumerable<SchoolListVm>
+
+<h2 class="mb-3">Училища</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Име</th>
+            <th>Град</th>
+            <th class="text-end"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.Name</td>
+                <td>@s.City</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary"
+                       asp-controller="Schools" asp-action="Details" asp-route-id="@s.Id">
+                        Детайли
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

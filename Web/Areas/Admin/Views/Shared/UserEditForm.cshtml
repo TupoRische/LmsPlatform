@@ -1,0 +1,151 @@
+﻿@model Core.ViewModels.Admin.Users.UserEditVm
+
+<div class="form-grid">
+    <div>
+        <label asp-for="FirstName" class="form-label">Име</label>
+        <input asp-for="FirstName" class="form-control form-control-lg" />
+        <span asp-validation-for="FirstName" class="text-danger small"></span>
+    </div>
+
+    <div>
+        <label asp-for="LastName" class="form-label">Фамилия</label>
+        <input asp-for="LastName" class="form-control form-control-lg" />
+        <span asp-validation-for="LastName" class="text-danger small"></span>
+    </div>
+
+    <div class="form-span-2">
+        <label asp-for="Email" class="form-label">Имейл</label>
+        <input asp-for="Email" class="form-control form-control-lg" />
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+
+    <div class="form-span-2">
+        <label asp-for="SchoolId" class="form-label">Училище</label>
+        <select asp-for="SchoolId" class="form-select form-select-lg">
+            @foreach (var school in Model.Schools)
+            {
+                <option value="@school.Id">@school.Name</option>
+            }
+        </select>
+        <span asp-validation-for="SchoolId" class="text-danger small"></span>
+    </div>
+</div>
+
+<style>
+    .teacher-edit-page {
+        /* Основна синя гама */
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+        display: block;
+        width: 100%;
+    }
+
+    .teacher-edit-shell {
+        max-width: 1120px;
+        margin: 2rem auto;
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 2rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .teacher-edit-head h1 {
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+        font-weight: 500;
+    }
+
+    .teacher-edit-head p {
+        margin: 0 0 1.5rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+    
+    .form-span-2 {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        display: block;
+        color: var(--text);
+        font-weight: 700;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Стилизиране на input полетата */
+    .form-control, .form-select {
+        width: 100% !important;
+        border-radius: 12px !important;
+        border: 1px solid var(--line) !important;
+        background-color: white !important;
+        color: var(--text);
+        transition: border-color 0.2s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent) !important;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(63, 110, 165, 0.1);
+        }
+
+    .teacher-edit-actions {
+        display: flex;
+        gap: 0.7rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+
+    .edit-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 110px;
+        padding: 0.65rem 1.5rem;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        background: #5c85b1;
+        color: white;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+        .edit-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(63, 110, 165, 0.2);
+        }
+
+    .edit-link--soft {
+        background: #f0f5fa;
+        color: #3f6ea5;
+        border: 1px solid rgba(63, 110, 165, 0.15);
+    }
+
+    /* Мобилна версия */
+    @@media (max-width: 768px) {
+        .form-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>

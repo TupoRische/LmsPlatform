@@ -1,0 +1,32 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Достъпът е отказан";
+}
+
+<div class="container mb-4 pb-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 shadow-sm p-0 rounded-4 overflow-hidden bg-white border text-center">
+
+            <div class="py-3 text-white fw-bold" style="background-color: #728ead; font-size: 1.25rem;">
+                Система за защита
+            </div>
+
+            <div class="p-4">
+                <div class="mb-4">
+                    <i class="bi bi-shield-lock text-danger" style="font-size: 5rem;"></i>
+                </div>
+
+                <h1 class="h2 fw-bold text-dark mb-3">Достъпът е отказан</h1>
+
+                <p class="text-secondary fs-5 mt-3">Вашият профил няма необходимите <br /> права за преглед на тази страница.</p>
+
+                <div class="mt-5 d-flex justify-content-center">
+                    <a href="/" class="btn btn-lg px-5 shadow-sm text-white rounded-pill" style="background-color: #728ead;">
+                        Към началната страница
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

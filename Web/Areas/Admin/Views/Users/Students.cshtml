@@ -1,0 +1,334 @@
+@using Core.ViewModels.Admin.Students
+@model StudentsPageVm
+
+<div class="admin-spotlight students-page mb-4">
+    <div class="students-hero">
+        <div>
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Ученици</h1>
+            <p>Централизиран преглед на регистрираните ученици, училищната им принадлежност и активността им в платформата.</p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Users"
+           asp-action="Index"
+           class="hero-link">
+            Всички потребители
+        </a>
+    </div>
+
+    <div class="students-stats">
+        <article class="stat-card">
+            <span>Общо ученици</span>
+            <strong>@Model.TotalStudents</strong>
+        </article>
+        <article class="stat-card">
+            <span>С избрано училище</span>
+            <strong>@Model.WithSchoolCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Без училище</span>
+            <strong>@Model.WithoutSchoolCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Публикувани коментари</span>
+            <strong>@Model.TotalComments</strong>
+        </article>
+    </div>
+
+    @if (!Model.Students.Any())
+    {
+        <div class="admin-empty-state">
+            Все още няма ученици в системата.
+        </div>
+    }
+    else
+    {
+        <div class="students-grid">
+            @foreach (var student in Model.Students)
+            {
+                var initial = string.IsNullOrWhiteSpace(student.FullName) ? "?" : student.FullName[..1].ToUpperInvariant();
+
+                <article class="student-card">
+                    <div class="student-card__top">
+                        <div class="student-avatar">@initial</div>
+
+                        <div class="student-meta">
+                            <h3>@student.FullName</h3>
+                            <a href="mailto:@student.Email">@student.Email</a>
+                        </div>
+
+                        
+                    </div>
+
+                    <dl class="student-facts">
+                        <div>
+                            <dt>Училище</dt>
+                            <dd>@student.SchoolName</dd>
+                        </div>
+                        <div>
+                            <dt>Регистрация</dt>
+                            <dd>@student.CreatedOn.ToString("dd.MM.yyyy")</dd>
+                        </div>
+                        <div>
+                            <dt>Коментари</dt>
+                            <dd>@student.CommentsCount</dd>
+                        </div>
+                        <div>
+                            <dt>Резултати от анкета</dt>
+                            <dd>@student.QuizResultsCount</dd>
+                        </div>
+                    </dl>
+                    <div class="student-card__actions" style="margin-top: auto; display: flex; gap: 0.5rem;">
+                        <a asp-action="EditStudent"
+                           asp-route-id="@student.Id"
+                           class="student-link">
+                            Редактиране
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .students-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --surface: #ffffff;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .student-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.56rem 0.72rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: #5c85b1;
+        color: white;
+        transition: all 0.2s ease;
+    }
+
+        .student-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(63, 110, 165, 0.2);
+            color: white;
+        }
+
+    .students-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.15rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        align-items: center;
+        min-height: 148px;
+        margin-bottom: 1rem;
+    }
+
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .students-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .students-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.88rem;
+    }
+
+    .hero-link {
+        background: #5c85b1;
+        color: white;
+        text-decoration: none;
+        padding: 0.58rem 0.82rem;
+        border-radius: 999px;
+        font-weight: 700;
+        white-space: nowrap;
+        font-size: 0.82rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-link:hover,
+    .hero-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
+    }
+
+    .students-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0.8rem 0.9rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-card strong {
+        color: var(--text);
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    .students-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .student-card {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0.85rem 0.95rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .student-card__top {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .student-avatar {
+        width: 2.45rem;
+        height: 2.45rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #7ea4d3, #4f78a8);
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .student-meta h3 {
+        margin: 0 0 0.2rem;
+        font-size: 0.94rem;
+        color: var(--text);
+    }
+
+    .student-meta a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.82rem;
+    }
+
+    .student-facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+        margin: 0 0 0.8rem;
+    }
+
+    .student-facts dt {
+        color: var(--muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+    }
+
+    .student-facts dd {
+        margin: 0;
+        color: var(--text);
+        font-weight: 600;
+        line-height: 1.35;
+        font-size: 0.84rem;
+    }
+
+    .student-tags {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+    }
+
+    .student-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.58rem;
+        border-radius: 999px;
+        background: #dff1ff;
+        color: #275c8f;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .student-tag--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .student-tag--warn {
+        background: #fff1d9;
+        color: #9c6b12;
+    }
+
+    .admin-empty-state {
+        background: white;
+        border: 1px dashed var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    @@media (max-width: 992px) {
+        .students-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .students-hero {
+            align-items: start;
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .students-stats,
+        .student-facts {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

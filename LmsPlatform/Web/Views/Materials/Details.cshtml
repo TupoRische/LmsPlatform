@@ -1,0 +1,433 @@
+@using Core.ViewModels.Comments
+@using Core.ViewModels.Materials
+@using System.Security.Claims
+@model MaterialDetailsVm
+@{
+    int CountComments(IEnumerable<CommentListVm> comments)
+    {
+        var total = 0;
+
+        foreach (var comment in comments)
+        {
+            total++;
+            total += CountComments(comment.Replies);
+        }
+
+        return total;
+    }
+}
+<div class="container page-container mb-5 mt-4">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="d-flex gap-2 mb-3">
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: #7FA1C3; color: white;">
+                            <i class="bi bi-briefcase me-1"></i> @Model.ProfessionName
+                        </span>
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: #6482AD; color: white;">
+                            <i class="bi bi-book me-1"></i> @Model.CategoryName
+                        </span>
+                    </div>
+                    <h1 class="display-5 fw-bold m-0" style="color: #314c73;">@Model.Title</h1>
+                    <div class="mt-2 text-muted small">
+                        <i class="bi bi-person me-1"></i> @Model.TeacherName
+                    </div>
+                </div>
+                <a class="btn btn-light border shadow-sm rounded-pill px-4 fw-bold"
+                   style="color: #6482AD;" href="javascript:history.back()">
+                    <i class="bi bi-arrow-left me-1"></i> Назад
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-8 p-4 p-md-5 bg-white">
+                            <h5 class="fw-bold mb-3" style="color: #314c73;">Описание на ресурса</h5>
+                            <p class="text-secondary mb-5" style="line-height: 1.6; min-height: 60px;">
+                                @(!string.IsNullOrWhiteSpace(Model.Description) ? Model.Description : "Няма предоставено описание за този материал.")
+                            </p>
+
+                            <div class="d-flex flex-row gap-3 mt-4">
+                                @if (!string.IsNullOrWhiteSpace(Model.FilePath))
+                                {
+                                    <button type="button" class="btn-details-custom btn-preview shadow-sm"
+                                            data-bs-toggle="modal" data-bs-target="#previewModal">
+                                        <i class="bi bi-eye me-2"></i> Преглед
+                                    </button>
+
+                                    <a class="btn-details-custom btn-download shadow-sm"
+                                       href="@Model.FilePath" download>
+                                        <i class="bi bi-download me-2"></i> Изтегли
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 p-4 d-flex flex-column justify-content-center border-start" style="background-color: #fcfcfc;">
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Преподавател</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-person-circle me-1"></i> @Model.TeacherName</span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Дата на публикуване</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-calendar3 me-1"></i> @Model.CreatedOn.ToString("dd.MM.yyyy")</span>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Професия</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-briefcase me-1"></i> @Model.ProfessionName</span>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Категория</small>
+                                <span class="fw-bold" style="color: #314c73;"><i class="bi bi-tag me-1"></i> @Model.CategoryName</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h4 class="fw-bold m-0" style="color: #314c73;">@(CountComments(Model.Comments) == 1 ? "Коментар" : "Коментари") (@CountComments(Model.Comments))</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        @if (TempData["CommentError"] != null)
+                        {
+                            <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4">
+                                @TempData["CommentError"]
+                            </div>
+                        }
+
+                        <form asp-controller="Comments" asp-action="Create" method="post" class="mb-4">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="materialId" value="@Model.Id" />
+                            <input type="hidden" name="ParentCommentId" value="" />
+                            <div class="d-flex flex-column flex-md-row gap-3">
+                                <textarea name="Content" class="form-control border-0 rounded-3 shadow-sm bg-light p-3"
+                                          placeholder="Напиши своя коментар..." rows="2" required style="resize: none;"></textarea>
+
+                                <button type="submit" class="btn btn-primary rounded-3 shadow-sm border-0 align-self-md-end"
+                                        style="background-color: #6482AD; height: 50px; min-width: 120px; padding: 0 !important;">
+                                    Изпрати
+                                </button>
+                            </div>
+                        </form>
+                    }
+
+                    <div class="comments-list">
+                        @if (!Model.Comments.Any())
+                        {
+                            <div class="alert alert-light border rounded-4 text-muted mb-0">
+                                Все още няма коментари. Бъди първият, който ще започне разговора.
+                            </div>
+                        }
+                        else
+                        {
+                            foreach (var comment in Model.Comments)
+                            {
+                                <partial name="_CommentThreadPublic"
+                                         model="comment"
+                                         view-data='new ViewDataDictionary(ViewData)
+                                         {
+                                             ["MaterialId"] = Model.Id,
+                                             ["CanReply"] = User.Identity?.IsAuthenticated ?? false
+                                         }' />
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom px-4">
+                <h5 class="modal-title fw-bold" id="previewModalLabel" style="color: #314c73;">Преглед на материал</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                @if (!string.IsNullOrWhiteSpace(Model.FilePath))
+                {
+                    var cleanPath = Model.FilePath.Trim();
+                    var isPdf = cleanPath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                    var isPptx = cleanPath.EndsWith(".pptx", StringComparison.OrdinalIgnoreCase);
+
+                    if (isPdf)
+                    {
+                        <iframe src="@cleanPath" width="100%" height="750px" style="border: none; display: block;"></iframe>
+                    }
+                    else if (isPptx)
+                    {
+                        <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=@(Context.Request.Scheme + "://" + Context.Request.Host + cleanPath)"
+                                width="100%" height="750px" frameborder="0">
+                        </iframe>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-file-earmark-zip display-1 text-muted opacity-25"></i>
+                            <p class="mt-3 text-muted">Този тип файл (@System.IO.Path.GetExtension(cleanPath)) не поддържа директен преглед.</p>
+                            <a href="@cleanPath" class="btn btn-success rounded-pill px-4" download>Изтегли и разгледай</a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #E2DAD6 !important;
+    }
+
+    main {
+        padding-top: 100px !important;
+    }
+
+    .btn-details-custom {
+        height: 54px;
+        flex: 1;
+        min-width: 160px;
+        max-width: 250px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px !important;
+        font-weight: 600;
+        transition: 0.3s ease;
+        border-width: 2px !important;
+        padding: 0 !important;
+        text-decoration: none;
+        outline: none !important;
+    }
+
+    .btn-details-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-preview {
+        background-color: #6482AD !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .btn-download {
+        background-color: transparent !important;
+        color: #198754 !important;
+        border-color: #198754 !important;
+    }
+
+    .btn-download:hover {
+        background-color: #198754 !important;
+        color: white !important;
+    }
+
+    .rounded-4 {
+        border-radius: 1.25rem !important;
+    }
+
+    textarea.form-control:focus {
+        background-color: white !important;
+        box-shadow: 0 0 0 3px rgba(100,130,173,0.1) !important;
+    }
+
+    .comments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .comment-thread-item {
+        position: relative;
+    }
+
+    .comment-thread-item--reply::before {
+        content: "";
+        position: absolute;
+        left: -1rem;
+        top: 1.25rem;
+        bottom: 1.25rem;
+        width: 2px;
+        background: linear-gradient(180deg, rgba(100,130,173,0.18), rgba(100,130,173,0.03));
+    }
+
+    .comment-card {
+        background: linear-gradient(180deg, #ffffff 0%, #fcfdff 100%);
+        border: 1px solid rgba(100,130,173,0.10);
+        box-shadow: 0 10px 24px rgba(49,76,115,0.08);
+    }
+
+    .comment-author {
+        color: #314c73;
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .avatar-circle {
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #87a8d0, #6482AD);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .badge-role {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 0.35rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .role-admin {
+        background-color: rgba(100,130,173,0.12);
+        color: #46658d;
+    }
+
+    .role-user {
+        background-color: rgba(127,161,195,0.14);
+        color: #5d7fa6;
+    }
+
+    .comment-text {
+        color: #435a7a;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .text-muted-custom {
+        color: #8ca0ba !important;
+        font-size: 0.92rem;
+    }
+
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        flex-shrink: 0;
+    }
+
+    .comment-replies {
+        margin-left: 1.5rem;
+        padding-left: 1.5rem;
+    }
+
+    .comment-thread-item--reply .comment-card {
+        background: rgba(255,255,255,0.72);
+        border-color: rgba(100,130,173,0.06);
+        box-shadow: 0 6px 16px rgba(49,76,115,0.04);
+    }
+
+    .comment-thread-item--reply .avatar-circle {
+        width: 2.85rem;
+        height: 2.85rem;
+        font-size: 1.2rem;
+        background: linear-gradient(135deg, #9bb5d7, #7d9cc1);
+    }
+
+    .comment-thread-item--reply .comment-text {
+        color: #516884;
+    }
+
+    .comment-icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(100,130,173,0.10);
+        background: rgba(255,255,255,0.7);
+        color: #90a8c7;
+        transition: 0.2s ease;
+        padding: 0;
+    }
+
+    .reply-toggle-btn:hover {
+        background: rgba(100,130,173,0.08);
+        color: #5a7ba7;
+        border-color: rgba(100,130,173,0.18);
+    }
+
+    .comment-reply-form {
+        background-color: rgba(100,130,173,0.05);
+        border: 1px solid rgba(100,130,173,0.08);
+        border-radius: 18px;
+        padding: 1rem;
+    }
+
+    .comment-edit-form {
+        background-color: rgba(100,130,173,0.05);
+        border: 1px solid rgba(100,130,173,0.08);
+        border-radius: 18px;
+        padding: 1rem;
+    }
+
+    .comment-submit-btn {
+        background-color: #6482AD !important;
+        min-width: 130px;
+    }
+
+    .btn-delete-minimal:hover {
+        background-color: #f8d7da;
+        color: #b42318;
+        border-color: rgba(180,35,24,0.14);
+    }
+
+    @@media (max-width: 768px) {
+        .comment-replies {
+            margin-left: 0.75rem;
+            padding-left: 1rem;
+        }
+
+        .comment-thread-item--reply::before {
+            left: -0.55rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('click', function (event) {
+            const toggle = event.target.closest('[data-ui-toggle]');
+            if (!toggle) {
+                return;
+            }
+
+            const targetId = toggle.getAttribute('data-ui-toggle');
+            const form = document.getElementById(targetId);
+            if (!form) {
+                return;
+            }
+
+            form.classList.toggle('d-none');
+
+            const textarea = form.querySelector('textarea');
+            if (textarea && !form.classList.contains('d-none')) {
+                textarea.focus();
+            }
+        });
+    </script>
+}

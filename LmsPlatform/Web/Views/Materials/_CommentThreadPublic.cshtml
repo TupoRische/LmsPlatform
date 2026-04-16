@@ -1,0 +1,159 @@
+@using Core.ViewModels.Comments
+@using System.Security.Claims
+@model CommentListVm
+@{
+    var materialId = (int)(ViewData["MaterialId"] ?? 0);
+    var canReply = (bool)(ViewData["CanReply"] ?? false);
+    var replyFormId = $"reply-form-{Model.Id}";
+    var editFormId = $"edit-form-{Model.Id}";
+    var isOwner = User.FindFirst(ClaimTypes.NameIdentifier)?.Value == Model.AuthorId;
+    var authorInitial = string.IsNullOrWhiteSpace(Model.AuthorName)
+        ? "?"
+        : Model.AuthorName[..1].ToUpperInvariant();
+    var roleLabel = Model.Role switch
+    {
+        "Admin" => "Администратор",
+        "Teacher" => "Учител",
+        "Student" => "Ученик",
+        _ => Model.Role
+    };
+}
+
+<div class="comment-thread-item @(Model.ParentCommentId.HasValue ? "comment-thread-item--reply" : string.Empty)">
+    <div class="comment-card d-flex gap-3 p-3 p-md-4 rounded-4">
+        <div class="avatar-circle shadow-sm">
+            @authorInitial
+        </div>
+
+        <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span class="comment-author">@Model.AuthorName</span>
+                        @if (!string.IsNullOrEmpty(Model.Role))
+                        {
+                            <span class="badge-role @(Model.Role == "Admin" ? "role-admin" : "role-user")">
+                                @roleLabel
+                            </span>
+                        }
+                    </div>
+
+                    <p class="comment-text mb-2">@Model.Content</p>
+                    <small class="text-muted-custom d-block">@Model.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
+                </div>
+
+                <div class="comment-actions">
+                    @if (canReply)
+                    {
+                        <button type="button"
+                                class="comment-icon-btn reply-toggle-btn"
+                                data-ui-toggle="@replyFormId"
+                                title="Отговори"
+                                aria-label="Отговори">
+                            <i class="bi bi-reply-fill"></i>
+                        </button>
+                    }
+
+                    @if (isOwner)
+                    {
+                        <button type="button"
+                                class="comment-icon-btn edit-toggle-btn"
+                                data-ui-toggle="@editFormId"
+                                title="Редактирай"
+                                aria-label="Редактирай">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                    }
+
+                    @if (User.IsInRole("Admin") || isOwner)
+                    {
+                        <form asp-controller="Comments" asp-action="Delete" method="post"
+                              onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този коментар и всички негови отговори?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="commentId" value="@Model.Id" />
+                            <input type="hidden" name="materialId" value="@materialId" />
+
+                            <button type="submit" class="comment-icon-btn btn-delete-minimal" title="Изтрий" aria-label="Изтрий">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            @if (isOwner)
+            {
+                <form id="@editFormId"
+                      asp-controller="Comments"
+                      asp-action="Edit"
+                      method="post"
+                      class="comment-edit-form d-none mt-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="commentId" value="@Model.Id" />
+                    <input type="hidden" name="materialId" value="@materialId" />
+
+                    <div class="d-flex flex-column gap-2">
+                        <textarea name="Content"
+                                  class="form-control border-0 rounded-3 shadow-sm bg-light p-3"
+                                  rows="3"
+                                  required>@Model.Content</textarea>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button"
+                                    class="btn btn-light border rounded-3 px-3"
+                                    data-ui-toggle="@editFormId">
+                                Откажи
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-primary rounded-3 shadow-sm border-0 px-4 comment-submit-btn">
+                                Запази
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+
+            @if (canReply)
+            {
+                <form id="@replyFormId"
+                      asp-controller="Comments"
+                      asp-action="Create"
+                      method="post"
+                      class="comment-reply-form d-none mt-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="materialId" value="@materialId" />
+                    <input type="hidden" name="ParentCommentId" value="@Model.Id" />
+
+                    <div class="d-flex flex-column flex-md-row gap-2">
+                        <textarea name="Content"
+                                  class="form-control border-0 rounded-3 shadow-sm bg-light p-3"
+                                  rows="2"
+                                  required
+                                  placeholder="Напиши своя отговор..."></textarea>
+
+                        <button type="submit"
+                                class="btn btn-primary rounded-3 shadow-sm border-0 align-self-md-end comment-submit-btn">
+                            Отговори
+                        </button>
+                    </div>
+                </form>
+            }
+
+            @if (Model.Replies.Any())
+            {
+                <div class="comment-replies mt-3">
+                    @foreach (var reply in Model.Replies)
+                    {
+                        <partial name="_CommentThreadPublic"
+                                 model="reply"
+                                 view-data='new ViewDataDictionary(ViewData)
+                                 {
+                                     ["MaterialId"] = materialId,
+                                     ["CanReply"] = canReply
+                                 }' />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+@using Core.ViewModels.Admin.Users
+@model UserEditVm
+
+<div class="teacher-edit-page mb-4">
+    <div class="teacher-edit-shell">
+        <div class="teacher-edit-head">
+            <div>
+                <span class="hero-kicker">Профил на учител</span>
+                <h1>Редакция</h1>
+                <p>Актуализирай основните данни за преподавателя</p>
+            </div>
+        </div>
+
+        <form asp-action="Edit" method="post" class="teacher-edit-form">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-grid">
+                <partial name="UserEditForm" model="Model" />
+            </div>
+
+
+            <div class="teacher-edit-actions">
+                <a asp-action="TeacherDetails" asp-route-id="@Model.Id" class="edit-link edit-link--soft">Назад</a>
+                <button type="submit" class="edit-link">Запази</button>
+            </div>
+        </form>
+    </div>
+</div>
+@* 
+<style>
+    .teacher-edit-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --beige-soft: #f6efe5;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .teacher-edit-shell {
+        max-width: 1120px;
+        width: 100%;
+        margin: 0 auto;
+        display: block; 
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.2rem 1.3rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .teacher-edit-head h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .teacher-edit-head p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+        max-width: 760px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .form-span-2 {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .form-label {
+        color: var(--text);
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+    }
+
+    .teacher-edit-form .form-control,
+    .teacher-edit-form .form-select {
+        width: 100% !important;
+        max-width: none !important;
+        border-radius: 14px;
+        border-color: rgba(63, 110, 165, 0.14);
+        padding: 0.72rem 0.9rem;
+        box-shadow: none;
+    }
+
+    .teacher-edit-actions {
+        display: flex;
+        gap: 0.55rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+
+    .edit-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        padding: 0.58rem 0.82rem;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .edit-link:hover,
+        .edit-link:focus {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+        }
+
+    .edit-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+        .edit-link--soft:hover,
+        .edit-link--soft:focus {
+            background: var(--accent-soft);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
+        }
+
+    @@media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style> *@

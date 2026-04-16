@@ -1,0 +1,137 @@
+@model Core.ViewModels.School.SchoolDetailsVm
+
+<div class="school-delete-page mb-4">
+    <div class="school-delete-card">
+        <span class="hero-kicker">Училища</span>
+        <h1>Изтриване</h1>
+        <p>Сигурни ли сте, че искате да изтриете училището <strong>@Model.Name</strong>?</p>
+
+        <dl class="school-delete-facts">
+            <div>
+                <dt>Град</dt>
+                <dd>@Model.City</dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div>
+                    <dt>Описание</dt>
+                    <dd>@Model.Description</dd>
+                </div>
+            }
+        </dl>
+
+        <div class="school-delete-actions">
+            <a asp-action="Index" class="delete-link delete-link--soft">Отказ</a>
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="delete-link">Да, изтрий</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .school-delete-page {
+        --accent: #b42318;
+        --accent-soft: #fff1f1;
+        --line: rgba(180, 35, 24, 0.10);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .school-delete-card {
+        background: linear-gradient(135deg, #fff6f6 0%, #ffffff 60%);
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        padding: 2rem;
+        box-shadow: 0 14px 32px rgba(40, 73, 111, 0.05);
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.6rem;
+    }
+
+    .school-delete-card h1 {
+        margin: 0 0 0.45rem;
+        color: var(--text);
+    }
+
+    .school-delete-card p {
+        margin: 0 0 1.25rem;
+        color: var(--muted);
+        line-height: 1.7;
+    }
+
+    .school-delete-facts {
+        display: grid;
+        gap: 0.9rem;
+        margin: 0 0 1.5rem;
+    }
+
+    .school-delete-facts div {
+        background: white;
+        border: 1px solid rgba(180, 35, 24, 0.08);
+        border-radius: 20px;
+        padding: 1rem;
+    }
+
+    .school-delete-facts dt {
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+    }
+
+    .school-delete-facts dd {
+        margin: 0;
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .school-delete-actions {
+        display: flex;
+        gap: 0.7rem;
+        justify-content: flex-end;
+    }
+
+    .delete-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+        padding: 0.9rem 1.1rem;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .delete-link:hover,
+    .delete-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(180, 35, 24, 0.12);
+    }
+
+    .delete-link--soft {
+        background: #f5f8fb;
+        color: var(--text);
+    }
+
+    .delete-link--soft:hover,
+    .delete-link--soft:focus {
+        background: #f5f8fb;
+        color: var(--text);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.10);
+    }
+</style>

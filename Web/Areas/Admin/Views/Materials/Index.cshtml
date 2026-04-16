@@ -1,0 +1,312 @@
+@using Core.ViewModels.Admin.Materials
+@model AdminMaterialsPageVm
+
+<div class="admin-materials-page mb-4">
+    <div class="materials-hero">
+        <div>
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Материали</h1>
+            <p>Подреден преглед на учебните материали с професия, категория, автор и активност в коментарите.</p>
+        </div>
+    </div>
+
+    <div class="materials-stats">
+        <article class="stat-card">
+            <span>Всички материали</span>
+            <strong>@Model.TotalMaterials</strong>
+        </article>
+        <article class="stat-card">
+            <span>С прикачен файл</span>
+            <strong>@Model.WithFilesCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>С външен линк</span>
+            <strong>@Model.WithExternalLinksCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Коментари общо</span>
+            <strong>@Model.TotalComments</strong>
+        </article>
+    </div>
+
+    @if (!Model.Materials.Any())
+    {
+        <div class="admin-empty-state">Все още няма материали в системата.</div>
+    }
+    else
+    {
+        <div class="materials-grid">
+            @foreach (var material in Model.Materials)
+            {
+                var summary = !string.IsNullOrWhiteSpace(material.Description)
+                    ? material.Description
+                    : "Няма добавено описание за този материал.";
+                var commentsLabel = material.CommentsCount == 1 ? "коментар" : "коментара";
+
+                if (summary.Length > 150)
+                {
+                    summary = summary[..147] + "...";
+                }
+
+                <article class="material-card">
+                    <div class="material-card__head">
+                        <div>
+                            <span class="material-meta">@material.ProfessionName · @material.CategoryName</span>
+                            <h3>@material.Title</h3>
+                        </div>
+
+                        <span class="material-comments">@material.CommentsCount @commentsLabel</span>
+                    </div>
+
+                    <p>@summary</p>
+
+                    <div class="material-facts">
+                        <span>Автор: @material.TeacherName</span>
+                        <span>Публикувано: @material.CreatedOn.ToString("dd.MM.yyyy")</span>
+                    </div>
+
+                    <div class="material-card__actions">
+                        <a asp-area=""
+                           asp-controller="Materials"
+                           asp-action="Details"
+                           asp-route-id="@material.Id"
+                           class="material-link">
+                            Отвори
+                        </a>
+
+                        <a asp-area="Admin"
+                           asp-controller="Comments"
+                           asp-action="Details"
+                           asp-route-materialId="@material.Id"
+                           class="material-link material-link--soft">
+                            Коментари
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .admin-materials-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --beige-soft: #f6efe5;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .materials-hero,
+    .stat-card,
+    .material-card,
+    .admin-empty-state {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .materials-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        padding: 1.15rem 1.25rem;
+        min-height: 148px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .materials-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .materials-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.88rem;
+    }
+
+    .materials-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        padding: 0.85rem 0.95rem;
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    .stat-card strong {
+        color: var(--text);
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    .materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 0.85rem;
+    }
+
+    .material-card {
+        padding: 0.95rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .material-card__head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+
+    .material-meta {
+        display: inline-block;
+        color: var(--muted);
+        margin-bottom: 0.3rem;
+        font-size: 0.76rem;
+    }
+
+    .material-card h3 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .material-comments {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.32rem 0.6rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.74rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .material-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 0.86rem;
+        min-height: 2.7rem;
+    }
+
+    .material-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+    }
+
+    .material-facts span {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.28rem 0.56rem;
+        border-radius: 999px;
+        background: #f7f9fc;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    .material-card__actions {
+        display: flex;
+        gap: 0.55rem;
+        margin-top: auto;
+    }
+
+    .material-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        padding: 0.6rem 0.8rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .material-link:hover,
+    .material-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .material-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .material-link--soft:hover,
+    .material-link--soft:focus {
+        background: var(--accent-soft);
+        color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
+    }
+
+    .admin-empty-state {
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--muted);
+    }
+
+    @@media (max-width: 992px) {
+        .materials-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .materials-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .material-card__head,
+        .material-card__actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .materials-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

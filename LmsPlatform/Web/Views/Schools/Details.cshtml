@@ -1,0 +1,23 @@
+﻿@using Core.ViewModels.School
+@model SchoolDetailsVm
+
+<h2 class="mb-2">@Model.Name</h2>
+<div class="text-muted mb-3">@Model.City</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p>@Model.Description</p>
+}
+else
+{
+    <p class="text-muted">Няма описание.</p>
+}
+
+<div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" asp-controller="Schools" asp-action="Index">Назад</a>
+
+    <a class="btn btn-primary"
+       asp-controller="Professions" asp-action="Index" asp-route-schoolId="@Model.Id">
+        Виж професиите
+    </a>
+</div>

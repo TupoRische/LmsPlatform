@@ -1,0 +1,134 @@
+﻿@using Core.ViewModels.Admin.Users
+@model UserEditVm
+
+<div class="teacher-edit-page mb-4 student-theme">
+    @* Добавяме клас student-theme за различен цвят, ако желаеш *@
+    <div class="teacher-edit-shell">
+        <div class="teacher-edit-head">
+            <div>
+                <span class="hero-kicker">Профил на ученик</span>
+                <h1>Редакция</h1>
+                <p>Актуализирай основните данни за ученика и неговото училище</p>
+            </div>
+        </div>
+
+        <form asp-action="EditStudent" method="post" class="teacher-edit-form">
+            <input type="hidden" asp-for="Id" />
+
+            @* Използваме твоето partial view за самите полета (Име, Фамилия, Училище) *@
+            <div class="form-grid">
+                <partial name="UserEditForm" model="Model" />
+            </div>
+
+            <div class="teacher-edit-actions">
+                <a asp-action="Students" class="edit-link edit-link--soft">Назад</a>
+                <button type="submit" class="edit-link">Запази</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* <style>
+    /* Копираме дизайна на учителите */
+    .teacher-edit-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    /* Опционално: Лилав акцент само за ученици, за да се различават от учителите */
+    .student-theme {
+        --accent: #6366f1;
+        --accent-soft: #f0f1ff;
+        --line: rgba(99, 102, 241, 0.12);
+        --text: #312e81;
+        --muted: #4f46e5;
+    }
+
+    .teacher-edit-shell {
+        max-width: 1120px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.2rem 1.3rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .teacher-edit-head h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .teacher-edit-head p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* По подразбиране е една колона за partial-а */
+        gap: 0.9rem;
+    }
+
+    .teacher-edit-actions {
+        display: flex;
+        gap: 0.55rem;
+        justify-content: flex-end;
+        margin-top: 1.5rem;
+    }
+
+    .edit-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        padding: 0.58rem 1.2rem;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: var(--accent);
+        color: white;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+        .edit-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+    .edit-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    /* Стилизиране на input полетата вътре в partial-а */
+    .teacher-edit-form input,
+    .teacher-edit-form select {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: white;
+    }
+</style>
+ *@

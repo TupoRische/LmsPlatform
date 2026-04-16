@@ -1,0 +1,305 @@
+﻿@using Core.ViewModels.Teacher.Materials
+@model TeacherMaterialsPageVm
+
+<div class="teacher-materials-page mb-4">
+    @* Hero секция за Преподавателя *@
+    <div class="teacher-hero">
+        <div>
+            <span class="hero-label">Преподавателски панел</span>
+            <h1>Моите учебни материали</h1>
+            <p>Управлявайте ресурсите, които сте споделили с учениците. Преглеждайте обратната връзка и активността по вашите теми.</p>
+        </div>
+    </div>
+
+    @* Статистически карти за личните материали *@
+    <div class="teacher-stats-row">
+        <article class="t-stat-card">
+            <span>Общо материали</span>
+            <strong>@Model.TotalMaterials</strong>
+        </article>
+        <article class="t-stat-card">
+            <span>С прикачен файл</span>
+            <strong>@Model.WithFilesCount</strong>
+        </article>
+        <article class="t-stat-card">
+            <span>Външни препратки</span>
+            <strong>@Model.WithExternalLinksCount</strong>
+        </article>
+        <article class="t-stat-card">
+            <span>Общо коментари</span>
+            <strong>@Model.TotalComments</strong>
+        </article>
+    </div>
+
+    @if (!Model.Materials.Any())
+    {
+        <div class="teacher-empty-state">
+            <i class="bi bi-folder2-open" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
+            Все още не сте добавили учебни материали.
+        </div>
+    }
+    else
+    {
+        <div class="teacher-materials-grid">
+            @foreach (var material in Model.Materials)
+            {
+                var summary = !string.IsNullOrWhiteSpace(material.Description)
+                ? material.Description
+                : "Няма добавено описание за този материал.";
+                var commentsLabel = material.CommentsCount == 1 ? "коментар" : "коментара";
+
+                if (summary.Length > 140)
+                {
+                    summary = summary[..137] + "...";
+                }
+
+                <article class="teacher-resource-card">
+                    <div class="resource-card__header">
+                        <div>
+                            <span class="resource-type">@material.ProfessionName · @material.CategoryName</span>
+                            <h3>@material.Title</h3>
+                        </div>
+                    </div>
+
+                    <p class="resource-description">@summary</p>
+
+                    <div class="resource-footer-info">
+                        <span><i class="bi bi-calendar3"></i> @material.CreatedOn.ToString("dd.MM.yyyy")</span>
+                        @if (!string.IsNullOrEmpty(material.Url))
+                        {
+                            <span class="has-link-tag"><i class="bi bi-link-45deg"></i> Линк</span>
+                        }
+                    </div>
+
+                    <div class="resource-card__actions">
+                        <a asp-area=""
+                           asp-controller="Materials"
+                           asp-action="Details"
+                           asp-route-id="@material.Id"
+                           class="t-btn t-btn--primary">
+                            Преглед
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .teacher-materials-page {
+        --t-primary: #3f6ea5;
+        --t-primary-soft: #edf4fb;
+        --t-bg-gradient: linear-gradient(135deg, #f8fafd 0%, #fefaf4 100%);
+        --t-border: rgba(63, 110, 165, 0.12);
+        --t-text-main: #28496f;
+        --t-text-muted: #6f86a0;
+        --t-white: #ffffff;
+    }
+
+    /* Hero Section */
+    .teacher-hero {
+        background: var(--t-bg-gradient);
+        border: 1px solid var(--t-border);
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        min-height: 160px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 20px rgba(40, 73, 111, 0.03);
+    }
+
+    .hero-label {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--t-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .teacher-hero h1 {
+        margin: 0 0 0.4rem;
+        color: var(--t-text-main);
+        font-weight: 500;
+        font-size: clamp(1rem, 2.2vw, 2rem);
+    }
+
+    .teacher-hero p {
+        margin: 0;
+        max-width: 700px;
+        color: var(--t-text-muted);
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    /* Stats Row */
+    .teacher-stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .t-stat-card {
+        background: var(--t-white);
+        border: 1px solid var(--t-border);
+        border-radius: 16px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+        .t-stat-card span {
+            display: block;
+            color: var(--t-text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .t-stat-card strong {
+            color: var(--t-text-main);
+            font-size: 1.4rem;
+        }
+
+    /* Materials Grid */
+    .teacher-materials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .teacher-resource-card {
+        background: var(--t-white);
+        border: 1px solid var(--t-border);
+        border-radius: 24px; /* Малко по-заоблено според новата снимка */
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s ease;
+    }
+
+    .resource-card__header {
+        margin-bottom: 1.25rem;
+    }
+
+    .resource-type {
+        font-size: 0.85rem;
+        color: var(--t-text-muted);
+        margin-bottom: 0.4rem;
+        display: block;
+    }
+
+    .teacher-resource-card h3 {
+        margin: 0;
+        font-size: 1.4rem; /* По-голям шрифт за заглавието */
+        color: var(--t-text-main);
+        font-weight: 700;
+    }
+
+    .resource-description {
+        color: var(--t-text-muted);
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .resource-footer-info {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .resource-footer-info span {
+            font-size: 0.85rem;
+            color: var(--t-text-muted);
+            background: #f8f9fa;
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .has-link-tag {
+        color: #2a9d8f !important;
+        background: #e9f5f3 !important;
+    }
+
+    /* Buttons */
+    .resource-card__actions {
+        display: flex;
+    }
+
+    .t-btn {
+        flex: 1;
+        padding: 0.65rem;
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+    .t-btn--primary {
+        flex: 1; /* Разпъва бутона до края */
+        background: #4a76a8; /* Точният цвят от снимката */
+        color: white;
+        padding: 0.8rem;
+        border-radius: 14px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: background 0.2s;
+    }
+
+        .t-btn--primary:hover {
+            background: #3b638d;
+            color: white;
+        }
+
+    .t-btn--outline {
+        background: transparent;
+        color: var(--t-primary);
+        border: 1px solid var(--t-primary);
+    }
+
+        .t-btn--outline:hover {
+            background: var(--t-primary-soft);
+            color: var(--t-primary);
+        }
+
+    .teacher-empty-state {
+        background: var(--t-white);
+        border: 2px dashed var(--t-border);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        color: var(--t-text-muted);
+    }
+
+    /* Media Queries */
+    @@media (max-width: 992px) {
+        .teacher-stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .teacher-stats-row {
+            grid-template-columns: 1fr;
+        }
+
+        .teacher-materials-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .resource-card__actions {
+            flex-direction: column;
+        }
+    }
+</style>

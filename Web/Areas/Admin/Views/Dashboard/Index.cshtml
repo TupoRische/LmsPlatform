@@ -1,0 +1,707 @@
+@model Core.ViewModels.Admin.AdminDashboardVm
+
+<div class="admin-dashboard-page mb-4">
+    <section class="dashboard-hero">
+        <div class="dashboard-hero__copy">
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Администраторско табло</h1>
+            <p>Всички основни секции са на едно място с бърз преглед на потребители, съдържание и чакащи действия.</p>
+        </div>
+
+        <div class="dashboard-hero__stats">
+            <div class="hero-stat">
+                <span>Потребители</span>
+                <strong>@Model.UsersCount</strong>
+            </div>
+            <div class="hero-stat">
+                <span>Материали</span>
+                <strong>@Model.Materials</strong>
+            </div>
+            <div class="hero-stat hero-stat--warning">
+                <span>Чакащи</span>
+                <strong>@Model.PendingTeachers</strong>
+            </div>
+        </div>
+    </section>
+
+    <div class="dashboard-grid">
+        <a asp-area="Admin"
+           asp-controller="Users"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--blue">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Потребители</span>
+                        <strong>@Model.UsersCount</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-people dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var user in Model.RecentUsers)
+                    {
+                        <div class="dashboard-list-item">
+                            <span class="dashboard-list-title dashboard-list-title--normal">@user.FullName</span>
+                            <span class="dashboard-pill @(user.Role switch
+                            {
+                                "Админ" => "dashboard-pill--admin",
+                                "Учител" => "dashboard-pill--teacher",
+                                "Ученик" => "dashboard-pill--student",
+                                _ => "dashboard-pill--muted"
+                            })">@user.Role</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Users"
+           asp-action="Teachers"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--blue">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Учители</span>
+                        <strong>@Model.Teachers</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-person-badge dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var teacher in Model.RandomTeachers)
+                    {
+                        <div class="dashboard-list-item">
+                            <span class="dashboard-list-title dashboard-list-title--normal">@teacher.FullName</span>
+                            <span class="dashboard-pill dashboard-pill--teacher">Учител</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Users"
+           asp-action="Students"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--cyan">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Ученици</span>
+                        <strong>@Model.Students</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-mortarboard dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var student in Model.RandomStudents)
+                    {
+                        <div class="dashboard-list-item">
+                            <span class="dashboard-list-title dashboard-list-title--normal">@student.FullName</span>
+                            <span class="dashboard-pill dashboard-pill--student">Ученик</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="TeacherRequests"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--warning">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Неодобрени учители</span>
+                        <strong>@Model.PendingTeachers</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-hourglass-split dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var teacher in Model.PendingTeachersPreview)
+                    {
+                        <div class="dashboard-list-item dashboard-list-item--stacked">
+                            <div>
+                                <div class="dashboard-list-title">@teacher.FullName</div>
+                                <div class="dashboard-subtle">@teacher.Email</div>
+                            </div>
+                            <span class="dashboard-pill dashboard-pill--warning">@teacher.RequestedRole</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Преглед на заявките</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Schools"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--neutral">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Училища</span>
+                        <strong>@Model.Schools</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-building dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var school in Model.RandomSchools)
+                    {
+                        <div class="dashboard-list-item dashboard-list-item--stacked dashboard-list-item--left">
+                            <div class="dashboard-list-title">@school.Abbreviation</div>
+                            <div class="dashboard-subtle">@school.City</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Professions"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--neutral">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Професии</span>
+                        <strong>@Model.Professions</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-briefcase dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var profession in Model.RandomProfessions)
+                    {
+                        <div class="dashboard-list-item dashboard-list-item--left">
+                            <span class="dashboard-list-title dashboard-list-title--normal">@profession.Name</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Materials"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--blue">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Материали</span>
+                        <strong>@Model.Materials</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-journal-text dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @foreach (var material in Model.RandomMaterials)
+                    {
+                        <div class="dashboard-list-item dashboard-list-item--stacked dashboard-list-item--left">
+                            <div class="dashboard-list-title">@material.Title</div>
+                            <div class="dashboard-subtle">@material.ProfessionName</div>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+
+        <a asp-area="Admin"
+           asp-controller="Comments"
+           asp-action="Index"
+           class="dashboard-card-link">
+            <article class="dashboard-card dashboard-card--blue dashboard-card--compact">
+                <div class="dashboard-card__header">
+                    <div>
+                        <span class="dashboard-label">Коментари</span>
+                        <strong>@Model.Comments</strong>
+                    </div>
+                    <div class="dashboard-icon-wrap">
+                        <i class="bi bi-chat-dots dashboard-icon"></i>
+                    </div>
+                </div>
+
+                <div class="dashboard-card__body">
+                    @if (Model.RandomCommentThreads.Any())
+                    {
+                        @foreach (var thread in Model.RandomCommentThreads)
+                        {
+                            var commentsLabel = thread.CommentsCount == 1 ? "коментар" : "коментара";
+
+                            <div class="dashboard-list-item dashboard-list-item--stacked dashboard-list-item--left">
+                                <div class="dashboard-thread">
+                                    <div class="dashboard-thread__top">
+                                        <span class="dashboard-list-title">@thread.MaterialTitle</span>
+                                        <span class="dashboard-pill dashboard-pill--thread">@thread.CommentsCount @commentsLabel</span>
+                                    </div>
+                                    <div class="dashboard-subtle">@thread.LastComment</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="dashboard-card__empty">
+                            <span>Все още няма разговори</span>
+                            <small>Когато се появят коментари, тук ще показваме 3 нишки.</small>
+                        </div>
+                    }
+                </div>
+
+                <div class="dashboard-card__footer">
+                    <span>Отвори секцията</span>
+                    <i class="bi bi-arrow-right-short"></i>
+                </div>
+            </article>
+        </a>
+    </div>
+</div>
+
+<style>
+    .admin-dashboard-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --cyan: #23b7de;
+        --cyan-soft: #e9f8fc;
+        --warning: #d19928;
+        --warning-soft: #fbf0d9;
+        --neutral: #61748d;
+        --neutral-soft: #f1f5f9;
+        --beige: #f6efe5;
+        --beige-strong: #eadbc6;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .dashboard-hero,
+    .dashboard-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: 0 14px 30px rgba(40, 73, 111, 0.05);
+    }
+
+    .dashboard-hero {
+        background: linear-gradient(135deg, #f5f9fd 0%, #f7f0e7 100%);
+        padding: 1.4rem 1.5rem;
+        min-height: 168px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .dashboard-hero__copy {
+        max-width: 720px;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-hero h1 {
+        margin: 0 0 0.3rem;
+        color: #28496f;
+        font-size: 2rem;
+        margin-top: 0;
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .dashboard-hero p {
+        color: #6f86a0;
+        margin-top: 0.5rem !important;
+        max-width: 600px;
+        margin: 0;
+    }
+
+    .dashboard-hero__stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(90px, 1fr));
+        gap: 0.75rem;
+        min-width: min(360px, 100%);
+    }
+
+    .hero-stat {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(63, 110, 165, 0.1);
+        border-radius: 16px;
+        padding: 0.8rem 0.9rem;
+    }
+
+    .hero-stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.74rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .hero-stat strong {
+        color: var(--text);
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .hero-stat--warning {
+        background: rgba(251, 240, 217, 0.85);
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.95rem;
+    }
+
+    .dashboard-card-link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        padding: 1rem 1rem 0.95rem;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .dashboard-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: var(--accent);
+    }
+
+    .dashboard-card:hover,
+    .dashboard-card-link:focus .dashboard-card {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 34px rgba(40, 73, 111, 0.08);
+        border-color: rgba(63, 110, 165, 0.18);
+    }
+
+    .dashboard-card--blue::before {
+        background: linear-gradient(90deg, #3f6ea5 0%, #7fa6d2 100%);
+    }
+
+    .dashboard-card--blue {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .dashboard-card--cyan::before {
+        background: linear-gradient(90deg, #23b7de 0%, #7fd8ef 100%);
+    }
+
+    .dashboard-card--cyan {
+        background: linear-gradient(180deg, #ffffff 0%, #f4fcfe 100%);
+    }
+
+    .dashboard-card--warning::before {
+        background: linear-gradient(90deg, #d19928 0%, #f2c463 100%);
+    }
+
+    .dashboard-card--warning {
+        background: linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
+    }
+
+    .dashboard-card--neutral::before {
+        background: linear-gradient(90deg, #8da0b5 0%, #c4d0dd 100%);
+    }
+
+    .dashboard-card--neutral {
+        background: linear-gradient(180deg, #ffffff 0%, #faf7f1 100%);
+    }
+
+    .dashboard-card__header {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.8rem;
+        align-items: flex-start;
+        padding-bottom: 0.8rem;
+        margin-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(63, 110, 165, 0.10);
+    }
+
+    .dashboard-label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .dashboard-card strong {
+        display: block;
+        color: var(--text);
+        font-size: 1.45rem;
+        line-height: 1;
+    }
+
+    .dashboard-icon-wrap {
+        width: 2.7rem;
+        height: 2.7rem;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-soft);
+        flex-shrink: 0;
+    }
+
+    .dashboard-card--blue .dashboard-icon-wrap {
+        background: var(--accent-soft);
+    }
+
+    .dashboard-card--cyan .dashboard-icon-wrap {
+        background: var(--cyan-soft);
+    }
+
+    .dashboard-card--warning .dashboard-icon-wrap {
+        background: var(--warning-soft);
+    }
+
+    .dashboard-card--neutral .dashboard-icon-wrap {
+        background: var(--neutral-soft);
+    }
+
+    .dashboard-icon {
+        color: var(--accent);
+        font-size: 1.35rem;
+        line-height: 1;
+    }
+
+    .dashboard-card--cyan .dashboard-icon {
+        color: var(--cyan);
+    }
+
+    .dashboard-card--warning .dashboard-icon {
+        color: var(--warning);
+    }
+
+    .dashboard-card--neutral .dashboard-icon {
+        color: var(--neutral);
+    }
+
+    .dashboard-card__body {
+        display: grid;
+        gap: 0.58rem;
+        flex: 1;
+    }
+
+    .dashboard-card__body--centered {
+        align-content: center;
+    }
+
+    .dashboard-list-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.7rem;
+        align-items: center;
+        min-height: 2rem;
+    }
+
+    .dashboard-list-item--stacked {
+        align-items: flex-start;
+    }
+
+    .dashboard-list-item--left {
+        justify-content: flex-start;
+    }
+
+    .dashboard-list-title {
+        color: var(--text);
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .dashboard-list-title--normal {
+        font-weight: 600;
+    }
+
+    .dashboard-subtle {
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+
+    .dashboard-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.3rem 0.58rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .dashboard-pill--admin,
+    .dashboard-pill--teacher {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .dashboard-pill--student {
+        background: var(--cyan-soft);
+        color: var(--cyan);
+    }
+
+    .dashboard-pill--warning {
+        background: var(--warning-soft);
+        color: #946715;
+    }
+
+    .dashboard-pill--muted {
+        background: var(--neutral-soft);
+        color: var(--neutral);
+    }
+
+    .dashboard-pill--thread {
+        background: rgba(63, 110, 165, 0.08);
+        color: var(--accent);
+        font-size: 0.68rem;
+    }
+
+    .dashboard-card__empty {
+        display: grid;
+        gap: 0.28rem;
+    }
+
+    .dashboard-card__empty span {
+        color: var(--text);
+        font-weight: 700;
+    }
+
+    .dashboard-card__empty small {
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.45;
+    }
+
+    .dashboard-card__footer {
+        margin-top: 0.8rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(63, 110, 165, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .dashboard-card--warning .dashboard-card__footer {
+        color: #9a6e17;
+    }
+
+    .dashboard-card--neutral .dashboard-card__footer {
+        color: var(--neutral);
+    }
+
+    .dashboard-card__footer i {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .dashboard-thread {
+        display: grid;
+        gap: 0.24rem;
+        width: 100%;
+    }
+
+    .dashboard-thread__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    .dashboard-card--compact .dashboard-card__body {
+        min-height: 7.3rem;
+    }
+
+    @@media (max-width: 1200px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 900px) {
+        .dashboard-hero {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .dashboard-hero__stats {
+            min-width: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-grid,
+        .dashboard-hero__stats {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

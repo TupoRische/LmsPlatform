@@ -1,0 +1,215 @@
+@using Core.ViewModels.Comments
+@model List<CommentThreadVm>
+
+<div class="comments-page mb-4">
+    <div class="comments-hero">
+        <div>
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Коментари</h1>
+            <p>Разговорите са подредени по материал, за да влизаш бързо в активната нишка и да я модерираш.</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="admin-empty-state">Все още няма коментари по материали.</div>
+    }
+    else
+    {
+        <div class="comments-grid">
+            @foreach (var thread in Model)
+            {
+                var commentsLabel = thread.CommentsCount == 1 ? "коментар" : "коментара";
+
+                <article class="thread-card">
+                    <div class="thread-card__head">
+                        <div>
+                            <span class="thread-kicker">Материал</span>
+                            <h3>@thread.MaterialTitle</h3>
+                        </div>
+                        <span class="thread-count">@thread.CommentsCount @commentsLabel</span>
+                    </div>
+
+                    <div class="thread-block">
+                        <strong>Участници</strong>
+                        <p>@string.Join(", ", thread.Participants)</p>
+                    </div>
+
+                    <div class="thread-block">
+                        <strong>Последен коментар</strong>
+                        <p>"@thread.LastComment"</p>
+                    </div>
+
+                    <a asp-action="Details"
+                       asp-route-materialId="@thread.MaterialId"
+                       class="thread-link">
+                        Виж разговора
+                    </a>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .comments-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .comments-hero,
+    .thread-card,
+    .admin-empty-state {
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+        background: #fff;
+    }
+
+    .comments-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        padding: 1.15rem 1.25rem;
+        min-height: 148px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .hero-kicker,
+    .thread-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .comments-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .thread-card h3 {
+        margin: 0;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+
+    .comments-hero p,
+    .thread-block p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.86rem;
+    }
+
+    .comments-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        align-items: start;
+    }
+
+    .thread-card {
+        padding: 0.82rem 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+
+        .thread-card h3 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+    .thread-card__head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.7rem;
+        align-items: start;
+    }
+
+    .thread-count {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.28rem 0.55rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.72rem;
+        white-space: nowrap;
+    }
+
+    .thread-block {
+        background: #f9fbfe;
+        border: 1px solid rgba(63, 110, 165, 0.08);
+        border-radius: 14px;
+        padding: 0.65rem 0.72rem;
+    }
+
+    .thread-block strong {
+        display: block;
+        color: var(--text);
+        margin-bottom: 0.28rem;
+        font-size: 0.84rem;
+    }
+
+    .thread-link {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.58rem 0.75rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .thread-link:hover,
+    .thread-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .admin-empty-state {
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--muted);
+    }
+
+    @@media (max-width: 1200px) {
+        .comments-grid
+
+    {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .comments-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    
+</style>

@@ -1,0 +1,248 @@
+﻿@using Core.ViewModels.School
+@model IEnumerable<SchoolListVm>
+
+<div class="student-schools-container mb-5">
+    @* --- Hero секция --- *@
+    <div class="schools-hero">
+        <div>
+            <span class="hero-kicker">Образование и партньори</span>
+            <h1>Училища</h1>
+            <p>Разгледай списъка с училища, намери тяхното местоположение и посети официалните им страници за повече информация.</p>
+        </div>
+    </div>
+
+    @* --- Списък с училища --- *@
+    <div class="schools-table-container mt-4">
+        <div class="schools-table-header d-none d-md-flex">
+            <div class="col-name">Име на институцията</div>
+            <div class="col-city">Град</div>
+            <div class="col-action text-end">Действие</div>
+        </div>
+
+        <div class="schools-table-body">
+            @foreach (var s in Model)
+            {
+                @* ВАЖНО: Добавено id="school-@s.Id" за работа с търсачката *@
+                <div class="school-row" id="school-@s.Id">
+                    <div class="col-name">
+                        <div class="d-flex align-items-center">
+                            <div class="school-mini-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <span class="fw-bold text-dark">@s.Name</span>
+                        </div>
+                    </div>
+                    <div class="col-city">
+                        <span class="city-tag">
+                            <i class="bi bi-geo-alt"></i> @s.City
+                        </span>
+                    </div>
+                    <div class="col-action text-end">
+                        @if (!string.IsNullOrWhiteSpace(s.WebsiteUrl))
+                        {
+                            <a href="@s.WebsiteUrl" target="_blank" class="link-btn">
+                                Официален сайт <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted small italic">Няма сайт</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .student-schools-container {
+        --accent: #3f6ea5;
+        --line: rgba(63, 110, 165, 0.12);
+        --muted: #6f86a0;
+        --text: #28496f;
+        --highlight-bg: #fff9e6;
+        --highlight-border: #ffc107;
+    }
+
+    /* ЕФЕКТ ЗА ПОДЧЕРТАВАНЕ (HIGHLIGHT) */
+    .highlight-school {
+        background-color: var(--highlight-bg) !important;
+        border-left: 5px solid var(--highlight-border) !important;
+        box-shadow: 0 0 20px rgba(255, 193, 7, 0.25);
+        transform: scale(1.01);
+        z-index: 10;
+    }
+
+    .schools-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.8rem;
+    }
+
+    .schools-hero h1 {
+        color: var(--text);
+        font-weight: 500;
+        font-size: 2.5rem;
+    }
+
+    .schools-hero p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        max-width: 600px;
+        margin: 0;
+    }
+
+    .schools-table-container {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        overflow: hidden;
+    }
+
+    .schools-table-header {
+        background: #f8fbfc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+    }
+
+    .school-row {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f0f3f5;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .school-row:last-child {
+            border-bottom: none;
+        }
+
+        .school-row:hover {
+            background-color: #fcfdfe;
+        }
+
+    .col-name {
+        flex: 0 0 60%;
+        padding-right: 20px;
+    }
+
+    .col-city {
+        flex: 0 0 20%;
+        display: flex;
+        align-items: center;
+    }
+
+    .col-action {
+        flex: 0 0 20%;
+        text-align: right;
+    }
+
+    .school-mini-icon {
+        width: 32px;
+        height: 32px;
+        background: #edf2f7;
+        color: var(--accent);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 0.9rem;
+    }
+
+    .city-tag {
+        color: var(--muted);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .city-tag i {
+            color: #a0aec0;
+        }
+
+    .link-btn {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+    }
+
+        .link-btn:hover {
+            background: #f0f7ff;
+            border-color: #d0e3ff;
+            color: #2b507d;
+        }
+
+    @@media (max-width: 768px) {
+        .school-row
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .col-action {
+        width: 100%;
+        text-align: left !important;
+    }
+
+    .link-btn {
+        padding-left: 0;
+    }
+
+    }</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Проверка за котва в URL (напр. #school-5)
+            if (window.location.hash && window.location.hash.startsWith('#school-')) {
+                const targetId = window.location.hash;
+                const element = document.querySelector(targetId);
+
+                if (element) {
+                    // Малко закъснение, за да завърши рендерирането на браузъра
+                    setTimeout(() => {
+                        // 1. Скролва плавно до центъра на екрана
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        // 2. Активира визуалния ефект
+                        element.classList.add('highlight-school');
+
+                        // 3. Плавно премахва ефекта след 4 секунди
+                        setTimeout(() => {
+                            element.style.transition = "all 1.5s ease";
+                            element.classList.remove('highlight-school');
+                        }, 4000);
+                    }, 600);
+                }
+            }
+        });
+    </script>
+}

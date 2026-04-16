@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Infrastructure.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+<div class="profile-wrapper">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="profile-info">
+            <div class="profile-avatar">
+                @User.Identity?.Name?.Substring(0, 1).ToUpper()
+            </div>
+
+            <div>
+                <div class="profile-greeting">Здравей,</div>
+                <div class="profile-email">@User.Identity?.Name</div>
+            </div>
+        </div>
+
+        <hr />
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              method="post">
+            <button type="submit" class="profile-logout">
+                Излез
+            </button>
+        </form>
+    }
+    else
+    {
+        <a asp-area="Identity"
+           asp-page="/Account/Login"
+           class="profile-login-btn">
+            Влез
+        </a><br />
+        <a asp-area="Identity"
+           asp-page="/Account/Register"
+           class="profile-login-btn">
+            Регистрирай се
+        </a>
+    }
+
+</div>

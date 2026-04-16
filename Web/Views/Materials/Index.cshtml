@@ -1,0 +1,33 @@
+﻿@using Core.ViewModels.Materials
+@model IEnumerable<MaterialListVm>
+
+<h2 class="mb-3">Материали</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Няма добавени материали за тази професия.
+    </div>
+    <a class="btn btn-outline-secondary" href="javascript:history.back()">Назад</a>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var m in Model)
+        {
+            <div class="list-group-item">
+                <h5 class="mb-1">@m.Title</h5>
+
+                @if (!string.IsNullOrWhiteSpace(m.Description))
+                {
+                    <p class="mb-1 text-muted">@m.Description</p>
+                }
+
+                <a class="btn btn-sm btn-outline-primary mt-2"
+                     asp-controller="Materials" asp-action="Details" asp-route-id="@m.Id">Детайли</a>
+            </div>
+        }
+    </div>
+
+    <a class="btn btn-outline-secondary mt-3" href="javascript:history.back()">Назад</a>
+}

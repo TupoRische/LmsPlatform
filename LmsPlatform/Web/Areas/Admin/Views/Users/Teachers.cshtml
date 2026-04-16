@@ -1,0 +1,370 @@
+@using Core.ViewModels.Admin.Teachers
+@model IEnumerable<TeacherListVm>
+
+@{
+    var teachers = Model.ToList();
+    var withSchoolCount = teachers.Count(t => !string.IsNullOrWhiteSpace(t.School));
+    var withoutSchoolCount = teachers.Count - withSchoolCount;
+}
+
+<div class="teachers-page mb-4">
+    <div class="teachers-hero">
+        <div>
+            <span class="hero-kicker">Админ панел</span>
+            <h1>Учители</h1>
+            <p>Централизиран преглед на одобрените преподаватели и училищната им принадлежност.</p>
+        </div>
+
+        <a asp-area="Admin"
+           asp-controller="Users"
+           asp-action="Index"
+           class="hero-link">
+            Всички потребители
+        </a>
+    </div>
+
+    <div class="teachers-stats">
+        <article class="stat-card">
+            <span>Общо учители</span>
+            <strong>@teachers.Count</strong>
+        </article>
+        <article class="stat-card">
+            <span>С избрано училище</span>
+            <strong>@withSchoolCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Без училище</span>
+            <strong>@withoutSchoolCount</strong>
+        </article>
+        <article class="stat-card">
+            <span>Активни профили</span>
+            <strong>@teachers.Count</strong>
+        </article>
+    </div>
+
+    @if (!teachers.Any())
+    {
+        <div class="admin-empty-state">Все още няма одобрени учители.</div>
+    }
+    else
+    {
+        <div class="teachers-grid">
+            @foreach (var teacher in teachers)
+            {
+                var initial = string.IsNullOrWhiteSpace(teacher.FullName) ? "?" : teacher.FullName[..1].ToUpperInvariant();
+                var hasSchool = !string.IsNullOrWhiteSpace(teacher.School);
+
+                <article class="teacher-card">
+                    <div class="teacher-card__top">
+                        <div class="teacher-avatar">@initial</div>
+
+                        <div class="teacher-meta">
+                            <h3>@teacher.FullName</h3>
+                            <div class="teacher-school">@(hasSchool ? teacher.School : "Без училище")</div>
+                        </div>
+                    </div>
+
+                    <dl class="teacher-facts">
+                        <div>
+                            <dt>Роля</dt>
+                            <dd>Учител</dd>
+                        </div>
+                        <div>
+                            <dt>Статус</dt>
+                            <dd>Одобрен</dd>
+                        </div>
+                        <div>
+                            <dt>Училище</dt>
+                            <dd>@(hasSchool ? teacher.School : "Липсва")</dd>
+                        </div>
+                        <div>
+                            <dt>Материали</dt>
+                            <dd>Преглед</dd>
+                        </div>
+                    </dl>
+
+                    <div class="teacher-tags">
+                        <span class="teacher-tag">Учител</span>
+                    </div>
+
+                    <div class="teacher-card__actions">
+                        <a asp-action="TeacherDetails"
+                           asp-route-id="@teacher.Id"
+                           class="teacher-link">
+                            Детайли
+                        </a>
+                        <a asp-action="Materials"
+                           asp-route-id="@teacher.Id"
+                           class="teacher-link teacher-link--soft">
+                            Материали
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .teachers-page {
+        --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
+        --surface: #ffffff;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .teachers-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.15rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        align-items: center;
+        min-height: 148px;
+        margin-bottom: 1rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .teachers-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .teachers-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.88rem;
+    }
+
+    .hero-link {
+        background: var(--accent);
+        color: white;
+        text-decoration: none;
+        padding: 0.58rem 0.82rem;
+        border-radius: 999px;
+        font-weight: 700;
+        white-space: nowrap;
+        font-size: 0.82rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-link:hover,
+    .hero-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(40, 73, 111, 0.16);
+    }
+
+    .teachers-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0.8rem 0.9rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-card strong {
+        color: var(--text);
+        font-size: 1.3rem;
+        line-height: 1;
+    }
+
+    .teachers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .teacher-card {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0.85rem 0.95rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .teacher-card__top {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .teacher-avatar {
+        width: 2.45rem;
+        height: 2.45rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #7ea4d3, #4f78a8);
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .teacher-meta h3 {
+        margin: 0 0 0.2rem;
+        font-size: 0.94rem;
+        color: var(--text);
+    }
+
+    .teacher-school {
+        color: var(--accent);
+        font-size: 0.82rem;
+    }
+
+    .teacher-facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem;
+        margin: 0 0 0.8rem;
+    }
+
+    .teacher-facts dt {
+        color: var(--muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+    }
+
+    .teacher-facts dd {
+        margin: 0;
+        color: var(--text);
+        font-weight: 600;
+        line-height: 1.35;
+        font-size: 0.84rem;
+    }
+
+    .teacher-tags {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+    }
+
+    .teacher-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.58rem;
+        border-radius: 999px;
+        background: #dff1ff;
+        color: #275c8f;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .teacher-tag--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .teacher-tag--warn {
+        background: #fff1d9;
+        color: #9c6b12;
+    }
+
+    .teacher-card__actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+
+    .teacher-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        padding: 0.56rem 0.72rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .teacher-link:hover,
+    .teacher-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .teacher-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .teacher-link--soft:hover,
+    .teacher-link--soft:focus {
+        background: var(--accent-soft);
+        color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
+    }
+
+    .admin-empty-state {
+        background: white;
+        border: 1px dashed var(--line);
+        border-radius: 18px;
+        padding: 1.5rem;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    @@media (max-width: 992px) {
+        .teachers-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .teachers-hero {
+            align-items: start;
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .teachers-stats,
+        .teacher-facts {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

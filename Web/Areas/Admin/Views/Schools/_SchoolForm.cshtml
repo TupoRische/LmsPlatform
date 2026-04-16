@@ -1,0 +1,156 @@
+@model Core.ViewModels.School.SchoolFormVm
+
+<div class="school-form-page mb-4">
+    <div class="school-form-shell">
+        <div class="school-form-head">
+            <span class="hero-kicker">Училища</span>
+            <h1>@ViewData["Title"]</h1>
+            <p>Попълни основната информация, която ще се използва в профилите и професиите, свързани с училището.</p>
+        </div>
+
+        <form method="post" class="school-form-grid">
+            @Html.AntiForgeryToken()
+
+            <div>
+                <label asp-for="Name" class="form-label">Име</label>
+                <input asp-for="Name" class="form-control form-control-lg" />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div>
+                <label asp-for="City" class="form-label">Град</label>
+                <input asp-for="City" class="form-control form-control-lg" />
+                <span asp-validation-for="City" class="text-danger small"></span>
+            </div>
+
+            <div class="form-span-2">
+                <label asp-for="Description" class="form-label">Описание</label>
+                <textarea asp-for="Description" rows="5" class="form-control form-control-lg"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="school-form-actions form-span-2">
+                <a asp-action="Index" class="school-form-link school-form-link--soft">Назад</a>
+                <button type="submit" class="school-form-link">Запази</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .school-form-page {
+        --accent: #4a6483;
+        --accent-soft: #edf3fa;
+        --beige-soft: #f6efe5;
+        --line: rgba(74, 100, 131, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .school-form-shell {
+        max-width: 1120px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.2rem 1.3rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .school-form-head h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .school-form-head p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.5;
+        max-width: 760px;
+    }
+
+    .school-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+    }
+
+    .form-span-2 {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        color: var(--text);
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+    }
+
+    .school-form-grid .form-control {
+        border-radius: 14px;
+        border-color: rgba(74, 100, 131, 0.14);
+        padding: 0.72rem 0.9rem;
+        box-shadow: none;
+    }
+
+    .school-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.55rem;
+        margin-top: 0.2rem;
+    }
+
+    .school-form-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        padding: 0.58rem 0.82rem;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .school-form-link:hover,
+    .school-form-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .school-form-link--soft {
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .school-form-link--soft:hover,
+    .school-form-link--soft:focus {
+        background: var(--accent-soft);
+        color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.10);
+    }
+
+    @@media (max-width: 768px) {
+        .school-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

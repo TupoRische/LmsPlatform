@@ -1,0 +1,224 @@
+@using Core.ViewModels.Comments
+@model IEnumerable<CommentListVm>
+
+<div class="comment-thread-page mb-4">
+    <div class="thread-hero">
+        <div>
+            <span class="hero-kicker">Модерация</span>
+            <h1>Разговор по материал</h1>
+            <p>Преглед на цялата нишка с вложените отговори и бърза moderation action за всеки коментар.</p>
+        </div>
+
+        <a asp-action="Index" class="thread-back-link">Назад към всички разговори</a>
+    </div>
+
+    <div class="thread-shell">
+        @if (!Model.Any())
+        {
+            <div class="admin-empty-state">Няма коментари за този материал.</div>
+        }
+        else
+        {
+            foreach (var comment in Model)
+            {
+                <partial name="_CommentThreadAdmin"
+                         model="comment"
+                         view-data='new ViewDataDictionary(ViewData)
+                         {
+                             ["MaterialId"] = ViewContext.RouteData.Values["materialId"]
+                         }' />
+            }
+        }
+    </div>
+</div>
+
+<style>
+    .admin-comment-thread {
+        position: relative;
+    }
+
+    .admin-comment-thread--reply {
+        margin-left: 1.5rem;
+        padding-left: 1.2rem;
+        border-left: 2px solid rgba(63, 110, 165, 0.12);
+    }
+
+    .admin-comment-card {
+        background: #fff;
+        border: 1px solid rgba(63, 110, 165, 0.10);
+        border-radius: 18px;
+        padding: 0.9rem 1rem;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .admin-comment-card__meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: start;
+        margin-bottom: 0.6rem;
+    }
+
+    .admin-comment-author {
+        color: #28496f;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .admin-comment-role {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.28rem 0.55rem;
+        border-radius: 999px;
+        background: #edf4fb;
+        color: #3f6ea5;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .admin-comment-role--admin {
+        background: #f6efe5;
+        color: #8b6842;
+    }
+
+    .admin-comment-text {
+        margin: 0 0 0.45rem;
+        color: #49637f;
+        line-height: 1.55;
+        font-size: 0.86rem;
+    }
+
+    .admin-comment-date {
+        color: #8aa0ba;
+        font-size: 0.76rem;
+    }
+
+    .admin-comment-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.56rem 0.78rem;
+        background: #fff1f1;
+        color: #b42318;
+        font-weight: 700;
+        font-size: 0.8rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .admin-comment-delete:hover,
+    .admin-comment-delete:focus {
+        background: #fff1f1;
+        color: #b42318;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(180, 35, 24, 0.10);
+    }
+
+    .admin-comment-replies {
+        margin-top: 0.75rem;
+        display: grid;
+        gap: 0.7rem;
+    }
+
+    .comment-thread-page {
+        --accent: #3f6ea5;
+        --line: rgba(63, 110, 165, 0.12);
+        --text: #28496f;
+        --muted: #6f86a0;
+    }
+
+    .thread-hero,
+    .thread-shell,
+    .admin-empty-state {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 10px 22px rgba(40, 73, 111, 0.04);
+    }
+
+    .thread-hero {
+        background: linear-gradient(135deg, #f4f8fc 0%, #f6efe5 100%);
+        padding: 1.15rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        align-items: center;
+        min-height: 148px;
+        margin-bottom: 1rem;
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .thread-hero h1 {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-size: clamp(1.45rem, 2vw, 1.9rem);
+    }
+
+    .thread-hero p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 760px;
+        line-height: 1.5;
+        font-size: 0.88rem;
+    }
+
+    .thread-back-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.58rem 0.82rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.82rem;
+        background: var(--accent);
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .thread-back-link:hover,
+    .thread-back-link:focus {
+        background: var(--accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 73, 111, 0.14);
+    }
+
+    .thread-shell {
+        padding: 1rem;
+    }
+
+    .admin-empty-state {
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--muted);
+    }
+
+    @@media (max-width: 768px) {
+        .thread-hero {
+            flex-direction: column;
+            align-items: start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .admin-comment-thread--reply {
+            margin-left: 0.75rem;
+            padding-left: 0.85rem;
+        }
+
+        .admin-comment-card__meta {
+            flex-direction: column;
+        }
+    }
+</style>
