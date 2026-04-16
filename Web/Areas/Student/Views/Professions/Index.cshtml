@@ -369,6 +369,20 @@
         .professions-grid {
             grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
         }
+        .professions-grid
+
+    {
+        grid-template-columns: repeat(2, 1fr); /* 2 колони за таблети */
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .professions-grid
+
+    {
+        grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
+    }
 
         .professions-hero-actions {
             align-items: stretch;

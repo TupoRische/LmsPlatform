@@ -1,7 +1,10 @@
 ﻿using Core.Contracts;
 using Infrastructure.Data.Entities;
 using Infrastructure.Repositories.Contracts;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authorization;
+=======
+>>>>>>> ee95621cecddaaaf9564213ba5eb43054605cad8
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +21,10 @@ namespace Web.Controllers
             this.comments = comments;
         }
 
+<<<<<<< HEAD
         [Authorize]
+=======
+>>>>>>> ee95621cecddaaaf9564213ba5eb43054605cad8
         public async Task<IActionResult> Details(int id)
         {
             var model = await materials.GetByIdAsync(id);
