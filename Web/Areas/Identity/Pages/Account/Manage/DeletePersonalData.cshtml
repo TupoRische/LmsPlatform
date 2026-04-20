@@ -1,32 +1,41 @@
-﻿@page
+@page
 @model DeletePersonalDataModel
 @{
-    ViewData["Title"] = "Delete Personal Data";
-    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+    ViewData["Title"] = "Изтриване на акаунт";
 }
 
-<h3>@ViewData["Title"]</h3>
+<section class="auth-page">
+    <div class="auth-shell auth-shell--single">
+        <section class="auth-carrd">
+            <span class="auth-chip" style="background: rgba(220,53,69,0.12); color: #dc3545;">Внимание</span>
+            <h1 class="auth-title" style="color: #dc3545;">Изтриване на акаунта</h1>
+            <p class="auth-subtitle">Това действие е <strong>необратимо</strong>. Всички ваши данни ще бъдат изтрити окончателно.</p>
 
-<div class="alert alert-warning" role="alert">
-    <p>
-        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-    </p>
-</div>
+            <partial name="_StatusMessage" for="StatusMessage" />
 
-<div>
-    <form id="delete-user" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-        @if (Model.RequirePassword)
-        {
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Please enter your password." />
-                <label asp-for="Input.Password" class="form-label"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-        }
-        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
-    </form>
-</div>
+            <form id="delete-user" asp-page-handler="DeleteAccount" method="post" class="auth-form">
+                @if (Model.RequirePassword)
+                {
+                    <div class="auth-field">
+                        <label asp-for="Input.Password" class="form-label">Парола</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Въведете паролата, за да потвърдите" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                }
+
+                <div class="auth-actions mt-4 text-center">
+                    <button type="submit" class="btn w-100" style="background: #dc3545; color: white; border: none; padding: 14px; border-radius: 18px; font-size: 1rem; font-weight: 600; min-height: 56px;">
+                        <i class="bi bi-trash me-2"></i>Изтрий акаунта ми завинаги
+                    </button>
+                </div>
+
+                <div class="auth-link-row mt-3" style="justify-content: center;">
+                    <a asp-page="./PersonalData" style="color: #6482ad; text-decoration: none; font-weight: 600;">← Отказ</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

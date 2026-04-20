@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bg">
 <head>
     <meta charset="utf-8" />
@@ -21,7 +21,7 @@
                     <a asp-controller="Home" asp-action="Index">LmsPlatform</a>
                 </span>
 
-                <div class="menu">
+                <div class="menu" id="navMenu">
                     <ul class="nav-links">
                         <li>
                             <a asp-area=""
@@ -114,6 +114,9 @@
                         </div>
                     </div>
 
+                    <div class="menu-toggle" id="mobileMenuToggle">
+                        <i class="bi bi-list"></i>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -188,6 +191,18 @@
             });
         </script>
     }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('mobileMenuToggle');
+            const menu = document.getElementById('navMenu');
+            if (menuToggle && menu) {
+                menuToggle.addEventListener('click', function () {
+                    menu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
     <partial name="_ValidationScriptsPartial" />

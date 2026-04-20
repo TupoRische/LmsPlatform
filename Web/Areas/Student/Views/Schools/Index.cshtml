@@ -22,7 +22,6 @@
         <div class="schools-table-body">
             @foreach (var s in Model)
             {
-                @* ВАЖНО: Добавено id="school-@s.Id" за работа с търсачката *@
                 <div class="school-row" id="school-@s.Id">
                     <div class="col-name">
                         <div class="d-flex align-items-center">
@@ -65,7 +64,6 @@
         --highlight-border: #ffc107;
     }
 
-    /* ЕФЕКТ ЗА ПОДЧЕРТАВАНЕ (HIGHLIGHT) */
     .highlight-school {
         background-color: var(--highlight-bg) !important;
         border-left: 5px solid var(--highlight-border) !important;

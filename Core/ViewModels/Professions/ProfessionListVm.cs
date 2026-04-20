@@ -12,6 +12,7 @@ namespace Core.ViewModels.Professions
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
         public string SchoolName { get; set; } = null!;
+        public string Abbreviation { get; set; }
         public int MaterialsCount { get; set; }
     }
 }

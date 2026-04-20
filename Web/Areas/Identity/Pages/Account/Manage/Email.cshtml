@@ -1,0 +1,29 @@
+@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Имейл";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<section class="auth-page">
+    <div class="auth-shell auth-shell--single">
+        <section class="auth-carrd">
+            <span class="auth-chip">Имейл</span>
+            <h1 class="auth-title">Вашият имейл адрес</h1>
+            <p class="auth-subtitle">Имейл адресът е свързан с вашия акаунт и не може да бъде променян.</p>
+
+            <partial name="_StatusMessage" for="StatusMessage" />
+
+            <form id="email-form" method="post" class="auth-form">
+                <div class="auth-field">
+                    <label class="form-label">Имейл адрес</label>
+                    <input type="email" value="@Model.Email" class="form-control" disabled readonly />
+                </div>
+
+                <div class="auth-link-row mt-3" style="justify-content: center;">
+                    <a asp-page="./Index" style="color: #6482ad; text-decoration: none; font-weight: 600;">← Обратно към Профил</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</section>

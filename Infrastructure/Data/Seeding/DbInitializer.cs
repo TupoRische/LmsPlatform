@@ -1,4 +1,4 @@
-﻿using Infrastructure.Data.Entities;
+using Infrastructure.Data.Entities;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -83,9 +83,9 @@ public static class DbInitializer
     private static async Task<(ApplicationUser admin, ApplicationUser teacher1, ApplicationUser teacher2)>
   SeedUsers(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
     {
-        var pmg = context.Schools.First(s => s.Abbreviation == "ПМГ „Иван Вазов“");
-        var fsg = context.Schools.First(s => s.Abbreviation == "ФСГ „Васил Левски“");
-        var su = context.Schools.First(s => s.Abbreviation == "СУ „Свети Климент Охридски“");
+        var pmg = context.Schools.FirstOrDefault(s => s.Abbreviation == "ПМГ „Иван Вазов“");
+        var fsg = context.Schools.FirstOrDefault(s => s.Abbreviation == "ФСГ „Васил Левски“");
+        var su = context.Schools.FirstOrDefault(s => s.Abbreviation == "СУ „Свети Климент Охридски“");
 
         async Task<ApplicationUser> CreateUser(string email, string first, string last, string? role, bool approved, string password, bool requestedTeacher = false, int? schoolId = null)
         {
@@ -111,12 +111,12 @@ public static class DbInitializer
         }
 
         var admin = await CreateUser("admin@lms.com", "System", "Admin", "Admin", true, "Admin@123!");
-        var teacher1 = await CreateUser("teacher1@lms.com", "Иван", "Иванов", "Teacher", true, "Teacher@123!", false, pmg.Id);
-        var teacher2 = await CreateUser("teacher2@lms.com", "Мария", "Петрова", "Teacher", true, "Teacher@123!", false, fsg.Id);
+        var teacher1 = await CreateUser("teacher1@lms.com", "Иван", "Иванов", "Teacher", true, "Teacher@123!", false, pmg?.Id);
+        var teacher2 = await CreateUser("teacher2@lms.com", "Мария", "Петрова", "Teacher", true, "Teacher@123!", false, fsg?.Id);
 
-        await CreateUser("teacher3@lms.com", "Георги", "Стоянов", null, false, "Teacher@123!", true, pmg.Id);
-        await CreateUser("student1@lms.com", "Петър", "Петров", "Student", true, "Student@123!", false, pmg.Id);
-        await CreateUser("student2@lms.com", "Анна", "Илиева", "Student", true, "Student@123!", false, su.Id);
+        await CreateUser("teacher3@lms.com", "Георги", "Стоянов", null, false, "Teacher@123!", true, pmg?.Id);
+        await CreateUser("student1@lms.com", "Петър", "Петров", "Student", true, "Student@123!", false, pmg?.Id);
+        await CreateUser("student2@lms.com", "Анна", "Илиева", "Student", true, "Student@123!", false, su?.Id);
 
         return (admin, teacher1, teacher2);
     }
@@ -129,7 +129,9 @@ public static class DbInitializer
             return;
 
         int GetSchoolId(string name, string city) =>
-          context.Schools.First(s => s.Name == name && s.City == city).Id;
+          context.Schools.FirstOrDefault(s => s.Name == name && s.City == city)?.Id
+            ?? context.Schools.FirstOrDefault()?.Id 
+            ?? 0;
 
         context.Professions.AddRange(
           new Profession { Name = "Графичен дизайнер", Description = "Създава визуални материали: лого, плакати, брошури, банери и дизайн за социални мрежи.", SchoolId = GetSchoolId("Средно училище \"Свети Климент Охридски\"", "Добрич") },

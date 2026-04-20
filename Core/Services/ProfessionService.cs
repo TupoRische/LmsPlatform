@@ -49,6 +49,7 @@ namespace Core.Services
                     Name = p.Name,
                     Description = p.Description,
                     SchoolName = p.School.Name,
+                    Abbreviation = p.School.Abbreviation,
                     MaterialsCount = p.Materials.Count
                 })
                 .OrderBy(p => p.Name)

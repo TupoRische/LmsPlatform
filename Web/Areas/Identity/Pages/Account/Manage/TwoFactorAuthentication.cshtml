@@ -1,0 +1,19 @@
+@page
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Двуфакторна автентикация";
+}
+
+<section class="auth-page">
+    <div class="auth-shell auth-shell--single">
+        <section class="auth-carrd" style="text-align: center;">
+            <span class="auth-chip">Недостъпно</span>
+            <h1 class="auth-title">Двуфакторната автентикация не е налична</h1>
+            <p class="auth-subtitle">Тази функционалност не е активирана за платформата.</p>
+
+            <div class="auth-link-row mt-4" style="justify-content: center;">
+                <a asp-page="./Index" style="color: #6482ad; text-decoration: none; font-weight: 600;">← Обратно към Профил</a>
+            </div>
+        </section>
+    </div>
+</section>

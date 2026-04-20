@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core.ViewModels.Professions.ProfessionListVm>
+@model IEnumerable<Core.ViewModels.Professions.ProfessionListVm>
 
 @{
     Layout = "_Layout";
@@ -86,7 +86,9 @@
                 <article class="profession-card">
                     <div class="profession-card__head">
                         <div>
-                            <span class="profession-school">@profession.SchoolName</span>
+                            <span class="profession-school">
+                                @profession.Abbreviation
+                            </span>
                             <h3>@profession.Name</h3>
                         </div>
                         <span class="profession-count">@profession.MaterialsCount @materialsLabel</span>
@@ -124,8 +126,8 @@
                                 Материали
                             </a>
                         }
-                    </div> @* Край на profession-actions *@
-                </article> @* Край на profession-card *@
+                    </div>
+                </article> 
             }
         </div>
     }
@@ -210,7 +212,7 @@
         border-radius: 12px;
         border: 1px solid rgba(63, 110, 165, 0.1);
         padding: 0.7rem 1rem;
-        height: 48px; /* Еднаква височина за input и select */
+        height: 48px; 
     }
 
     .btn-primary-custom {
@@ -222,7 +224,7 @@
 
     /* Стил за текстовия линк "Изчисти" */
     .text-clear-link {
-        color: #6f86a0; /* Твоят --text-muted */
+        color: #6f86a0; 
         text-decoration: none;
         font-size: 0.9rem;
         font-weight: 500;
@@ -231,11 +233,10 @@
     }
 
         .text-clear-link:hover {
-            color: #dc3545; /* Става червен при посочване */
+            color: #dc3545; 
             text-decoration: underline;
         }
 
-    /* Консистенция за инпути и селекти */
     .custom-select {
         border-radius: 12px;
         border: 1px solid rgba(63, 110, 165, 0.1);
@@ -255,7 +256,7 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
-        align-items: start;
+        align-items: stretch;
     }
 
     .profession-card {
@@ -267,7 +268,7 @@
         display: flex;
         flex-direction: column;
         transition: transform 0.2s ease;
-        position: relative; /* ВАЖНО: Дефинира контекст за слоевете */
+        position: relative; 
     }
 
         .profession-card:hover {
@@ -319,8 +320,8 @@
         gap: 0.8rem;
         margin-top: auto;
         position: relative;
-        z-index: 10; /* Изкарваме ги най-отгоре */
-        pointer-events: auto; /* Връщаме кликаемостта само тук */
+        z-index: 10;
+        pointer-events: auto; 
     }
 
     .profession-link {
@@ -361,18 +362,18 @@
 
     @@media (max-width: 1200px) {
         .professions-grid {
-            grid-template-columns: repeat(2, 1fr); /* 2 колони за таблети */
+            grid-template-columns: repeat(2, 1fr); 
         }
     }
 
     @@media (max-width: 768px) {
         .professions-grid {
-            grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
+            grid-template-columns: 1fr; 
         }
         .professions-grid
 
     {
-        grid-template-columns: repeat(2, 1fr); /* 2 колони за таблети */
+        grid-template-columns: repeat(2, 1fr); 
     }
 
     }
@@ -381,7 +382,7 @@
         .professions-grid
 
     {
-        grid-template-columns: 1fr; /* 1 колона за мобилни устройства */
+        grid-template-columns: 1fr;
     }
 
         .professions-hero-actions {

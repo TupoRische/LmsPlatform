@@ -1,4 +1,4 @@
-﻿using Infrastructure.Data.Entities;
+using Infrastructure.Data.Entities;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -125,9 +125,9 @@ new School
     SeedUsers(UserManager<ApplicationUser> userManager,
               ApplicationDbContext context)
     {
-        var pmg = context.Schools.First(s => s.Abbreviation == "ПМГ „Иван Вазов“");
-        var fsg = context.Schools.First(s => s.Abbreviation == "ФСГ „Васил Левски“");
-        var su = context.Schools.First(s => s.Abbreviation == "СУ „Свети Климент Охридски“");
+        var pmg = context.Schools.FirstOrDefault(s => s.Abbreviation == "ПМГ „Иван Вазов“");
+        var fsg = context.Schools.FirstOrDefault(s => s.Abbreviation == "ФСГ „Васил Левски“");
+        var su = context.Schools.FirstOrDefault(s => s.Abbreviation == "СУ „Свети Климент Охридски“");
 
         async Task<ApplicationUser> CreateUser(
     string email,
@@ -226,7 +226,7 @@ new School
             true,
             "Teacher123!",
             false,
-            pmg.Id);
+            pmg?.Id);
 
         var teacher2 = await CreateUser(
             "teacher2@lms.com",
@@ -236,7 +236,7 @@ new School
             true,
             "Teacher123!",
             false,
-            fsg.Id);
+            fsg?.Id);
 
         // Pending teacher (без Teacher роля)
         await CreateUser(
@@ -247,7 +247,7 @@ new School
             false,
             "Teacher123!",
             true,
-            pmg.Id);
+            pmg?.Id);
 
         // Students
         await CreateUser(
@@ -258,7 +258,7 @@ new School
             true,
             "Student123!",
             false,
-            pmg.Id);
+            pmg?.Id);
 
         await CreateUser(
             "student2@lms.com",
@@ -268,7 +268,7 @@ new School
             true,
             "Student123!",
             false,
-            su.Id);
+            su?.Id);
 
         return (admin, teacher1, teacher2);
     }
@@ -281,9 +281,9 @@ new School
             return;
 
         int GetSchoolId(string name, string city) =>
-            context.Schools
-                .First(s => s.Name == name && s.City == city)
-                .Id;
+            context.Schools.FirstOrDefault(s => s.Name == name && s.City == city)?.Id
+                ?? context.Schools.FirstOrDefault()?.Id 
+                ?? 0;
 
         context.Professions.AddRange(
 
@@ -415,8 +415,11 @@ new School
         if (context.Materials.Any())
             return;
 
-        var category = context.MaterialCategories.First();
-        var profession = context.Professions.First();
+        var category = context.MaterialCategories.FirstOrDefault();
+        var profession = context.Professions.FirstOrDefault();
+
+        if (category == null || profession == null)
+            return;
 
         context.Materials.AddRange(
 
