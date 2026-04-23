@@ -90,8 +90,8 @@ namespace Web.Areas.Identity.Pages.Account
             /// 
             public bool RequestTeacher { get; set; }
 
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Имейлът е задължителен")]
+            [EmailAddress(ErrorMessage = "Невалиден имейл адрес")]
             [Display(Name = "Имейл")]
             public string Email { get; set; }
 
