@@ -7,7 +7,6 @@
 
 <section class="auth-page">
     <div class="auth-shell auth-shell--single">
-        @* Използваме auth-carrd с две "r", за да хване стила от Login страницата *@
         <section class="auth-carrd">
             <span class="auth-chip">Създай нов акаунт</span>
             <h1 class="auth-title">@ViewData["Title"]</h1>
@@ -16,7 +15,6 @@
             <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="auth-form">
                 <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary" role="alert"></div>
 
-                @* Име и Фамилия на един ред *@
                 <div class="auth-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="auth-field">
                         <label asp-for="Input.FirstName" class="form-label">Име</label>
@@ -31,7 +29,6 @@
                     </div>
                 </div>
 
-                @* Избор на училище *@
                 <div class="auth-field">
                     <label asp-for="Input.SchoolId" class="form-label">Училище</label>
                     <select asp-for="Input.SchoolId" class="form-select" asp-items="Model.Schools" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #dee2e6;">
@@ -40,7 +37,6 @@
                     <span asp-validation-for="Input.SchoolId" class="text-danger"></span>
                 </div>
 
-                @* Опция за Учител - стилизирана като карта *@
                 <label asp-for="Input.RequestTeacher" class="auth-check-card" style="display: block; background: #f8f9fa; padding: 1rem; border-radius: 12px; cursor: pointer; border: 1px solid #eee;">
                     <span class="auth-check-card-main" style="display: flex; gap: 10px; align-items: flex-start;">
                         <input asp-for="Input.RequestTeacher" class="form-check-input" style="margin-top: 4px;" />
@@ -51,14 +47,12 @@
                     </span>
                 </label>
 
-                @* Имейл *@
                 <div class="auth-field">
                     <label asp-for="Input.Email" class="form-label">Имейл</label>
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
 
-                @* Пароли на един ред *@
                 <div class="auth-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div class="auth-field">
                         <label asp-for="Input.Password" class="form-label">Парола</label>
@@ -72,8 +66,6 @@
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
                 </div>
-
-                @* Бутонът със същия цвят като Login *@
                 <button id="registerSubmit" type="submit" class="btn btn-primary auth-submit" style="background: #6482AD !important; width: 100%; margin-top: 1.5rem; padding: 0.8rem; border-radius: 999px; border: none; font-weight: bold; color: white;">Регистрирай се</button>
 
                 <div class="auth-link-row">

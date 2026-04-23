@@ -11,6 +11,36 @@
         </div>
     </div>
 
+    <div class="filter-wrapper">
+        <form method="get" asp-action="Index" class="filter-container">
+
+            <div class="filter-group">
+                <i class="bi bi-sort-alpha-down filter-icon"></i>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSortParm" asp-route-city="@ViewBag.CurrentCity" class="filter-control-link">
+                    Училище: @(ViewBag.CurrentSort == "name_desc" ? "Я - А" : "А - Я")
+                </a>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <div class="filter-group">
+                <i class="bi bi-geo-alt filter-icon"></i>
+                <select name="city" class="filter-select" onchange="this.form.submit()">
+                    <option value="">Всички градове</option>
+                    @foreach (var cityName in ViewBag.Cities)
+                    {
+                        <option value="@cityName" selected="@(ViewBag.CurrentCity == cityName)">@cityName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn-search"><i class="bi bi-search"></i></button>
+                <a asp-action="Index" class="btn-reset"><i class="bi bi-arrow-counterclockwise"></i></a>
+            </div>
+        </form>
+    </div>
+
     @* --- Списък с училища --- *@
     <div class="schools-table-container mt-4">
         <div class="schools-table-header d-none d-md-flex">
@@ -57,21 +87,14 @@
 <style>
     .student-schools-container {
         --accent: #3f6ea5;
+        --accent-soft: #edf4fb;
         --line: rgba(63, 110, 165, 0.12);
         --muted: #6f86a0;
         --text: #28496f;
-        --highlight-bg: #fff9e6;
-        --highlight-border: #ffc107;
+        --surface: #ffffff;
     }
 
-    .highlight-school {
-        background-color: var(--highlight-bg) !important;
-        border-left: 5px solid var(--highlight-border) !important;
-        box-shadow: 0 0 20px rgba(255, 193, 7, 0.25);
-        transform: scale(1.01);
-        z-index: 10;
-    }
-
+    /* Hero Секция */
     .schools-hero {
         background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
         border: 1px solid var(--line);
@@ -92,17 +115,117 @@
 
     .schools-hero h1 {
         color: var(--text);
-        font-weight: 500;
-        font-size: 2.5rem;
     }
 
     .schools-hero p {
-        color: var(--muted);
+        color: #6f86a0;
         font-size: 0.9rem;
         max-width: 600px;
         margin: 0;
     }
+    
 
+    /* --- Филтриране --- */
+    .filter-wrapper {
+        background: var(--surface);
+        border-radius: 100px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 20px rgba(40, 73, 111, 0.08);
+        border: 1px solid var(--line);
+        margin-bottom: 2rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        padding: 0 15px;
+        position: relative;
+    }
+
+    .filter-icon {
+        color: #5c85b1;
+        font-size: 1.1rem;
+        margin-right: 12px;
+    }
+
+    .filter-divider {
+        width: 1px;
+        height: 28px;
+        background: var(--line);
+    }
+
+    .filter-control-link, .filter-select {
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.95rem;
+        font-weight: 600;
+        width: 100%;
+        text-decoration: none;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .filter-select {
+        appearance: none;
+        padding-right: 25px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235c85b1' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-search {
+        background: #6482AD;
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-search:hover {
+            background: var(--text);
+            transform: scale(1.05);
+        }
+
+    .btn-reset {
+        background: #f8fafc;
+        color: var(--muted);
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+        .btn-reset:hover {
+            background: #fee2e2;
+            color: #dc3545;
+        }
+
+    /* Таблица (твоите стилове) */
     .schools-table-container {
         background: white;
         border-radius: 12px;
@@ -117,7 +240,6 @@
         color: var(--muted);
         font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
         font-weight: 700;
     }
 
@@ -126,13 +248,8 @@
         align-items: center;
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid #f0f3f5;
-        transition: all 0.3s ease;
-        position: relative;
+        transition: 0.3s;
     }
-
-        .school-row:last-child {
-            border-bottom: none;
-        }
 
         .school-row:hover {
             background-color: #fcfdfe;
@@ -140,18 +257,14 @@
 
     .col-name {
         flex: 0 0 60%;
-        padding-right: 20px;
     }
 
     .col-city {
         flex: 0 0 20%;
-        display: flex;
-        align-items: center;
     }
 
     .col-action {
         flex: 0 0 20%;
-        text-align: right;
     }
 
     .school-mini-icon {
@@ -164,7 +277,6 @@
         align-items: center;
         justify-content: center;
         margin-right: 12px;
-        font-size: 0.9rem;
     }
 
     .city-tag {
@@ -175,10 +287,6 @@
         gap: 5px;
     }
 
-        .city-tag i {
-            color: #a0aec0;
-        }
-
     .link-btn {
         color: var(--accent);
         text-decoration: none;
@@ -186,54 +294,53 @@
         font-size: 0.85rem;
         padding: 0.5rem 1rem;
         border-radius: 6px;
-        border: 1px solid transparent;
-        transition: all 0.2s;
+        transition: 0.2s;
     }
 
         .link-btn:hover {
             background: #f0f7ff;
-            border-color: #d0e3ff;
             color: #2b507d;
         }
 
     @@media (max-width: 768px) {
-        .school-row
+        .filter-wrapper {
+            border-radius: 24px;
+        }
 
-    {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-divider {
+            display: none;
+        }
+
+        .filter-group {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .filter-actions {
+            justify-content: center;
+            margin-top: 15px;
+        }
     }
-
-    .col-action {
-        width: 100%;
-        text-align: left !important;
-    }
-
-    .link-btn {
-        padding-left: 0;
-    }
-
-    }</style>
+</style>
 
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Проверка за котва в URL (напр. #school-5)
             if (window.location.hash && window.location.hash.startsWith('#school-')) {
                 const targetId = window.location.hash;
                 const element = document.querySelector(targetId);
 
                 if (element) {
-                    // Малко закъснение, за да завърши рендерирането на браузъра
                     setTimeout(() => {
-                        // 1. Скролва плавно до центъра на екрана
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                        // 2. Активира визуалния ефект
                         element.classList.add('highlight-school');
 
-                        // 3. Плавно премахва ефекта след 4 секунди
                         setTimeout(() => {
                             element.style.transition = "all 1.5s ease";
                             element.classList.remove('highlight-school');

@@ -12,34 +12,30 @@
             <p>Разгледай специалностите, научи какво ще изучаваш и виж наличните материали за всяка професия.</p>
         </div>
     </div>
-    <form method="get" asp-action="Index" class="mb-5">
-        <div class="row g-3 align-items-end filter-row">
 
-            <div class="col-md-4">
-                <label class="form-label small text-muted text-uppercase fw-bold">Професия</label>
-                <select name="professionName" class="form-select custom-select">
-                    <option value="">Всички професии</option>
-                    @if (ViewBag.ProfessionNames != null)
-                    {
-                        foreach (var name in ViewBag.ProfessionNames)
-                        {
-                            <option value="@name" selected="@(Context.Request.Query["professionName"] == name)">
-                                @name
-                            </option>
-                        }
-                    }
-                </select>
+    <div class="filter-wrapper">
+        <form method="get" asp-action="Index" class="filter-container">
+            <div class="filter-group">
+                <i class="bi bi-sort-alpha-down filter-icon"></i>
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewBag.NameSortParm"
+                   asp-route-schoolId="@ViewBag.CurrentSchoolId"
+                   class="filter-control-link">
+                    Име: @(ViewBag.CurrentSort == "name_desc" ? "Я - А" : "А - Я")
+                </a>
             </div>
 
-            <div class="col-md-4">
-                <label class="form-label small text-muted text-uppercase fw-bold">Училище</label>
-                <select name="schoolId" class="form-select custom-select">
+            <div class="filter-divider"></div>
+
+            <div class="filter-group">
+                <i class="bi bi-building filter-icon"></i>
+                <select name="schoolId" class="filter-select" onchange="this.form.submit()">
                     <option value="">Всички училища</option>
                     @if (ViewBag.Schools != null)
                     {
                         foreach (var school in ViewBag.Schools)
                         {
-                            <option value="@school.Id" selected="@(Context.Request.Query["schoolId"] == school.Id.ToString())">
+                            <option value="@school.Id" selected="@(ViewBag.CurrentSchoolId?.ToString() == school.Id.ToString())">
                                 @school.Name
                             </option>
                         }
@@ -47,19 +43,16 @@
                 </select>
             </div>
 
-            <div class="col-md-4">
-                <div class="d-flex align-items-center gap-3">
-                    <button type="submit" class="btn-primary-custom rounded-pill border-0 py-2 flex-grow-1 shadow-sm">
-                        <i class="bi bi-funnel"></i> Филтрирай
-                    </button>
-                    <a asp-action="Index" class="text-clear-link">
-                        Изчисти
-                    </a>
-                </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn-search">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a asp-action="Index" class="btn-reset" title="Изчисти филтрите">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
             </div>
-
-        </div>
-    </form>
+        </form>
+    </div>
 
     @if (!Model.Any())
     {
@@ -207,48 +200,104 @@
         font-weight: 500;
     }
 
-    /* Филтриране */
-    .custom-select {
-        border-radius: 12px;
-        border: 1px solid rgba(63, 110, 165, 0.1);
-        padding: 0.7rem 1rem;
-        height: 48px; 
+    /* --- Филтриране --- */
+    .filter-wrapper {
+        background: var(--surface);
+        border-radius: 100px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 20px rgba(40, 73, 111, 0.08);
+        border: 1px solid var(--line);
+        margin-bottom: 2rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .btn-primary-custom {
-        background-color: #5c85b1;
-        color: white !important;
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        padding: 0 15px;
+        position: relative;
+    }
+
+    .filter-icon {
+        color: #5c85b1;
+        font-size: 1.1rem;
+        margin-right: 12px;
+    }
+
+    .filter-divider {
+        width: 1px;
+        height: 28px;
+        background: var(--line);
+    }
+
+    .filter-control-link, .filter-select {
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.95rem;
         font-weight: 600;
-        transition: 0.2s;
-    }
-
-    /* Стил за текстовия линк "Изчисти" */
-    .text-clear-link {
-        color: #6f86a0; 
+        width: 100%;
         text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: color 0.2s ease;
-        white-space: nowrap;
+        outline: none;
+        cursor: pointer;
     }
 
-        .text-clear-link:hover {
-            color: #dc3545; 
-            text-decoration: underline;
+    .filter-select {
+        appearance: none;
+        padding-right: 25px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235c85b1' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-search {
+        background: #6482AD;
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-search:hover {
+            background: var(--text);
+            transform: scale(1.05);
         }
 
-    .custom-select {
-        border-radius: 12px;
-        border: 1px solid rgba(63, 110, 165, 0.1);
-        padding: 0.7rem 1rem;
-        height: 48px;
-        background-color: white;
-        color: #28496f;
+    .btn-reset {
+        background: #f8fafc;
+        color: var(--muted);
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
     }
 
-        .custom-select:focus {
-            border-color: #5c85b1;
-            box-shadow: 0 0 0 0.25rem rgba(92, 133, 177, 0.1);
+        .btn-reset:hover {
+            background: #fee2e2;
+            color: #dc3545;
         }
 
     /* 3. Грид и Карти */
@@ -268,7 +317,7 @@
         display: flex;
         flex-direction: column;
         transition: transform 0.2s ease;
-        position: relative; 
+        position: relative;
     }
 
         .profession-card:hover {
@@ -294,6 +343,7 @@
         font-size: 1.1rem;
         font-weight: 700;
         margin: 0;
+        margin-top: 1rem;
     }
 
     .profession-count {
@@ -306,7 +356,7 @@
         white-space: nowrap;
     }
 
-    /* 4. Описание (Параграф) */
+    /* 4. Описание */
     .profession-card p {
         color: var(--muted);
         font-size: 0.9rem;
@@ -314,14 +364,15 @@
         margin-bottom: 1.5rem;
         flex-grow: 1;
     }
-    /* 5. Бутони (Actions) */
+
+    /* 5. Бутони */
     .profession-actions {
         display: flex;
         gap: 0.8rem;
         margin-top: auto;
         position: relative;
         z-index: 10;
-        pointer-events: auto; 
+        pointer-events: auto;
     }
 
     .profession-link {
@@ -360,30 +411,40 @@
         border: 1px dashed var(--line);
     }
 
+    /* Адаптивност */
     @@media (max-width: 1200px) {
         .professions-grid {
-            grid-template-columns: repeat(2, 1fr); 
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 
     @@media (max-width: 768px) {
+        .filter-wrapper {
+        border-radius: 24px;
+        }
+
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-divider {
+            display: none;
+        }
+
+        .filter-group {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .filter-actions {
+            justify-content: center;
+            margin-top: 15px;
+        }
+
         .professions-grid {
-            grid-template-columns: 1fr; 
+            grid-template-columns: 1fr;
         }
-        .professions-grid
-
-    {
-        grid-template-columns: repeat(2, 1fr); 
-    }
-
-    }
-
-    @@media (max-width: 768px) {
-        .professions-grid
-
-    {
-        grid-template-columns: 1fr;
-    }
 
         .professions-hero-actions {
             align-items: stretch;

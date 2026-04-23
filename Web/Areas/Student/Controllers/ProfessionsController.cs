@@ -17,18 +17,24 @@ namespace Web.Areas.Student.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? schoolId, string professionName)
+        public async Task<IActionResult> Index(int? schoolId, string sortOrder)
         {
             ViewBag.Schools = await schools.GetDropdownAsync();
 
-            var allProfessions = await professions.GetAllAsync(null, null);
-            ViewBag.ProfessionNames = allProfessions
-                .Select(p => p.Name)
-                .Distinct()
-                .OrderBy(p => p)
-                .ToList();
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.CurrentSchoolId = schoolId;
 
-            var model = await professions.GetAllAsync(schoolId, professionName);
+            var model = await professions.GetAllAsync(schoolId, null);
+
+            if (sortOrder == "name_desc")
+            {
+                model = model.OrderByDescending(p => p.Name).ToList();
+            }
+            else
+            {
+                model = model.OrderBy(p => p.Name).ToList();
+            }
 
             return View(model);
         }

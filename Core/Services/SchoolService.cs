@@ -1,7 +1,7 @@
 ﻿using Core.Contracts;
 using Core.ViewModels.School;
-using Infrastructure.Data.Entities;        // School
-using Infrastructure.Repositories;         // IRepository<T>
+using Infrastructure.Data.Entities;        
+using Infrastructure.Repositories;       
 using Infrastructure.Repositories.Contracts;
 using Infrastructure.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
@@ -15,19 +15,35 @@ namespace Core.Services
 
         public SchoolService(IRepository<School> repo) => this.repo = repo;
 
-        public async Task<IEnumerable<SchoolListVm>> GetAllAsync()
-            => await repo.AllReadonly()
-                .Select(s => new SchoolListVm
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    City = s.City,
-                    WebsiteUrl = s.WebsiteUrl,
-                    ProfessionsCount = s.Professions.Count,
-                    UsersCount = s.Users.Count
-                })
-                .OrderBy(s => s.City).ThenBy(s => s.Name)
-                .ToListAsync();
+        public async Task<IEnumerable<SchoolListVm>> GetAllAsync(string? city = null, string? sortOrder = null)
+        {
+            var schoolsQuery = repo.AllReadonly();
+
+            if (!string.IsNullOrEmpty(city))
+            {
+                schoolsQuery = schoolsQuery.Where(s => s.City == city);
+            }
+
+            var resultQuery = schoolsQuery.Select(s => new SchoolListVm
+            {
+                Id = s.Id,
+                Name = s.Name,
+                City = s.City,
+                WebsiteUrl = s.WebsiteUrl,
+                ProfessionsCount = s.Professions.Count,
+                UsersCount = s.Users.Count
+            });
+
+            resultQuery = sortOrder switch
+            {
+                "name_desc" => resultQuery.OrderByDescending(s => s.Name),
+                "city_asc" => resultQuery.OrderBy(s => s.City).ThenBy(s => s.Name),
+                "city_desc" => resultQuery.OrderByDescending(s => s.City),
+                _ => resultQuery.OrderBy(s => s.Name) 
+            };
+
+            return await resultQuery.ToListAsync();
+        }
         public async Task<IEnumerable<SchoolListVm>> GetRandomThreeAsync()
         {
             const int previewPoolSize = 12;

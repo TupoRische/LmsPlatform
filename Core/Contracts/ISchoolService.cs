@@ -10,7 +10,7 @@ namespace Core.Contracts
     public interface ISchoolService
     : IService<SchoolListVm, SchoolDetailsVm, SchoolFormVm>
     {
-        // ако ти трябват допълнителни методи само за училища – добавяш тук
+        Task<IEnumerable<SchoolListVm>> GetAllAsync(string? city = null, string? sortOrder = null);
         Task<IEnumerable<SchoolDropdownVm>> GetDropdownAsync();
         Task<IEnumerable<SchoolListVm>> GetRandomThreeAsync();
 

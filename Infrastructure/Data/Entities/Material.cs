@@ -23,22 +23,14 @@ namespace Infrastructure.Data.Entities
 
         [MaxLength(500)]
         public string? Url { get; set; }
-
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-
-        // FK към Profession
         public int ProfessionId { get; set; }
         public Profession Profession { get; set; } = null!;
-
-        // FK към Category
         public int MaterialCategoryId { get; set; }
         public MaterialCategory MaterialCategory { get; set; } = null!;
-
-        // FK към Teacher (Identity)
         [Required]
         public string TeacherId { get; set; } = null!;
         public ApplicationUser Teacher { get; set; } = null!;
-
         public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
 }

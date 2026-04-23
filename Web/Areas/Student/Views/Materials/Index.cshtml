@@ -7,7 +7,7 @@
 
 <div class="materials-page-root mb-5">
     @* 1. Hero Header Секция *@
-    <div class="professions-hero">
+    <div class="materials-hero">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <span class="hero-kicker">Библиотека</span>
@@ -23,13 +23,12 @@
         </div>
     </div>
 
-    @* 2. Филтри Секция - Добавен бутон Филтрирай *@
-    <form method="get" asp-action="Index" class="mb-5">
-        <div class="row g-3 align-items-end filter-row">
-            @* Колона 1: Професия *@
-            <div class="col-md-4">
-                <label class="form-label small text-muted" for="professionId">ПРОФЕСИЯ</label>
-                <select name="professionId" id="professionId" class="form-select custom-select">
+    @* 2. Филтриране (Pill Design) *@
+    <div class="filter-wrapper">
+        <form method="get" asp-action="Index" class="filter-container">
+            <div class="filter-group">
+                <i class="bi bi-briefcase filter-icon"></i>
+                <select name="professionId" class="filter-select" onchange="this.form.submit()">
                     <option value="">Всички професии</option>
                     @foreach (var profession in Model.Professions)
                     {
@@ -38,10 +37,11 @@
                 </select>
             </div>
 
-            @* Колона 2: Категория *@
-            <div class="col-md-4">
-                <label class="form-label small text-muted" for="materialCategoryId">КАТЕГОРИЯ</label>
-                <select name="materialCategoryId" id="materialCategoryId" class="form-select custom-select">
+            <div class="filter-divider"></div>
+
+            <div class="filter-group">
+                <i class="bi bi-tags filter-icon"></i>
+                <select name="materialCategoryId" class="filter-select" onchange="this.form.submit()">
                     <option value="">Всички категории</option>
                     @foreach (var category in Model.Categories)
                     {
@@ -50,111 +50,95 @@
                 </select>
             </div>
 
-            @* Колона 3: Бутони *@
-            <div class="col-md-4">
-                <div class="d-flex align-items-center gap-2 filter-buttons-group">
-                    <button type="submit" class="btn-primary-custom rounded-pill border-0 py-2 flex-grow-1">
-                        <i class="bi bi-funnel"></i> Филтрирай
-                    </button>
-                    <a asp-action="Index" class="btn-outline-custom rounded-pill text-decoration-none py-2 text-center flex-grow-1">
-                        Изчисти
-                    </a>
-                </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn-search" title="Филтрирай">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a asp-action="Index" class="btn-reset" title="Изчисти филтрите">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
     @* 3. Grid с карти за Материали *@
-    @if (!Model.Materials.Any())
-    {
-        <div class="text-center py-5">
-            <i class="bi bi-folder2-open display-2 text-light"></i>
-            <p class="text-muted mt-3">Все още няма добавени материали за избраните филтри.</p>
-        </div>
-    }
-    else
-    {
-        <div class="row row-cols-1 row-cols-md-3 g-4 materials-grid">
-            @foreach (var material in Model.Materials)
-            {
-                <div class="col">
-                    <article class="material-card h-100 shadow-sm">
-                        <div class="card-body-custom">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                @* Професия *@
-                                <span class="text-muted small d-block mb-1">
-                                    <i class="bi bi-briefcase small"></i> @material.ProfessionName
-                                </span>
+    <div class="materials-grid-container">
+        @if (!Model.Materials.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-folder2-open display-2 text-light"></i>
+                <p class="text-muted mt-3">Все още няма добавени материали за избраните филтри.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-md-3 g-4 materials-grid">
+                @foreach (var material in Model.Materials)
+                {
+                    <div class="col">
+                        <article class="material-card h-100 shadow-sm">
+                            <div class="card-body-custom">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted small d-block">
+                                        <i class="bi bi-briefcase small"></i> @material.ProfessionName
+                                    </span>
+                                    <span class="type-badge">@material.CategoryName</span>
+                                </div>
 
-                                @* Категория *@
-                                <span class="type-badge">@material.CategoryName</span>
-                            </div>
+                                <h5 class="card-title mt-2">@material.Title</h5>
 
-                            <h5 class="card-title mt-2">@material.Title</h5>
-
-                            @* Описание *@
-                            <div class="material-description mt-3 mb-4">
-                                <p class="text-muted small mb-0">
-                                    @(!string.IsNullOrWhiteSpace(material.Description)
-                                                                ? (material.Description.Length > 120 ? material.Description[..117] + "..." : material.Description)
-                                                                : "Няма добавено описание.")
-                        </p>
-                    </div>
-
-                            @* Мета информация за учител *@
-                            <div class="meta-item mt-auto">
-                                <i class="bi bi-person-fill text-muted"></i>
-                                <span class="small text-muted ms-1">Добавен от: <strong>@material.TeacherName</strong></span>
-                            </div>
-
-                            <div class="meta-item">
-                                <i class="bi bi-calendar3 text-muted"></i>
-                                <span class="small text-muted ms-1">@material.CreatedOn.ToString("dd.MM.yyyy")</span>
-                            </div>
+                                <div class="material-description mt-3 mb-4">
+                                    <p class="text-muted small mb-0">
+                                        @(!string.IsNullOrWhiteSpace(material.Description)
+                                                                        ? (material.Description.Length > 120 ? material.Description[..117] + "..." : material.Description)
+                                                                        : "Няма добавено описание.")
+                            </p>
                         </div>
 
-                        <div class="card-footer-custom mt-auto">
-                    @if (User.Identity.IsAuthenticated)
-                            {
-                                <a asp-area=""
-                                   asp-controller="Materials"
+                                <div class="meta-info mt-auto">
+                                    <div class="meta-item">
+                                        <i class="bi bi-person-fill text-muted"></i>
+                                        <span class="small text-muted ms-1">Добавен от: <strong>@material.TeacherName</strong></span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-calendar3 text-muted"></i>
+                                        <span class="small text-muted ms-1">@material.CreatedOn.ToString("dd.MM.yyyy")</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer-custom">
+                                <a asp-controller="Materials"
                                    asp-action="Details"
                                    asp-route-id="@material.Id"
                                    class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
                                     Към материала →
                                 </a>
-                            }
-                            else
-                            {
-                                <a asp-area="Identity"
-                                   asp-page="/Account/Login"
-                                   class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
-                                    Към материала →
-                                </a>
-                            }
-                        </div>
-                    </article>
-                </div>
-            }
-        </div>
-    }
+                            </div>
+                        </article>
+                    </div>
+                        }
+            </div>
+        }
+    </div>
 </div>
 
 <style>
     :root {
         --primary: #5c85b1;
-        --primary-light: #f4f8fc;
+        --accent: #3f6ea5;
+        --line: rgba(63, 110, 165, 0.12);
         --text-dark: #28496f;
         --text-muted: #6f86a0;
-        --line: rgba(63, 110, 165, 0.1);
+        --surface: #ffffff;
     }
 
     .materials-page-root {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: var(--text-dark);
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    .professions-hero {
+    /* --- Hero Section --- */
+    .materials-hero {
         background: linear-gradient(135deg, #f4f8fc 0%, #e8f0f9 100%);
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -162,75 +146,153 @@
         margin-bottom: 2rem;
     }
 
-    .hero-kicker {
-        display: inline-block;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: #3f6ea5;
-        margin-bottom: 0.5rem;
+    .materials-hero h1 {
+            color: #28496f;
     }
 
-    .professions-hero h1 {
-        color: #28496f;
-        font-weight: 500;
-    }
-
-    .professions-hero p {
+    .materials-hero p {
         color: #6f86a0;
         font-size: 0.9rem;
         max-width: 600px;
         margin: 0;
     }
 
-    .custom-select {
-        border-radius: 12px;
-        border: 1px solid var(--line);
-        padding: 0.7rem 1rem;
-        color: var(--text-dark);
-        background-color: white;
+    .hero-kicker {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.8rem;
     }
 
-        .custom-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(92, 133, 177, 0.1);
+    /* Филтриране */
+    .filter-wrapper {
+        background: var(--surface);
+        border-radius: 100px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 25px rgba(40, 73, 111, 0.1);
+        border: 1px solid var(--line);
+        max-width: 900px;
+        margin: 0 auto 3rem auto; 
+        position: relative;
+        z-index: 10;
+    }
+
+    .filter-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        padding: 0 15px;
+    }
+
+    .filter-icon {
+        color: var(--primary);
+        font-size: 1.1rem;
+        margin-right: 10px;
+    }
+
+    .filter-divider {
+        width: 1px;
+        height: 30px;
+        background: var(--line);
+    }
+
+    .filter-select {
+        border: none;
+        background: transparent;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        font-weight: 600;
+        width: 100%;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        padding-right: 20px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235c85b1' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right center;
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .btn-search {
+        background: #6482AD;
+        color: white;
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+        .btn-search:hover {
+            transform: scale(1.05);
+            background: var(--text-dark);
         }
 
-    .btn-clear-custom:hover {
-        color: var(--primary) !important;
+    .btn-reset {
+        background: #f8fafc;
+        color: var(--text-muted);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
     }
 
-    /* Карта за материал */
-    .materials-grid .material-card {
+        .btn-reset:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+    /* --- Grid & Cards --- */
+    .materials-grid-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .materials-grid {
+        max-width: 1140px; /* Стандартна ширина на контейнера */
+        width: 100%;
+    }
+
+    .material-card {
         background: white;
         border-radius: 20px;
         border: 1px solid var(--line);
-        overflow: hidden;
+        transition: 0.3s;
         display: flex;
         flex-direction: column;
-        transition: all 0.2s ease;
     }
 
-        .materials-grid .material-card:hover {
+        .material-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(40, 73, 111, 0.08) !important;
+            box-shadow: 0 12px 30px rgba(40, 73, 111, 0.1) !important;
         }
 
     .card-body-custom {
-        padding: 1.5rem 2rem 1rem 2rem;
-        position: relative;
+        padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-    }
-
-    .material-description p {
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        line-height: 1.5;
     }
 
     .type-badge {
@@ -240,58 +302,59 @@
         border-radius: 50px;
         font-size: 0.7rem;
         font-weight: 700;
-        white-space: nowrap;
     }
 
-    .material-card h5.card-title {
+    .card-title {
         color: var(--text-dark);
         font-weight: 700;
-        font-size: 1.35rem;
-        margin-bottom: 0;
+        font-size: 1.25rem;
     }
 
     .meta-item {
         display: flex;
         align-items: center;
-        margin-bottom: 0.4rem;
+        margin-top: 0.3rem;
     }
 
-        .meta-item strong {
-            color: var(--text-dark);
-        }
-
     .card-footer-custom {
-        padding: 0 2rem 1.5rem 2rem;
-        background: white;
-        text-align: center;
+        padding: 0 1.5rem 1.5rem 1.5rem;
     }
 
     .btn-details-custom {
-        display: block;
-        width: 100%;
-        background-color: var(--primary);
+        background: var(--primary);
         color: white !important;
-        text-decoration: none !important;
-        padding: 10px 20px;
+        padding: 10px;
         font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-        .btn-details-custom:hover {
-            background-color: var(--text-dark);
-        }
-
-    .btn-primary-custom {
-        background-color: var(--primary);
-        color: white !important;
-        padding: 12px 24px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
         transition: 0.2s;
     }
 
-        .btn-primary-custom:hover {
-            background-color: var(--text-dark);
+        .btn-details-custom:hover {
+            background: var(--text-dark);
         }
+
+    /* Mobile */
+    @@media (max-width: 768px) {
+        .filter-wrapper {
+            border-radius: 24px;
+        }
+
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-divider {
+            display: none;
+        }
+
+        .filter-group {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .filter-actions {
+            justify-content: center;
+            margin-top: 15px;
+        }
+    }
 </style>

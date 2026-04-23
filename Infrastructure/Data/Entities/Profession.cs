@@ -16,11 +16,8 @@ namespace Infrastructure.Data.Entities
 
         [MaxLength(2000)]
         public string? Description { get; set; }
-
-        // FK към School (1 School -> много Professions)
         public int SchoolId { get; set; }
         public School School { get; set; } = null!;
-
         public ICollection<Material> Materials { get; set; } = new HashSet<Material>();
     }
 }

@@ -12,25 +12,18 @@ namespace Web.Areas.Student.Controllers
         public SchoolsController(ISchoolService schools)
             => this.schools = schools;
 
-        public async Task<IActionResult> Index(string city)
+        public async Task<IActionResult> Index(string city, string sortOrder)
         {
-            // 1. Вземаме всички училища (или филтрирани, ако услугата поддържа параметър)
-            var allSchools = await schools.GetAllAsync();
+            var allForFilter = await schools.GetAllAsync();
+            ViewBag.Cities = allForFilter.Select(s => s.City).Distinct().OrderBy(c => c).ToList();
 
-            // 2. Извличаме уникалните градове за падащото меню
-            ViewBag.Cities = allSchools
-                .Select(s => s.City)
-                .Distinct()
-                .OrderBy(c => c)
-                .ToList();
+            ViewBag.CurrentCity = city;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.CitySortParm = sortOrder == "city_asc" ? "city_desc" : "city_asc";
 
-            // 3. Филтрираме списъка, ако е избран конкретен град
-            if (!string.IsNullOrEmpty(city))
-            {
-                allSchools = allSchools.Where(s => s.City == city);
-            }
-
-            return View(allSchools);
+            var model = await schools.GetAllAsync(city, sortOrder);
+            return View(model);
         }
 
         [Authorize]
