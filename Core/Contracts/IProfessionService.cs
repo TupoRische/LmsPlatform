@@ -13,5 +13,7 @@ namespace Core.Contracts
         Task<IEnumerable<ProfessionListVm>> GetAllAsync(int? schoolId, string sortOrder);
         Task<IEnumerable<ProfessionIndexVm>> GetRandomThreeAsync();
         Task<ProfessionQuizPageVm> GetQuizAsync();
+        Task<ProfessionQuizSavedResultVm?> GetLatestQuizResultAsync(string userId);
+        Task<ProfessionQuizSavedResultVm?> ProcessQuizSubmissionAsync(ProfessionQuizSubmissionVm submission, string? userId = null);
     }
 }

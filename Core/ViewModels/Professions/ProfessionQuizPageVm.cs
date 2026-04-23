@@ -5,6 +5,8 @@ namespace Core.ViewModels.Professions
         public IReadOnlyList<ProfessionQuizQuestionVm> Questions { get; set; } = Array.Empty<ProfessionQuizQuestionVm>();
 
         public IReadOnlyList<ProfessionQuizResultVm> Results { get; set; } = Array.Empty<ProfessionQuizResultVm>();
+
+        public ProfessionQuizSavedResultVm? SavedResult { get; set; }
     }
 
     public class ProfessionQuizQuestionVm
@@ -38,5 +40,21 @@ namespace Core.ViewModels.Professions
         public int? ProfessionId { get; set; }
 
         public string Summary { get; set; } = string.Empty;
+    }
+
+    public class ProfessionQuizSavedResultVm
+    {
+        public string ProfessionName { get; set; } = string.Empty;
+
+        public int? ProfessionId { get; set; }
+
+        public string Summary { get; set; } = string.Empty;
+
+        public int Score { get; set; }
+    }
+
+    public class ProfessionQuizSubmissionVm
+    {
+        public IDictionary<int, List<int>> Answers { get; set; } = new Dictionary<int, List<int>>();
     }
 }

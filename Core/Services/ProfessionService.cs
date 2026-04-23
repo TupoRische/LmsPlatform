@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Core.Services
@@ -14,9 +15,13 @@ namespace Core.Services
     public class ProfessionService : IProfessionService
     {
         private readonly IRepository<Profession> repo;
+        private readonly IRepository<QuizResult> quizResultsRepo;
 
-        public ProfessionService(IRepository<Profession> repo)
-            => this.repo = repo;
+        public ProfessionService(IRepository<Profession> repo, IRepository<QuizResult> quizResultsRepo)
+        {
+            this.repo = repo;
+            this.quizResultsRepo = quizResultsRepo;
+        }
 
         public Task<int> CreateAsync(ProfessionFormVm model)
         {
@@ -96,16 +101,101 @@ namespace Core.Services
 
         public async Task<ProfessionQuizPageVm> GetQuizAsync()
         {
-            var professionIds = await repo.AllReadonly()
-                .Where(p => QuizProfessionNames.Contains(p.Name))
-                .Select(p => new { p.Id, p.Name })
-                .ToDictionaryAsync(p => p.Name, p => p.Id);
+            var professionIds = await GetQuizProfessionIdsAsync();
 
             return new ProfessionQuizPageVm
             {
                 Questions = BuildQuizQuestions(),
                 Results = BuildQuizResults(professionIds)
             };
+        }
+
+        public async Task<ProfessionQuizSavedResultVm?> GetLatestQuizResultAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return null;
+            }
+
+            var latestResult = await quizResultsRepo.AllReadonly()
+                .Where(result => result.UserId == userId)
+                .OrderByDescending(result => result.CreatedOn)
+                .ThenByDescending(result => result.Id)
+                .Select(result => new
+                {
+                    result.RecommendedProfessionId,
+                    ProfessionName = result.RecommendedProfession.Name,
+                    result.AnswersJson
+                })
+                .FirstOrDefaultAsync();
+
+            if (latestResult is null)
+            {
+                return null;
+            }
+
+            var resultDefinition = BuildQuizResultDefinitions()
+                .FirstOrDefault(definition => definition.ProfessionName == latestResult.ProfessionName);
+
+            if (resultDefinition is null)
+            {
+                return null;
+            }
+
+            var savedAnswers = DeserializeAnswers(latestResult.AnswersJson);
+            var score = savedAnswers is null
+                ? 0
+                : CalculateTotals(BuildQuizQuestions(), savedAnswers).GetValueOrDefault(latestResult.ProfessionName);
+
+            return new ProfessionQuizSavedResultVm
+            {
+                ProfessionName = latestResult.ProfessionName,
+                ProfessionId = latestResult.RecommendedProfessionId,
+                Summary = resultDefinition.Summary,
+                Score = score
+            };
+        }
+
+        public async Task<ProfessionQuizSavedResultVm?> ProcessQuizSubmissionAsync(ProfessionQuizSubmissionVm submission, string? userId = null)
+        {
+            var questions = BuildQuizQuestions();
+            var normalizedAnswers = NormalizeAnswers(submission, questions);
+
+            if (normalizedAnswers is null)
+            {
+                return null;
+            }
+
+            var professionIds = await GetQuizProfessionIdsAsync();
+            var results = BuildQuizResults(professionIds);
+            var bestMatch = ResolveBestResult(results, CalculateTotals(questions, normalizedAnswers));
+
+            if (bestMatch is null)
+            {
+                return null;
+            }
+
+            var resultVm = new ProfessionQuizSavedResultVm
+            {
+                ProfessionName = bestMatch.Value.Result.ProfessionName,
+                ProfessionId = bestMatch.Value.Result.ProfessionId,
+                Summary = bestMatch.Value.Result.Summary,
+                Score = bestMatch.Value.Score
+            };
+
+            if (!string.IsNullOrWhiteSpace(userId) && bestMatch.Value.Result.ProfessionId.HasValue)
+            {
+                await quizResultsRepo.AddAsync(new QuizResult
+                {
+                    UserId = userId,
+                    RecommendedProfessionId = bestMatch.Value.Result.ProfessionId.Value,
+                    AnswersJson = JsonSerializer.Serialize(normalizedAnswers)
+                });
+
+                await quizResultsRepo.SaveChangesAsync();
+            }
+
+            return resultVm;
         }
 
         public Task UpdateAsync(int id, ProfessionFormVm model)
@@ -266,21 +356,132 @@ namespace Core.Services
                     Option("Когато превръщам идея в нещо видимо и завършено", ("Графичен дизайнер", 2), ("Готвач", 2), ("Строителен техник", 1)))
             };
 
-        private static IReadOnlyList<ProfessionQuizResultVm> BuildQuizResults(IReadOnlyDictionary<string, int> professionIds)
-            => new List<ProfessionQuizResultVm>
+        private async Task<IReadOnlyDictionary<string, int>> GetQuizProfessionIdsAsync()
+            => await repo.AllReadonly()
+                .Where(p => QuizProfessionNames.Contains(p.Name))
+                .Select(p => new { p.Id, p.Name })
+                .ToDictionaryAsync(p => p.Name, p => p.Id);
+
+        private static Dictionary<int, List<int>>? NormalizeAnswers(
+            ProfessionQuizSubmissionVm submission,
+            IReadOnlyList<ProfessionQuizQuestionVm> questions)
+        {
+            if (submission?.Answers is null || submission.Answers.Count != questions.Count)
             {
-                CreateResult("Графичен дизайнер", "Имаш силен усет към визията, идеите и начина, по който едно послание въздейства. Ако развиваш това последователно, можеш да създаваш работа, която впечатлява и остава разпознаваема.", professionIds),
-                CreateResult("Оперативен счетоводител", "При теб личат точност, подреденост и спокойствие при работа с данни и процеси. Това е стабилна посока, в която вниманието ти към детайла може да се превърне в истинско предимство.", professionIds),
-                CreateResult("Приложен програмист", "Харесва ти да създаваш работещи дигитални решения и да превръщаш идеи в реални функции. С практика и постоянство можеш да изградиш много силен профил в разработката на софтуер.", professionIds),
-                CreateResult("Системен програмист", "Мислиш логично и виждаш как отделните части на една система работят заедно. Това е отлична основа за роля, в която надеждността и техническата дълбочина са особено ценни.", professionIds),
-                CreateResult("Електронна търговия", "Комбинираш интерес към дигиталната среда, продуктите и връзката с клиентите. Това може да се развие в много практична посока, където търговското мислене и онлайн уменията вървят ръка за ръка.", professionIds),
-                CreateResult("Електротехник", "Имаш нагласа към практическа работа, точност и техническа отговорност на терен. Това е професия, в която уверените действия и добрата подготовка водят до реален резултат всеки ден.", professionIds),
-                CreateResult("Техник на комуникационни системи", "Привличат те връзките между устройства, мрежи и сигнали, а това е много ценен технически профил. Ако продължиш да развиваш този интерес, можеш да се чувстваш силно в модерна и търсена среда.", professionIds),
-                CreateResult("Техник по транспортна техника", "Имаш практичен усет към машини, диагностика и работа с реална техника. Това е добра посока за човек, който обича да вижда директния ефект от своите умения.", professionIds),
-                CreateResult("Строителен техник", "Подхождате ти организацията, измерванията и превръщането на план в реално изпълнение. Това е професия, в която последователността и добрата координация дават видим и устойчив резултат.", professionIds),
-                CreateResult("Ветеринарен техник", "При теб се открояват наблюдателност, грижа и желание да помагаш в реални ситуации. Това е много смислена посока, ако искаш работата ти да носи спокойствие и подкрепа на животни и хора.", professionIds),
-                CreateResult("Готвач", "Имаш усет към вкуса, ритъма на практическата работа и удоволствието да създаваш нещо за другите. Ако развиеш това с дисциплина и творчество, можеш да се чувстваш много на място в кухнята.", professionIds),
-                CreateResult("Хотелиер", "Силна твоя страна е отношението към хората, организацията и доброто преживяване за госта. Това е чудесна посока, ако искаш да работиш в динамична среда, в която личното отношение има голяма стойност.", professionIds)
+                return null;
+            }
+
+            var normalizedAnswers = new Dictionary<int, List<int>>();
+
+            foreach (var question in questions)
+            {
+                if (!submission.Answers.TryGetValue(question.Id, out var selectedOptions))
+                {
+                    return null;
+                }
+
+                var normalizedSelections = (selectedOptions ?? new List<int>())
+                    .Distinct()
+                    .OrderBy(index => index)
+                    .ToList();
+
+                if (normalizedSelections.Count == 0 || normalizedSelections.Count > question.MaxSelections)
+                {
+                    return null;
+                }
+
+                if (normalizedSelections.Any(index => index < 0 || index >= question.Options.Count))
+                {
+                    return null;
+                }
+
+                normalizedAnswers[question.Id] = normalizedSelections;
+            }
+
+            return normalizedAnswers;
+        }
+
+        private static Dictionary<int, List<int>>? DeserializeAnswers(string answersJson)
+        {
+            if (string.IsNullOrWhiteSpace(answersJson))
+            {
+                return null;
+            }
+
+            try
+            {
+                return JsonSerializer.Deserialize<Dictionary<int, List<int>>>(answersJson);
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        private static Dictionary<string, int> CalculateTotals(
+            IReadOnlyList<ProfessionQuizQuestionVm> questions,
+            IReadOnlyDictionary<int, List<int>> answers)
+        {
+            var totals = new Dictionary<string, int>();
+
+            foreach (var question in questions)
+            {
+                if (!answers.TryGetValue(question.Id, out var answerIndexes))
+                {
+                    continue;
+                }
+
+                foreach (var answerIndex in answerIndexes)
+                {
+                    foreach (var score in question.Options[answerIndex].Scores)
+                    {
+                        totals[score.Key] = totals.GetValueOrDefault(score.Key) + score.Value;
+                    }
+                }
+            }
+
+            return totals;
+        }
+
+        private static (ProfessionQuizResultVm Result, int Score)? ResolveBestResult(
+            IReadOnlyList<ProfessionQuizResultVm> results,
+            IReadOnlyDictionary<string, int> totals)
+        {
+            (ProfessionQuizResultVm Result, int Score)? bestMatch = null;
+
+            foreach (var currentResult in results)
+            {
+                var currentScore = totals.GetValueOrDefault(currentResult.ProfessionName);
+
+                if (bestMatch is null || currentScore > bestMatch.Value.Score)
+                {
+                    bestMatch = (currentResult, currentScore);
+                }
+            }
+
+            return bestMatch;
+        }
+
+        private static IReadOnlyList<ProfessionQuizResultVm> BuildQuizResults(IReadOnlyDictionary<string, int> professionIds)
+            => BuildQuizResultDefinitions()
+                .Select(definition => CreateResult(definition, professionIds))
+                .ToList();
+
+        private static IReadOnlyList<QuizResultDefinition> BuildQuizResultDefinitions()
+            => new List<QuizResultDefinition>
+            {
+                new("Графичен дизайнер", "Имаш силен усет към визията, идеите и начина, по който едно послание въздейства. Ако развиваш това последователно, можеш да създаваш работа, която впечатлява и остава разпознаваема."),
+                new("Оперативен счетоводител", "При теб личат точност, подреденост и спокойствие при работа с данни и процеси. Това е стабилна посока, в която вниманието ти към детайла може да се превърне в истинско предимство."),
+                new("Приложен програмист", "Харесва ти да създаваш работещи дигитални решения и да превръщаш идеи в реални функции. С практика и постоянство можеш да изградиш много силен профил в разработката на софтуер."),
+                new("Системен програмист", "Мислиш логично и виждаш как отделните части на една система работят заедно. Това е отлична основа за роля, в която надеждността и техническата дълбочина са особено ценни."),
+                new("Електронна търговия", "Комбинираш интерес към дигиталната среда, продуктите и връзката с клиентите. Това може да се развие в много практична посока, където търговското мислене и онлайн уменията вървят ръка за ръка."),
+                new("Електротехник", "Имаш нагласа към практическа работа, точност и техническа отговорност на терен. Това е професия, в която уверените действия и добрата подготовка водят до реален резултат всеки ден."),
+                new("Техник на комуникационни системи", "Привличат те връзките между устройства, мрежи и сигнали, а това е много ценен технически профил. Ако продължиш да развиваш този интерес, можеш да се чувстваш силно в модерна и търсена среда."),
+                new("Техник по транспортна техника", "Имаш практичен усет към машини, диагностика и работа с реална техника. Това е добра посока за човек, който обича да вижда директния ефект от своите умения."),
+                new("Строителен техник", "Подхождате ти организацията, измерванията и превръщането на план в реално изпълнение. Това е професия, в която последователността и добрата координация дават видим и устойчив резултат."),
+                new("Ветеринарен техник", "При теб се открояват наблюдателност, грижа и желание да помагаш в реални ситуации. Това е много смислена посока, ако искаш работата ти да носи спокойствие и подкрепа на животни и хора."),
+                new("Готвач", "Имаш усет към вкуса, ритъма на практическата работа и удоволствието да създаваш нещо за другите. Ако развиеш това с дисциплина и творчество, можеш да се чувстваш много на място в кухнята."),
+                new("Хотелиер", "Силна твоя страна е отношението към хората, организацията и доброто преживяване за госта. Това е чудесна посока, ако искаш да работиш в динамична среда, в която личното отношение има голяма стойност.")
             };
 
         private static ProfessionQuizQuestionVm Question(int id, string section, string category, string text, params ProfessionQuizOptionVm[] options)
@@ -320,17 +521,19 @@ namespace Core.Services
                 Scores = scores.ToDictionary(score => score.profession, score => score.points)
             };
 
-        private static ProfessionQuizResultVm CreateResult(string professionName, string summary, IReadOnlyDictionary<string, int> professionIds)
+        private static ProfessionQuizResultVm CreateResult(QuizResultDefinition definition, IReadOnlyDictionary<string, int> professionIds)
         {
-            professionIds.TryGetValue(professionName, out var professionId);
+            professionIds.TryGetValue(definition.ProfessionName, out var professionId);
 
             return new ProfessionQuizResultVm
             {
-                ProfessionName = professionName,
+                ProfessionName = definition.ProfessionName,
                 ProfessionId = professionId == 0 ? null : professionId,
-                Summary = summary
+                Summary = definition.Summary
             };
         }
+
+        private sealed record QuizResultDefinition(string ProfessionName, string Summary);
 
         private static readonly string[] QuizProfessionNames =
         {

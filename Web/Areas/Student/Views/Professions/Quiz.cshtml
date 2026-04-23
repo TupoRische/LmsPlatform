@@ -13,10 +13,8 @@
 
     var questionsJson = JsonSerializer.Serialize(Model.Questions, jsonOptions);
     var resultsJson = JsonSerializer.Serialize(Model.Results, jsonOptions);
-    var quizSections = Model.Questions
-        .Select(question => question.Section)
-        .Distinct()
-        .ToList();
+    var savedResultJson = JsonSerializer.Serialize(Model.SavedResult, jsonOptions);
+    var saveQuizUrl = Url.Action("SaveQuizResult", "Professions", new { area = "Student" }) ?? string.Empty;
 }
 
 <div class="profession-quiz-page">
@@ -36,6 +34,7 @@
     </section>
 
     <section class="profession-quiz-shell" data-profession-quiz>
+        @Html.AntiForgeryToken()
         <div class="profession-quiz-progress-row">
             <div>
                 <span class="profession-quiz-progress-label" data-quiz-progress-label>Въпрос 1 от @Model.Questions.Count</span>
@@ -492,7 +491,10 @@
 
             const questions = @Html.Raw(questionsJson);
             const results = @Html.Raw(resultsJson);
+            const initialSavedResult = @Html.Raw(savedResultJson);
+            const saveQuizUrl = "@saveQuizUrl";
             const detailsBaseUrl = "/Student/Professions/Details/";
+            const antiForgeryToken = quizRoot.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
             const progressLabel = quizRoot.querySelector("[data-quiz-progress-label]");
             const progressPercent = quizRoot.querySelector("[data-quiz-progress-percent]");
@@ -519,6 +521,7 @@
                 currentIndex: 0,
                 answers: questions.map(() => [])
             };
+            let saveRequestVersion = 0;
 
             function renderQuestion() {
                 const question = questions[state.currentIndex];
@@ -586,7 +589,9 @@
 
                     if (!bestMatch || currentScore > bestMatch.score) {
                         return {
-                            result: currentResult,
+                            professionName: currentResult.professionName,
+                            professionId: currentResult.professionId,
+                            summary: currentResult.summary,
                             score: currentScore
                         };
                     }
@@ -595,13 +600,7 @@
                 }, null);
             }
 
-            function showResult() {
-                const bestMatch = resolveBestResult();
-
-                if (!bestMatch) {
-                    return;
-                }
-
+            function applyResult(result) {
                 stageEl.hidden = true;
                 resultEl.hidden = false;
                 progressLabel.textContent = "Резултат";
@@ -611,17 +610,71 @@
 
                 sectionChips.forEach((chip) => chip.classList.remove("is-active"));
 
-                resultTitle.textContent = bestMatch.result.professionName;
-                resultScore.textContent = `${bestMatch.score} т.`;
-                resultText.textContent = bestMatch.result.summary;
+                resultTitle.textContent = result.professionName;
+                resultScore.textContent = `${result.score} т.`;
+                resultText.textContent = result.summary;
 
-                if (bestMatch.result.professionId) {
+                if (result.professionId) {
                     detailsButton.hidden = false;
-                    detailsButton.href = `${detailsBaseUrl}${bestMatch.result.professionId}`;
+                    detailsButton.href = `${detailsBaseUrl}${result.professionId}`;
                 } else {
                     detailsButton.hidden = true;
                     detailsButton.removeAttribute("href");
                 }
+            }
+
+            function buildSubmissionPayload() {
+                const answers = {};
+
+                questions.forEach((question, questionIndex) => {
+                    answers[question.id] = [...state.answers[questionIndex]];
+                });
+
+                return { answers };
+            }
+
+            async function persistResult() {
+                if (!saveQuizUrl || !antiForgeryToken) {
+                    return;
+                }
+
+                const requestVersion = ++saveRequestVersion;
+
+                try {
+                    const response = await fetch(saveQuizUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "RequestVerificationToken": antiForgeryToken
+                        },
+                        body: JSON.stringify(buildSubmissionPayload())
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    const savedResult = await response.json();
+
+                    if (requestVersion !== saveRequestVersion || !savedResult) {
+                        return;
+                    }
+
+                    applyResult(savedResult);
+                } catch (error) {
+                    console.error("Could not persist profession quiz result.", error);
+                }
+            }
+
+            function finalizeQuiz() {
+                const bestMatch = resolveBestResult();
+
+                if (!bestMatch) {
+                    return;
+                }
+
+                applyResult(bestMatch);
+                void persistResult();
             }
 
             optionsEl.addEventListener("click", function (event) {
@@ -642,7 +695,7 @@
                     renderQuestion();
 
                     if (state.currentIndex === questions.length - 1) {
-                        window.setTimeout(showResult, 140);
+                        window.setTimeout(finalizeQuiz, 140);
                     }
 
                     return;
@@ -668,7 +721,7 @@
                 }
 
                 if (state.currentIndex === questions.length - 1) {
-                    showResult();
+                    finalizeQuiz();
                     return;
                 }
 
@@ -686,6 +739,7 @@
             });
 
             restartButton.addEventListener("click", function () {
+                saveRequestVersion += 1;
                 state.currentIndex = 0;
                 state.answers = questions.map(() => []);
                 resultEl.hidden = true;
@@ -694,6 +748,11 @@
                 detailsButton.removeAttribute("href");
                 renderQuestion();
             });
+
+            if (initialSavedResult) {
+                applyResult(initialSavedResult);
+                return;
+            }
 
             renderQuestion();
         });
