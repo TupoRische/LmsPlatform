@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Учебни материали";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var loginRequiredMessage = "Първо трябва да влезеш в профил, преди да можеш да разгледаш тази страница.";
 }
 
 <div class="materials-page-root mb-5">
@@ -108,12 +109,26 @@
                             </div>
 
                             <div class="card-footer-custom">
-                                <a asp-controller="Materials"
-                                   asp-action="Details"
-                                   asp-route-id="@material.Id"
-                                   class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
-                                    Към материала →
-                                </a>
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <a asp-area=""
+                                       asp-controller="Materials"
+                                       asp-action="Details"
+                                       asp-route-id="@material.Id"
+                                       class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
+                                        Към материала →
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-area="Identity"
+                                       asp-page="/Account/Login"
+                                       asp-route-returnUrl="@Url.Action("Details", "Materials", new { area = "", id = material.Id })"
+                                       asp-route-accessMessage="@loginRequiredMessage"
+                                       class="btn-details-custom rounded-pill text-center d-block text-decoration-none">
+                                        Към материала →
+                                    </a>
+                                }
                             </div>
                         </article>
                     </div>

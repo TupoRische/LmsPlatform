@@ -2,6 +2,7 @@
 
 @{
     Layout = "_Layout";
+    var loginRequiredMessage = "Първо трябва да влезеш в профил, преди да можеш да разгледаш тази страница.";
 }
 
 <div class="student-professions-container mb-5">
@@ -104,6 +105,8 @@
                         {
                             <a asp-area="Identity"
                                asp-page="/Account/Login"
+                               asp-route-returnUrl="@Url.Action("Details", "Professions", new { area = "Student", id = profession.Id })"
+                               asp-route-accessMessage="@loginRequiredMessage"
                                class="profession-link">
                                 Детайли
                             </a>

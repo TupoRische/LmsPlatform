@@ -1,6 +1,10 @@
 ﻿@using Core.ViewModels.Materials
 @model IEnumerable<MaterialListVm>
 
+@{
+    var loginRequiredMessage = "Първо трябва да влезеш в профил, преди да можеш да разгледаш тази страница.";
+}
+
 <h2 class="mb-3">Материали</h2>
 
 @if (!Model.Any())
@@ -23,8 +27,21 @@ else
                     <p class="mb-1 text-muted">@m.Description</p>
                 }
 
-                <a class="btn btn-sm btn-outline-primary mt-2"
-                     asp-controller="Materials" asp-action="Details" asp-route-id="@m.Id">Детайли</a>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <a class="btn btn-sm btn-outline-primary mt-2"
+                       asp-controller="Materials"
+                       asp-action="Details"
+                       asp-route-id="@m.Id">Детайли</a>
+                }
+                else
+                {
+                    <a class="btn btn-sm btn-outline-primary mt-2"
+                       asp-area="Identity"
+                       asp-page="/Account/Login"
+                       asp-route-returnUrl="@Url.Action("Details", "Materials", new { area = "", id = m.Id })"
+                       asp-route-accessMessage="@loginRequiredMessage">Детайли</a>
+                }
             </div>
         }
     </div>
