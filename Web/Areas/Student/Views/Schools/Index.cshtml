@@ -5,7 +5,7 @@
     @* --- Hero секция --- *@
     <div class="schools-hero">
         <div>
-            <span class="hero-kicker">Образование и партньори</span>
+            <span class="hero-kicker">Образование</span>
             <h1>Училища</h1>
             <p>Разгледай списъка с училища, намери тяхното местоположение и посети официалните им страници за повече информация.</p>
         </div>
@@ -248,11 +248,28 @@
         align-items: center;
         padding: 1.25rem 1.5rem;
         border-bottom: 1px solid #f0f3f5;
-        transition: 0.3s;
+        scroll-margin-top: 110px;
+        transition: background-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
     }
 
         .school-row:hover {
             background-color: #fcfdfe;
+        }
+
+        .school-row.highlight-school {
+            background-color: #fff7df;
+            box-shadow: inset 4px 0 0 #d4b15a;
+            transform: translateY(-1px);
+        }
+
+        .school-row.highlight-school .school-mini-icon {
+            background: #f8e7b7;
+            color: #9b6c00;
+        }
+
+        .school-row.highlight-school .city-tag,
+        .school-row.highlight-school .fw-bold {
+            color: #5f4a11 !important;
         }
 
     .col-name {
