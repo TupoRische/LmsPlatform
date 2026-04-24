@@ -16,17 +16,13 @@ namespace Infrastructure.Data.Entities
         public string Content { get; set; } = null!;
 
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-
-        // FK към Material
         public int MaterialId { get; set; }
         public Material Material { get; set; } = null!;
 
-        // FK към User (кой коментира)
         [Required]
         public string UserId { get; set; } = null!;
         public ApplicationUser User { get; set; } = null!;
 
-        // Reply / threading support
         public int? ParentCommentId { get; set; }
         public Comment? ParentComment { get; set; }
         public ICollection<Comment> Replies { get; set; } = new HashSet<Comment>();
