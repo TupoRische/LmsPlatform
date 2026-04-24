@@ -5,48 +5,50 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<section class="auth-page">
+<section class="auth-page" style="padding-top: 0;">
     <div class="auth-shell auth-shell--single">
         <section class="auth-carrd">
             <span class="auth-chip">Управление</span>
             <h1 class="auth-title">Настройки на профила</h1>
-            <p class="auth-subtitle">Тук можете да прегледате и редактирате своите лични данни. Имейл адресът е само за четене.</p>
+            <p class="auth-subtitle">Тук можете да прегледате и редактирате своите лични данни.</p>
 
             <partial name="_StatusMessage" for="StatusMessage" />
 
             <form id="profile-form" method="post" class="auth-form">
                 <div asp-validation-summary="ModelOnly" class="text-danger auth-validation-summary" role="alert"></div>
 
-                <div class="auth-field">
-                    <label asp-for="Username" class="form-label">Имейл адрес</label>
-                    <input asp-for="Username" class="form-control" disabled />
-                    <label asp-for="Username" class="form-label d-none"></label>
+                <div class="auth-grid">
+                    <div class="auth-field">
+                        <label asp-for="Username" class="form-label">Имейл адрес</label>
+                        <input asp-for="Username" class="form-control" disabled />
+                    </div>
+
                 </div>
 
-                <div class="auth-field">
-                    <label asp-for="Input.FirstName" class="form-label">Име</label>
-                    <input asp-for="Input.FirstName" class="form-control" />
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                <div class="auth-grid">
+                    <div class="auth-field">
+                        <label asp-for="Input.FirstName" class="form-label">Име</label>
+                        <input asp-for="Input.FirstName" class="form-control" placeholder="Вашето име" />
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.LastName" class="form-label">Фамилия</label>
+                        <input asp-for="Input.LastName" class="form-control" placeholder="Вашата фамилия" />
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="auth-field">
-                    <label asp-for="Input.LastName" class="form-label">Фамилия</label>
-                    <input asp-for="Input.LastName" class="form-control" />
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                <div class="auth-actions mt-4">
+                    <button id="update-profile-button" type="submit" class="auth-submit">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Запази промените
+                    </button>
                 </div>
 
-                <div class="auth-field">
-                    <label asp-for="Input.PhoneNumber" class="form-label">Телефонен номер</label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                </div>
-
-                <div class="auth-actions mt-4 text-center">
-                    <button id="update-profile-button" type="submit" class="btn btn-primary auth-submit w-100" style="background: #314c73 !important; border: none; padding: 12px; border-radius: 8px;">Запази промените</button>
-                </div>
-                
-                <div class="auth-link-row mt-3 text-center">
-                    <a asp-page="./ChangePassword" style="color: #6482ad; text-decoration: none;">Промяна на парола</a>
+                <div class="auth-link-row mt-4 justify-content-center">
+                    <a asp-page="./ChangePassword" class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> Промяна на парола
+                    </a>
                 </div>
             </form>
         </section>

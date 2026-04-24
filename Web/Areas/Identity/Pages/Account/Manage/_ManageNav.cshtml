@@ -1,3 +1,57 @@
 @using Infrastructure.Identity
 @inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
 
+<ul class="nav nav-pills flex-column manage-nav-custom">
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
+            <i class="fa-solid fa-user-circle"></i> Профил
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
+            <i class="fa-solid fa-key"></i> Парола
+        </a>
+    </li>
+
+    @if (hasExternalLogins)
+    {
+        <li id="external-logins" class="nav-item">
+            <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                <i class="fa-solid fa-share-nodes"></i> Външни входове
+            </a>
+        </li>
+    }
+
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+            <i class="fa-solid fa-user-shield"></i> Лични данни
+        </a>
+    </li>
+</ul>
+
+        <style>
+    .auth-page {
+        padding: unset !important;
+        min-height: calc(100vh - 90px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .nav-link {
+        color: #6482AD !important;
+    }
+
+    .nav-pills .nav-link.active {
+		background-color: #6482AD !important;
+        color: white !important;
+    }
+
+    .auth-title {
+        margin: 0 0 20px !important;
+    }
+        </style>
