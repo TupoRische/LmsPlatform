@@ -270,7 +270,7 @@ namespace Core.Services
     public async Task<IEnumerable<CommentThreadVm>> GetAllForTeacherAsync(string teacherId)
         {
             var allComments = await commentsRepo.AllReadonly()
-                .Where(c => c.Material.TeacherId == teacherId) // Филтрираме само материалите на този учител
+                .Where(c => c.Material.TeacherId == teacherId) 
                 .Include(c => c.Material)
                 .Include(c => c.User)
                 .ToListAsync();

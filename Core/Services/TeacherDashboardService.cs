@@ -3,7 +3,7 @@ using Core.ViewModels.Admin.Teachers;
 using Core.ViewModels.Teacher;
 using Core.ViewModels.Teacher.Materials;
 using Infrastructure.Data;
-using Infrastructure.Identity; // Увери се, че това е тук за ApplicationUser
+using Infrastructure.Identity; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -27,7 +27,7 @@ namespace Core.Services
         {
             var userId = userManager.GetUserId(user);
 
-            // 1. Списък за материалите
+            // Списък за материалите
             var materials = await context.Materials
                 .Include(m => m.MaterialCategory)
                 .Where(m => m.TeacherId == userId)
@@ -42,7 +42,7 @@ namespace Core.Services
                 .Take(3)
                 .ToListAsync();
 
-            // 2. Списък за коментарите с имената на студентите
+            // Списък за коментарите с имената на студентите
             var comments = await context.Comments
                 .Include(c => c.User)
                 .Include(c => c.Material)
@@ -58,7 +58,7 @@ namespace Core.Services
                 .Take(3)
                 .ToListAsync();
 
-            // 3. Данни за последна активност
+            // Данни за последна активност
             var lastM = await context.Materials
                 .Where(m => m.TeacherId == userId)
                 .OrderByDescending(m => m.CreatedOn)
@@ -131,7 +131,6 @@ namespace Core.Services
                     AuthorName = $"{c.User.FirstName} {c.User.LastName}",
                     Content = c.Content,
                     CreatedOn = c.CreatedOn,
-                    // Тук можеш да добавиш заглавие на материала, ако го добавиш в VM
                 })
                 .ToListAsync();
 

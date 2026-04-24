@@ -9,12 +9,12 @@ public class HomeService : IHomeService
 {
     private readonly IRepository<Profession> professionRepository;
     private readonly IRepository<School> schoolRepository;
-    private readonly IRepository<Material> materialRepository; // Добави това
+    private readonly IRepository<Material> materialRepository; 
 
     public HomeService(
         IRepository<Profession> professionRepository,
         IRepository<School> schoolRepository,
-        IRepository<Material> materialRepository) // И тук
+        IRepository<Material> materialRepository) 
     {
         this.professionRepository = professionRepository;
         this.schoolRepository = schoolRepository;
@@ -26,7 +26,7 @@ public class HomeService : IHomeService
         if (string.IsNullOrWhiteSpace(query)) return new List<SearchResultVm>();
         query = query.ToLower();
 
-        // 1. Професии
+        // Професии
         var professions = await professionRepository.All()
             .Where(p => p.Name.ToLower().Contains(query))
             .Select(p => new SearchResultVm
@@ -38,7 +38,7 @@ public class HomeService : IHomeService
                 Url = $"/Student/Professions/Details/{p.Id}"
             }).ToListAsync();
 
-        // 2. Училища
+        // Училища
         var schools = await schoolRepository.All()
             .Where(s => s.Name.ToLower().Contains(query))
             .Select(s => new SearchResultVm
@@ -50,7 +50,7 @@ public class HomeService : IHomeService
                 Url = $"/Student/Schools/Index#school-{s.Id}"
             }).ToListAsync();
 
-        // 3. Материали (НОВО)
+        // Материали
         var materials = await materialRepository.All()
             .Where(m => m.Title.ToLower().Contains(query) || m.Description.ToLower().Contains(query))
             .Select(m => new SearchResultVm
