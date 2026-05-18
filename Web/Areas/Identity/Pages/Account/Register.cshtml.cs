@@ -153,6 +153,7 @@ namespace Web.Areas.Identity.Pages.Account
             user.SchoolId = Input.SchoolId;
 
             user.RequestedTeacher = Input.RequestTeacher;
+            user.RequestedStudent = !Input.RequestTeacher;
             user.IsApproved = false;
 
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -169,8 +170,6 @@ namespace Web.Areas.Identity.Pages.Account
                     return RedirectToAction("Index", "Home", new { pendingApproval = 1, area = "" });
                 }
 
-                await _userManager.AddToRoleAsync(user, "Student");
-
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -184,13 +183,7 @@ namespace Web.Areas.Identity.Pages.Account
                 await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                {
-                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
-                }
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return LocalRedirect(returnUrl);
+                return RedirectToAction("Index", "Home", new { pendingApproval = 1, area = "" });
             }
 
             foreach (var error in result.Errors)

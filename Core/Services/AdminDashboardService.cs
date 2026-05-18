@@ -42,9 +42,11 @@ namespace Core.Services
         public async Task<AdminDashboardVm> GetStatsAsync()
             {
                 var totalUsers = await userManager.Users.CountAsync();
+                var pendingStudentIds = await GetPendingStudentIdsAsync();
 
                 var pendingTeachers = await userManager.Users
                     .CountAsync(u => u.RequestedTeacher && !u.IsApproved);
+                var pendingApprovals = pendingTeachers + pendingStudentIds.Count;
 
                 var teacherRoleId = await context.Roles
                     .Where(r => r.Name == "Teacher")
@@ -58,14 +60,18 @@ namespace Core.Services
 
                 var teachers = string.IsNullOrWhiteSpace(teacherRoleId)
                     ? 0
-                    : await context.UserRoles.CountAsync(ur => ur.RoleId == teacherRoleId);
+                    : await context.UserRoles.CountAsync(ur =>
+                        ur.RoleId == teacherRoleId &&
+                        context.Users.Any(u => u.Id == ur.UserId && u.IsApproved));
 
                 var students = string.IsNullOrWhiteSpace(studentRoleId)
                     ? 0
-                    : await context.UserRoles.CountAsync(ur => ur.RoleId == studentRoleId);
+                    : await context.UserRoles.CountAsync(ur =>
+                        ur.RoleId == studentRoleId &&
+                        context.Users.Any(u => u.Id == ur.UserId && u.IsApproved));
 
                 var latestPending = await userManager.Users
-                    .Where(u => u.RequestedTeacher && !u.IsApproved)
+                    .Where(u => !u.IsApproved && (u.RequestedTeacher || pendingStudentIds.Contains(u.Id)))
                     .OrderByDescending(u => u.CreatedOn)
                     .Take(5)
                     .Select(u => new SimpleUserVm
@@ -80,7 +86,7 @@ namespace Core.Services
                     TotalUsers = totalUsers,
                     Teachers = teachers,
                     Students = students,
-                    PendingTeachers = pendingTeachers,
+                    PendingTeachers = pendingApprovals,
                     Schools = await context.Schools.CountAsync(),
                     Professions = await context.Professions.CountAsync(),
                     Materials = await context.Materials.CountAsync(),
@@ -130,7 +136,7 @@ namespace Core.Services
 
                 var teachers = await context.Users
                     .AsNoTracking()
-                    .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == teacherRoleId))
+                    .Where(u => u.IsApproved && context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == teacherRoleId))
                     .OrderByDescending(u => u.CreatedOn)
                     .Take(Math.Max(count * 4, previewPoolSize))
                     .Select(t => new RandomTeacherVm
@@ -163,7 +169,7 @@ namespace Core.Services
 
                     var students = await context.Users
                         .AsNoTracking()
-                        .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == studentRoleId))
+                        .Where(u => u.IsApproved && context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == studentRoleId))
                         .OrderByDescending(u => u.CreatedOn)
                         .Take(Math.Max(count * 4, previewPoolSize))
                         .Select(s => new RandomStudentVm
@@ -181,8 +187,10 @@ namespace Core.Services
 
         public async Task<IEnumerable<PendingTeacherVm>> GetPendingTeachersPreviewAsync(int count = 3)
         {
+            var pendingStudentIds = await GetPendingStudentIdsAsync();
+
             return await userManager.Users
-                .Where(u => u.RequestedTeacher && !u.IsApproved)
+                .Where(u => !u.IsApproved && (u.RequestedTeacher || pendingStudentIds.Contains(u.Id)))
                 .OrderByDescending(u => u.CreatedOn)
                 .Take(count)
                 .Select(u => new PendingTeacherVm
@@ -190,7 +198,7 @@ namespace Core.Services
                     Id = u.Id,
                     FullName = $"{u.FirstName} {u.LastName}",
                     Email = u.Email!,
-                    RequestedRole = "Teacher"
+                    RequestedRole = u.RequestedTeacher ? "Teacher" : "Student"
                 })
                 .ToListAsync();
         }
@@ -254,7 +262,8 @@ namespace Core.Services
                     SchoolName = u.School != null ? u.School.Abbreviation + " - " + u.School.City : "Без училище",
                     u.CreatedOn,
                     u.IsApproved,
-                    u.RequestedTeacher
+                    u.RequestedTeacher,
+                    u.RequestedStudent
                 })
                 .ToListAsync();
 
@@ -264,6 +273,9 @@ namespace Core.Services
                     role => role.Id,
                     (userRole, role) => new { userRole.UserId, RoleName = role.Name! })
                 .ToListAsync();
+            var usersWithRoles = roleLookup
+                .Select(r => r.UserId)
+                .ToHashSet();
 
             var mappedUsers = users
                 .Select(u => new AdminUserListItemVm
@@ -282,9 +294,12 @@ namespace Core.Services
             {
                 TotalUsers = mappedUsers.Count,
                 AdminsCount = mappedUsers.Count(u => u.Role == "Admin"),
-                TeachersCount = mappedUsers.Count(u => u.Role == "Teacher"),
-                StudentsCount = mappedUsers.Count(u => u.Role == "Student"),
-                PendingTeachersCount = users.Count(u => u.RequestedTeacher && !u.IsApproved),
+                TeachersCount = mappedUsers.Count(u => u.Role == "Teacher" && u.IsApproved),
+                StudentsCount = mappedUsers.Count(u => u.Role == "Student" && u.IsApproved),
+                PendingTeachersCount = users.Count(u =>
+                    !u.IsApproved &&
+                    !usersWithRoles.Contains(u.Id) &&
+                    (u.RequestedTeacher || u.RequestedStudent)),
                 Users = mappedUsers
             };
         }
@@ -303,7 +318,7 @@ namespace Core.Services
 
             var students = await context.Users
                 .AsNoTracking()
-                .Where(u => context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == studentRoleId))
+                .Where(u => u.IsApproved && context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == studentRoleId))
                 .OrderByDescending(u => u.CreatedOn)
                 .Select(u => new StudentListItemVm
                 {
@@ -600,7 +615,9 @@ namespace Core.Services
 
                 return string.IsNullOrWhiteSpace(teacherRoleId)
                     ? 0
-                    : await context.UserRoles.CountAsync(ur => ur.RoleId == teacherRoleId);
+                    : await context.UserRoles.CountAsync(ur =>
+                        ur.RoleId == teacherRoleId &&
+                        context.Users.Any(u => u.Id == ur.UserId && u.IsApproved));
             }
 
             public async Task<int> GetStudentsCountAsync()
@@ -612,16 +629,21 @@ namespace Core.Services
 
                 return string.IsNullOrWhiteSpace(studentRoleId)
                     ? 0
-                    : await context.UserRoles.CountAsync(ur => ur.RoleId == studentRoleId);
+                    : await context.UserRoles.CountAsync(ur =>
+                        ur.RoleId == studentRoleId &&
+                        context.Users.Any(u => u.Id == ur.UserId && u.IsApproved));
             }
 
        
 
         public async Task<int> GetPendingTeachersCountAsync()
             {
-                return await userManager.Users
+                var pendingStudentIds = await GetPendingStudentIdsAsync();
+                var pendingTeachers = await userManager.Users
                     .Where(u => u.RequestedTeacher && !u.IsApproved)
                     .CountAsync();
+
+                return pendingTeachers + pendingStudentIds.Count;
             }
 
             public async Task<int> GetSchoolsCountAsync()
@@ -642,6 +664,18 @@ namespace Core.Services
             public async Task<int> GetCommentsCountAsync()
             {
                 return await context.Comments.CountAsync();
+            }
+
+            private async Task<List<string>> GetPendingStudentIdsAsync()
+            {
+                return await context.Users
+                    .AsNoTracking()
+                    .Where(u => !u.IsApproved &&
+                        !u.RequestedTeacher &&
+                        u.RequestedStudent &&
+                        !context.UserRoles.Any(ur => ur.UserId == u.Id))
+                    .Select(u => u.Id)
+                    .ToListAsync();
             }
         }
 }

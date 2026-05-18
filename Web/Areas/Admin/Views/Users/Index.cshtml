@@ -28,7 +28,7 @@
             <strong>@Model.StudentsCount</strong>
         </article>
         <article class="stat-card stat-card--pending">
-            <span>Чакащи учители</span>
+            <span>Чакащи одобрение</span>
             <strong>@Model.PendingTeachersCount</strong>
         </article>
     </div>
@@ -96,7 +96,7 @@
                                 <td>@user.SchoolName</td>
                                 <td>@user.CreatedOn.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    @if ((user.Role == "Teacher" && !user.IsApproved) || user.Role == "Без роля")
+                                    @if (user.Role != "Admin" && !user.IsApproved)
                                     {
                                         <span class="status-pill status-pill--pending">Изчакващ</span>
                                     }

@@ -302,6 +302,9 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("RequestedStudent")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("RequestedTeacher")
                         .HasColumnType("bit");
 

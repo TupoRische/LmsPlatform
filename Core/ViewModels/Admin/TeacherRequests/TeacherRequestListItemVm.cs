@@ -11,6 +11,7 @@ namespace Core.ViewModels.Admin.TeacherRequests
         public string Id { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string FullName { get; set; } = null!;
+        public string RequestedRole { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
     }
 

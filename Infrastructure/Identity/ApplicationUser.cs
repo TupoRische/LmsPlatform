@@ -18,6 +18,7 @@ namespace Infrastructure.Identity
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public bool RequestedTeacher { get; set; } = false;
+        public bool RequestedStudent { get; set; } = false;
         public int? SchoolId { get; set; }
         public School? School { get; set; }
     }

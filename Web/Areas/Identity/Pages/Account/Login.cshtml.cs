@@ -116,10 +116,12 @@ namespace Web.Areas.Identity.Pages.Account
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                if (user != null && user.RequestedTeacher && !user.IsApproved)
+                if (user != null && !user.IsApproved)
                 {
                     ModelState.AddModelError(string.Empty,
-                        "Заявката ти за учител все още не е одобрена.");
+                        user.RequestedTeacher
+                            ? "Заявката ти за учител все още не е одобрена."
+                            : "Профилът ти все още не е одобрен от администратор.");
                     return Page();
                 }
 
